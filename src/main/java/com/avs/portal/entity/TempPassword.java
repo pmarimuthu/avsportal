@@ -18,8 +18,8 @@ import com.avs.portal.bean.TempPasswordBean;
 public class TempPassword {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -38,12 +38,12 @@ public class TempPassword {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public User getUser() {
@@ -88,7 +88,7 @@ public class TempPassword {
 
 	public TempPasswordBean toBean() {
 		return new TempPasswordBean()
-				.setUserId(userId)
+				.setId(id)
 				.setGeneratedPassword(generatedPassword)
 				.setIsUsed(isUsed)
 				.setCreatedOn(createdOn.toLocalDateTime())
@@ -98,12 +98,12 @@ public class TempPassword {
 	@Override
 	public String toString() {
 		return "\nTempPassword [ " + 
-				"userId=" + userId + 
-				", user=" + user + 
-				", generatedPassword=" + generatedPassword + 
-				", isUsed=" + isUsed + 
-				", createdOn=" + createdOn + 
-				", updatedOn=" + updatedOn + 
+				"Id: " + id + 
+				", User: " + user + 
+				", Generated Password: " + generatedPassword + 
+				", Is Used: " + isUsed + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
 				"]";
 	}
 	

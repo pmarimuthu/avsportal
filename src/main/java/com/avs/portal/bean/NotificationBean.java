@@ -10,7 +10,7 @@ public class NotificationBean implements Serializable {
 
 	private static final long serialVersionUID = 3302057294948427326L;
 
-	private UUID userId;
+	private UUID id;
 	
 	private NotificationTypeEnum notificationType;
 	
@@ -22,12 +22,12 @@ public class NotificationBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public NotificationBean setUserId(UUID userId) {
-		this.userId = userId;
+	public NotificationBean setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -78,8 +78,8 @@ public class NotificationBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "NotificationBean [userId=" + userId + ", notificationType=" + notificationType
-				+ ", messageText=" + messageText + ", isRead=" + isRead + ", createdOn=" + createdOn + ", updatedOn="
+		return "NotificationBean [Id: " + id + ", Notification Type: " + notificationType
+				+ ", Message Text: " + messageText + ", Is Read: " + isRead + ", Created On: " + createdOn + ", Updated On: "
 				+ updatedOn + "]";
 	}
 	

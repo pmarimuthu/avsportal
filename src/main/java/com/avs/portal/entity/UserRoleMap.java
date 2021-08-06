@@ -20,8 +20,8 @@ import com.avs.portal.util.CommonUtil;
 public class UserRoleMap {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -37,12 +37,12 @@ public class UserRoleMap {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserRoleMap setUserId(UUID userId) {
-		this.userId = userId;
+	public UserRoleMap setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -84,7 +84,7 @@ public class UserRoleMap {
 	
 	public UserRoleMapBean toBean() {
 		return new UserRoleMapBean()
-				.setUserId(userId)
+				.setId(id)
 				.setRole(role)
 				.setCreatedOn(CommonUtil.toLocalDateTimeOrNull(createdOn))
 				.setUpdatedOn(CommonUtil.toLocalDateTimeOrNull(updatedOn));
@@ -92,7 +92,7 @@ public class UserRoleMap {
 
 	@Override
 	public String toString() {
-		return "UserRoleMap [userId=" + userId + ", user=" + user + ", role=" + role + ", createdOn=" + createdOn
+		return "UserRoleMap [userId=" + id + ", user=" + user + ", role=" + role + ", createdOn=" + createdOn
 				+ ", updatedOn=" + updatedOn + "]";
 	}
 	

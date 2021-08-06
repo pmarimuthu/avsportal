@@ -18,8 +18,8 @@ import com.avs.portal.bean.UserAccountStatusBean;
 public class UserAccountStatus {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId 
     @OneToOne(mappedBy = "userAccountStatus")
@@ -47,12 +47,12 @@ public class UserAccountStatus {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID userId) {
+		this.id = userId;
 	}
 
 	public User getUser() {
@@ -121,7 +121,7 @@ public class UserAccountStatus {
 
 	public UserAccountStatusBean toBean() {
 		UserAccountStatusBean bean = new UserAccountStatusBean();
-		bean.setUserId(userId);
+		bean.setId(id);
 		bean.setIsActive(isActive);
 		bean.setIsBlocked(isBlocked);
 		bean.setIsDeleted(isDeleted);
@@ -135,8 +135,8 @@ public class UserAccountStatus {
 
 	@Override
 	public String toString() {
-		return "UserAccountStatus [userId=" + userId + ", isVerified=" + isVerified + ", isActive="
-				+ isActive + ", isLocked=" + isLocked + ", isBlocked=" + isBlocked + ", isDeleted=" + isDeleted
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
+		return "UserAccountStatus [ Id: " + id + ", Is Verified: " + isVerified + ", Is Active: "
+				+ isActive + ", Is Locked: " + isLocked + ", Is Blocked: " + isBlocked + ", Is Deleted: " + isDeleted
+				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + "]";
 	}
 }

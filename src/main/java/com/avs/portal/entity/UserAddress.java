@@ -19,8 +19,8 @@ import com.avs.portal.enums.AddressTypeEnum;
 public class UserAddress {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -60,12 +60,12 @@ public class UserAddress {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserAddress setUserId(UUID userId) {
-		this.userId = userId;
+	public UserAddress setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -179,7 +179,7 @@ public class UserAddress {
 
 	public UserAddressBean toBean() {
 		return new UserAddressBean()
-				.setUserId(userId)
+				.setId(id)
 				.setAddressLine1(addressLine1)
 				.setAddressType(addressType)
 				.setCity(city)

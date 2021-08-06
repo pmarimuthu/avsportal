@@ -8,7 +8,7 @@ public class UserAccountStatusBean implements Serializable {
 
 	private static final long serialVersionUID = 2920506511467215606L;
 	
-	private UUID userId;
+	private UUID id;
 	
 	private Boolean isVerified;
 	
@@ -24,12 +24,12 @@ public class UserAccountStatusBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserAccountStatusBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserAccountStatusBean setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -98,9 +98,9 @@ public class UserAccountStatusBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserAccountStatusBean [userId=" + userId + ", isVerified=" + isVerified + ", isActive="
-				+ isActive + ", isLocked=" + isLocked + ", isBlocked=" + isBlocked + ", isDeleted=" + isDeleted
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
+		return "\nUserAccountStatusBean [ Id: " + id + ", Is Verified: " + isVerified + ", Is Active: "
+				+ isActive + ", Is Locked: " + isLocked + ", Is Blocked: " + isBlocked + ", Is Deleted: " + isDeleted
+				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 
 }

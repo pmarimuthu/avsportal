@@ -8,7 +8,7 @@ public class UserReferrerMapBean implements Serializable {
 
 	private static final long serialVersionUID = 9055563320640094809L;
 
-	private UUID userId;
+	private UUID id;
 	
 	private UUID referredBy;
 	
@@ -16,12 +16,12 @@ public class UserReferrerMapBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserReferrerMapBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserReferrerMapBean setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -54,8 +54,8 @@ public class UserReferrerMapBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserReferrerMapBean [userId=" + userId + ", referredBy=" + referredBy + ", createdOn="
-				+ createdOn + ", updatedOn=" + updatedOn + "]";
+		return "\nUserReferrerMapBean [ Id: " + id + ", Referred By: " + referredBy + ", Created On: "
+				+ createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 
 }

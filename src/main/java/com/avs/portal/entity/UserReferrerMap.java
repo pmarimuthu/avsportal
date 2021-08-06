@@ -18,8 +18,8 @@ import com.avs.portal.bean.UserReferrerMapBean;
 public class UserReferrerMap {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -35,12 +35,12 @@ public class UserReferrerMap {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public User getUser() {
@@ -72,7 +72,7 @@ public class UserReferrerMap {
 
 	public UserReferrerMapBean toBean() {
 		return new UserReferrerMapBean()
-				.setUserId(userId)
+				.setId(id)
 				.setReferredBy(referredBy)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
@@ -81,7 +81,7 @@ public class UserReferrerMap {
 	@Override
 	public String toString() {
 		return "\nUserReferrerMap [ " + 
-				"userId=" + userId + 
+				"userId=" + id + 
 				", user=" + user + 
 				", referredBy=" + referredBy + 
 				", createdOn=" + createdOn + 

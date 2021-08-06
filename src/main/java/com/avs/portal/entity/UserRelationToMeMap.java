@@ -20,8 +20,8 @@ import com.avs.portal.enums.VerificationStatusEnum;
 public class UserRelationToMeMap {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -46,12 +46,12 @@ public class UserRelationToMeMap {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public User getUser() {
@@ -112,7 +112,7 @@ public class UserRelationToMeMap {
 	
 	public UserRelationToMeMapBean toBean() {
 		return new UserRelationToMeMapBean()
-				.setUserId(relativeUserId)
+				.setId(relativeUserId)
 				.setRelativeUserId(relativeUserId)
 				.setRelationToMe(relationToMe)
 				.setVerificaionStatus(verificaionStatus)
@@ -124,7 +124,7 @@ public class UserRelationToMeMap {
 	@Override
 	public String toString() {
 		return "\nUserRelationToMe [ " +
-				"userId=" + userId + 
+				"userId=" + id + 
 				", user=" + user + 
 				", relativeUserId=" + relativeUserId + 
 				", relationToMe=" + relationToMe + 

@@ -11,7 +11,7 @@ public class UserInformationBean implements Serializable {
 
 	private static final long serialVersionUID = -3509526445058485342L;
 	
-	private UUID userId;
+	private UUID id;
 	
 	private String firstname;
 	
@@ -27,12 +27,12 @@ public class UserInformationBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserInformationBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserInformationBean setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -101,9 +101,9 @@ public class UserInformationBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserInformation [ userId=" + userId + ", firstname=" + firstname + ", lastname="
-				+ lastname + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", profession=" + profession
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + " ]";
+		return "\nUserInformation [ Id: " + id + ", Firstname: " + firstname + ", Lastname: "
+				+ lastname + ", Gender: " + gender + ", Date Of Birth: " + dateOfBirth + ", Profession: " + profession
+				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 
 }

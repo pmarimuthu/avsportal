@@ -8,7 +8,7 @@ public class UserCredentialBean implements Serializable {
 
 	private static final long serialVersionUID = -3205984755210708781L;
 	
-	private UUID userId;
+	private UUID id;
 	
 	private String password;
 	
@@ -16,12 +16,12 @@ public class UserCredentialBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserCredentialBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserCredentialBean setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -54,8 +54,8 @@ public class UserCredentialBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserCredentialBean [userId=" + userId + ", password=" + password + ", createdOn="
-				+ createdOn + ", updatedOn=" + updatedOn + "]";
+		return "\nUserCredentialBean [ Id: " + id + ", Password: " + password + ", Created On: "
+				+ createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 
 }

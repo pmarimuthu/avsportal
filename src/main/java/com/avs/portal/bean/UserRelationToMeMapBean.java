@@ -11,7 +11,7 @@ public class UserRelationToMeMapBean implements Serializable {
 
 	private static final long serialVersionUID = 1264185153560165325L;
 
-	private UUID userId;
+	private UUID id;
 	
 	private UUID relativeUserId;
 	
@@ -25,12 +25,12 @@ public class UserRelationToMeMapBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserRelationToMeMapBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserRelationToMeMapBean setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -90,9 +90,9 @@ public class UserRelationToMeMapBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserRelationToMeMap [userId=" + userId + ", relativeUserId=" + relativeUserId
-				+ ", relationToMe=" + relationToMe + ", verificaionStatus=" + verificaionStatus + ", verifiedBy="
-				+ verifiedBy + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
+		return "\nUserRelationToMeMap [ Id: " + id + ", Relative User Id: " + relativeUserId
+				+ ", Relation ToMe: " + relationToMe + ", Verificaion Status: " + verificaionStatus + ", Verified By: "
+				+ verifiedBy + ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 	
 }

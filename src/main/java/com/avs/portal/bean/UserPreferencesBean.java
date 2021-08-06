@@ -11,7 +11,7 @@ public class UserPreferencesBean implements Serializable {
 
 	private static final long serialVersionUID = 7773159516719852765L;
 	
-	private UUID userId;
+	private UUID id;
 	
 	private VisibilityEnum visibilityLevel;
 	
@@ -24,12 +24,12 @@ public class UserPreferencesBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 	
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserPreferencesBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserPreferencesBean setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -80,9 +80,9 @@ public class UserPreferencesBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserPreferencesBean [userId=" + userId + ", visibilityLevel=" + visibilityLevel + ", language="
-				+ language + ", advertisementOpt=" + advertisementOpt + ", createdOn=" + createdOn + ", updatedOn="
-				+ updatedOn + "]";
+		return "\nUserPreferencesBean [ Id: " + id + ", Visibility Level: " + visibilityLevel + ", Language: "
+				+ language + ", Advertisement Opt: " + advertisementOpt + ", Created On: " + createdOn + ", Updated On: "
+				+ updatedOn + " ]";
 	}
 	
 }

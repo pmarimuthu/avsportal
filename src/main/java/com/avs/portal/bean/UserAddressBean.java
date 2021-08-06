@@ -10,7 +10,7 @@ public class UserAddressBean implements Serializable {
 
 	private static final long serialVersionUID = -3018205575515028379L;
 	
-	private UUID userId;
+	private UUID id;
 	
 	private AddressTypeEnum addressType;
 	
@@ -34,12 +34,12 @@ public class UserAddressBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserAddressBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserAddressBean setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -144,9 +144,9 @@ public class UserAddressBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserAddress [userId=" + userId + ", addressType=" + addressType + ", addressLine1="
-				+ addressLine1 + ", city=" + city + ", state=" + state + ", country=" + country + ", pincode=" + pincode
-				+ ", geoLatitude=" + geoLatitude + ", geoLongitude=" + geoLongitude + ", ipAddress=" + ipAddress
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
+		return "UserAddress [ Id: " + id + ", Address Type: " + addressType + ", Address Line1: "
+				+ addressLine1 + ", City: " + city + ", State: " + state + ", Country: " + country + ", Pincode: " + pincode
+				+ ", GEO Latitude: " + geoLatitude + ", GEO Longitude: " + geoLongitude + ", IPAddress: " + ipAddress
+				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
 	}
 }

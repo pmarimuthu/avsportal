@@ -20,8 +20,8 @@ import com.avs.portal.enums.VisibilityEnum;
 public class UserPreferences {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "userPreferences")
@@ -43,12 +43,12 @@ public class UserPreferences {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserPreferences setUserId(UUID userId) {
-		this.userId = userId;
+	public UserPreferences setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -108,7 +108,7 @@ public class UserPreferences {
 
 	public UserPreferencesBean toBean() {
 		return new UserPreferencesBean()
-				.setUserId(userId)
+				.setId(id)
 				.setVisibilityLevel(this.visibility)
 				.setLanguage(language)
 				.setAdvertisementOpt(this.advertisement)
@@ -119,7 +119,7 @@ public class UserPreferences {
 
 	@Override
 	public String toString() {
-		return "UserPreferences [userId=" + userId + ", visibility=" + visibility + ", language="
+		return "UserPreferences [userId=" + id + ", visibility=" + visibility + ", language="
 				+ language + ", advertisement=" + advertisement + ", createdOn=" + createdOn + ", updatedOn="
 				+ updatedOn + "]";
 	}

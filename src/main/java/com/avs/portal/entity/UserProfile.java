@@ -26,8 +26,8 @@ import com.avs.portal.util.CommonUtil;
 public class UserProfile {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "userPreferences")
@@ -67,12 +67,12 @@ public class UserProfile {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserProfile setUserId(UUID userId) {
-		this.userId = userId;
+	public UserProfile setId(UUID userId) {
+		this.id = userId;
 		return this;
 	}
 
@@ -186,7 +186,7 @@ public class UserProfile {
 
 	public UserProfileBean toBean() {
 		return new UserProfileBean()
-				.setUserId(userId)
+				.setId(id)
 				.setBirthTimestamp(CommonUtil.toLocalDateTimeOrNull(birthTimestamp))
 				.setCaste(caste)
 				.setKoththiram(koththiram)

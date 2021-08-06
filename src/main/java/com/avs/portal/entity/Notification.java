@@ -19,12 +19,12 @@ import com.avs.portal.enums.NotificationTypeEnum;
 public class Notification {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "notification")
-	@JoinColumn(name = "userid")   //same name as id @Column
+	@JoinColumn(name = "id")   //same name as id @Column
     private User user;
 
 	@Column(name = "notification_type")
@@ -42,12 +42,12 @@ public class Notification {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public Notification setUserId(UUID userId) {
-		this.userId = userId;
+	public Notification setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -107,7 +107,7 @@ public class Notification {
 
 	public NotificationBean toBean() {
 		return new NotificationBean()
-				.setUserId(userId)
+				.setId(id)
 				.setNotificationType(notificationType)
 				.setMessageText(messageText)
 				.setIsRead(isRead)
@@ -118,13 +118,13 @@ public class Notification {
 	@Override
 	public String toString() {
 		return "\nNotification [ " + 
-				"userId=" + userId + 
-				", user=" + user + 
-				", notificationType=" + notificationType + 
-				", messageText=" + messageText + 
-				", isRead=" + isRead + 
-				", createdOn=" + createdOn + 
-				", updatedOn=" + updatedOn + 
+				"Id: " + id + 
+				", User: " + user + 
+				", Notification Type: " + notificationType + 
+				", Message Text: " + messageText + 
+				", Is Read: " + isRead + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
 				"]";
 	}
 	

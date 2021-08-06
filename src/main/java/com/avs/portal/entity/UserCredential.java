@@ -18,8 +18,8 @@ import com.avs.portal.bean.UserCredentialBean;
 public class UserCredential {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId 
     @OneToOne(mappedBy = "userCredential")
@@ -35,12 +35,12 @@ public class UserCredential {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public User getUser() {
@@ -77,7 +77,7 @@ public class UserCredential {
 	
 	public UserCredentialBean toBean() {
 		return new UserCredentialBean()
-		.setUserId(userId)
+		.setId(id)
 		.setPassword(password)
 		.setCreatedOn(createdOn.toLocalDateTime())
 		.setUpdatedOn(updatedOn.toLocalDateTime());
@@ -85,7 +85,7 @@ public class UserCredential {
 
 	@Override
 	public String toString() {
-		return "UserCredential [userId=" + userId + ", password=" + password + ", createdOn=" + createdOn
+		return "UserCredential [userId=" + id + ", password=" + password + ", createdOn=" + createdOn
 				+ ", updatedOn=" + updatedOn + "]";
 	}
 

@@ -20,8 +20,8 @@ import com.avs.portal.enums.VerificationSubjectEnum;
 public class UserVerification {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "tempPassword")
@@ -43,12 +43,12 @@ public class UserVerification {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID userId) {
+		this.id = userId;
 	}
 
 	public User getUser() {
@@ -107,7 +107,7 @@ public class UserVerification {
 	
 	public UserVerificationBean toBean() {
 		return new UserVerificationBean()
-				.setUserId(userId)
+				.setUserId(id)
 				.setVerificationSubject(verificationSubject)
 				.setVerificationMode(verificationMode)
 				.setVerifiedBy(verifiedBy)
@@ -117,7 +117,7 @@ public class UserVerification {
 
 	@Override
 	public String toString() {
-		return "UserVerification [userId=" + userId + ", user=" + user + ", verificationSubject=" + verificationSubject
+		return "UserVerification [userId=" + id + ", user=" + user + ", verificationSubject=" + verificationSubject
 				+ ", verificationMode=" + verificationMode + ", verifiedBy=" + verifiedBy + ", createdOn=" + createdOn
 				+ ", updatedOn=" + updatedOn + "]";
 	}

@@ -20,8 +20,8 @@ import com.avs.portal.enums.GenderEnum;
 public class UserInformation {
 
 	@Id
-	@Column(name = "userid")
-	private UUID userId;
+	@Column(name = "id")
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "userInformation")
@@ -49,12 +49,12 @@ public class UserInformation {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUserId(UUID userId) {
-		this.userId = userId;
+	public void setId(UUID userId) {
+		this.id = userId;
 	}
 
 	public User getUser() {
@@ -123,7 +123,7 @@ public class UserInformation {
 	
 	public UserInformationBean toBean() {
 		UserInformationBean bean = new UserInformationBean();
-		bean.setUserId(userId);
+		bean.setId(id);
 		bean.setFirstname(firstname);
 		bean.setLastname(lastname);
 		bean.setGender(gender);
@@ -137,7 +137,7 @@ public class UserInformation {
 
 	@Override
 	public String toString() {
-		return "UserInformation [userId=" + userId + ", user=" + user + ", firstname=" + firstname + ", lastname="
+		return "UserInformation [userId=" + id + ", user=" + user + ", firstname=" + firstname + ", lastname="
 				+ lastname + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", profession=" + profession
 				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
 	}

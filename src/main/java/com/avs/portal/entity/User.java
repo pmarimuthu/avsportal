@@ -205,16 +205,18 @@ public class User {
 		return loginHistories;
 	}
 
-	public void setLoginHistories(List<LoginHistory> loginHistories) {
+	public User setLoginHistories(List<LoginHistory> loginHistories) {
 		this.loginHistories = loginHistories;
+		return this;
 	}
 
 	public Notification getNotification() {
 		return notification;
 	}
 
-	public void setNotification(Notification notification) {
+	public User setNotification(Notification notification) {
 		this.notification = notification;
+		return this;
 	}
 
 	public Long getPhone() {

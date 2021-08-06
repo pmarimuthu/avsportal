@@ -10,7 +10,7 @@ public class UserRoleMapBean implements Serializable {
 
 	private static final long serialVersionUID = 7032801748899001443L;
 
-	private UUID userId;
+	private UUID id;
 	
 	private RoleEnum role;
 	
@@ -18,12 +18,12 @@ public class UserRoleMapBean implements Serializable {
 	
 	private LocalDateTime updatedOn;
 
-	public UUID getUserId() {
-		return userId;
+	public UUID getId() {
+		return id;
 	}
 
-	public UserRoleMapBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserRoleMapBean setId(UUID id) {
+		this.id = id;
 		return this;
 	}
 
@@ -56,8 +56,8 @@ public class UserRoleMapBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserRoleMapBean [userId=" + userId + ", role=" + role + ", createdOn=" + createdOn
-				+ ", updatedOn=" + updatedOn + "]";
+		return "\nUserRoleMapBean [ Id: " + id + ", Role: " + role + ", Created On: " + createdOn
+				+ ", Updated On: " + updatedOn + " ]";
 	}
 	
 }
