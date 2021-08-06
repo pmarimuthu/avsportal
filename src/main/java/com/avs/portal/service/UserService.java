@@ -101,24 +101,10 @@ public class UserService {
 		createNotification(user);
 		createUserRelationToMeMap(user);
 		
-		//createLoginHistories(user);
-		LoginHistory loginHistory1 = new LoginHistory();
-		loginHistory1.setConsecutiveFailedLoginCount(0);
-		loginHistory1.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		loginHistory1.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		LoginHistory loginHistory2 = new LoginHistory();
-		loginHistory2.setConsecutiveFailedLoginCount(0);
-		loginHistory2.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		loginHistory2.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		List<LoginHistory> loginHistories = Arrays.asList(loginHistory1, loginHistory2);
-		user.setLoginHistories(loginHistories);
-		loginHistory1.setUser(user);
-		loginHistory2.setUser(user);
-		
-		loginHistoryRepository.save(loginHistory1);
-		loginHistoryRepository.save(loginHistory2);
+		List<LoginHistory> loginHistories = createLoginHistories(user);
+		for (LoginHistory loginHistory : loginHistories) {
+			loginHistoryRepository.save(loginHistory);
+		}
 		
 		user = userRepository.save(user);
 		
@@ -349,15 +335,20 @@ public class UserService {
 	// LoginHistory :: login_history_13
 	// --------------------------------
 	private List<LoginHistory> createLoginHistories(User user) {
-		LoginHistory loginHistory = new LoginHistory();
-		loginHistory.setConsecutiveFailedLoginCount(0);
-		loginHistory.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		loginHistory.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		LoginHistory loginHistory1 = new LoginHistory();
+		loginHistory1.setConsecutiveFailedLoginCount(0);
+		loginHistory1.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		loginHistory1.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		user.getLoginHistories().add(loginHistory);
-		loginHistory.setUser(user);
+		LoginHistory loginHistory2 = new LoginHistory();
+		loginHistory2.setConsecutiveFailedLoginCount(0);
+		loginHistory2.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		loginHistory2.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		return user.getLoginHistories();
+		loginHistory1.setUser(user);
+		loginHistory2.setUser(user);
+		
+		return Arrays.asList(loginHistory1, loginHistory2);
 	}
 
 	// UserRelationToMeMap :: user_relation_to_me_map_14

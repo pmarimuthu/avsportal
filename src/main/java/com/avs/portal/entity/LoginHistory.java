@@ -59,8 +59,15 @@ public class LoginHistory {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public LoginHistory setUser(User user) {
+		if(this.user != null)
+			this.user.internalRemoveLoginHistory(this);
+		
 		this.user = user;
+		if(user != null)
+			user.internalAddLoginHistory(this);
+		
+		return this;
 	}
 
 	public Integer getConsecutiveFailedLoginCount() {
@@ -120,7 +127,7 @@ public class LoginHistory {
 	public LoginHistoryBean toBean() {
 		return new LoginHistoryBean()
 				.setId(id)
-				.setUserId(id)
+				.setUserId(user.getId())
 				.setConsecutiveFailedLoginCount(consecutiveFailedLoginCount)
 				.setIpAddress(ipAddress)
 				.setDeviceType(deviceType)

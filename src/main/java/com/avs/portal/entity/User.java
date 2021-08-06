@@ -90,7 +90,7 @@ public class User {
     @PrimaryKeyJoinColumn
     private Notification notification;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
 	private List<LoginHistory> loginHistories = new ArrayList<>();
 
 	public UUID getId() {
@@ -202,6 +202,7 @@ public class User {
 	}
 
 	public List<LoginHistory> getLoginHistories() {
+		//return Collections.unmodifiableList(loginHistories);
 		return loginHistories;
 	}
 
@@ -209,7 +210,31 @@ public class User {
 		this.loginHistories = loginHistories;
 		return this;
 	}
+	
+	// Ref >>>> https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
+	
+	public User addLoginHistory(LoginHistory loginHistory) {
+		loginHistory.setUser(this);
+		return this;
+	}
+	
+	public User removeLoginHistory(LoginHistory loginHistory) {
+		loginHistory.setUser(null);
+		return this;
+	}
 
+	User internalAddLoginHistory(LoginHistory loginHistory) {
+		loginHistories.add(loginHistory);
+		return this;
+	}
+	
+	User internalRemoveLoginHistory(LoginHistory loginHistory) {
+		loginHistories.remove(loginHistory);
+		return this;
+	}
+
+	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
+	
 	public Notification getNotification() {
 		return notification;
 	}
