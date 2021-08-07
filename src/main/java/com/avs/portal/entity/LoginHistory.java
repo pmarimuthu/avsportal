@@ -15,6 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.avs.portal.bean.LoginHistoryBean;
 import com.avs.portal.enums.DeviceTypeEnum;
 import com.avs.portal.enums.UserAgentEnum;
+import com.avs.portal.util.CommonUtil;
 
 @Entity
 @Table(schema = "public", name = "login_history_13")
@@ -30,7 +31,7 @@ public class LoginHistory {
 	private User user; // ref
 
 	@Column(name = "consecutive_failed_login_count")
-	private Integer consecutiveFailedLoginCount;
+	private Integer consecutiveFailedLoginCount = 0;
 	
 	@Column(name = "ipaddress")
 	private String ipAddress;
@@ -145,8 +146,8 @@ public class LoginHistory {
 				", IPAddress: " + ipAddress + 
 				", Device Type: " + deviceType + 
 				", User Agent: " + userAgent + 
-				", Created On: " + createdOn + 
-				", Updated On: " + updatedOn + 
+				", Created On: " + CommonUtil.toString(createdOn) + 
+				", Updated On: " + CommonUtil.toString(updatedOn) + 
 				"]";
 	}
 	

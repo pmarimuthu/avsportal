@@ -9,6 +9,11 @@ import java.util.regex.Pattern;
 
 public class CommonUtil {
 
+	public static final String DATE_TIME_PATTERN1 = "EEEE d, MMM yy HH:mm:ss";
+	
+	public static final String DATE_TIME_PATTERN2 = "yyyy-MM-dd HH:mm:ss";
+	
+	
 	public static boolean isValidPhone(Long phone) {
         if(phone != null 
         		&& String.valueOf(phone).length() == 10)
@@ -31,14 +36,12 @@ public class CommonUtil {
     }
 	
 	public static String toString(Timestamp timestamp) {
-		String pattern = "EEE d MMM yy"; //"E, d M y, H:m:s S Z";
-		SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.US);
+		SimpleDateFormat formatter = new SimpleDateFormat(CommonUtil.DATE_TIME_PATTERN1, Locale.US);
 		return formatter.format(timestamp);
 	}
 	
 	public static String toString(LocalDateTime localDateTime) {
-		String pattern = "yyyy-MM-dd HH:mm:ss"; //"EEE d MMM yy"; //"E, d M y, H:m:s S Z";
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CommonUtil.DATE_TIME_PATTERN1);
 		return localDateTime.format(formatter);
 	}
 

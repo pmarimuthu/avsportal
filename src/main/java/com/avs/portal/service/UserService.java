@@ -101,11 +101,12 @@ public class UserService {
 		createNotification(user);
 		createUserRelationToMeMap(user);
 		
+		/**
 		List<LoginHistory> loginHistories = createLoginHistories(user);
 		for (LoginHistory loginHistory : loginHistories) {
 			loginHistoryRepository.save(loginHistory);
 		}
-		
+		*/
 		user = userRepository.save(user);
 		
 		return user.toBean();
@@ -180,7 +181,7 @@ public class UserService {
 	// ------------------------------------
 	private UserCredential createUserCredential(User user) {
 		UserCredential userCredential = new UserCredential();
-		userCredential.setPassword(null);
+		userCredential.setPassword(UUID.randomUUID().toString());
 		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userCredential.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 

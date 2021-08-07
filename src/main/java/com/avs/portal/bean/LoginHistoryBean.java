@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.avs.portal.enums.DeviceTypeEnum;
 import com.avs.portal.enums.UserAgentEnum;
+import com.avs.portal.util.CommonUtil;
 
 public class LoginHistoryBean implements Serializable {
 
@@ -101,9 +102,16 @@ public class LoginHistoryBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nLoginHistoryBean [Id: " + id + ", UserId: " + userId + ", Consecutive Failed Login Count: "
-				+ consecutiveFailedLoginCount + ", IPAddress: " + ipAddress + ", Device Type: " + deviceType
-				+ ", User Agent: " + userAgent + ", Created On: " + createdOn + ", Updated On: " + updatedOn + "]";
+		return "\nLoginHistoryBean [ " +
+				"  Id: " + id + 
+				", UserId: " + userId + 
+				", Consecutive Failed Login Count: " + consecutiveFailedLoginCount + 
+				", IPAddress: " + ipAddress + 
+				", Device Type: " + deviceType + 
+				", User Agent: " + userAgent + 
+				", Created On: " + CommonUtil.toString(createdOn) + 
+				", Updated On: " + CommonUtil.toString(updatedOn) + 
+				" ]";
 	}
 	
 }
