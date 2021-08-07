@@ -91,7 +91,7 @@ public class User {
     @PrimaryKeyJoinColumn
     private Notification notification;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<>();
 
 	public UUID getId() {

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class CommonUtil {
@@ -50,6 +51,10 @@ public class CommonUtil {
 			return null;
 		
 		return timestamp.toLocalDateTime();
+	}
+
+	public static String generateTempPassword() {
+		return String.format("%04d", new Random().nextInt(10000));
 	}
 	
 }

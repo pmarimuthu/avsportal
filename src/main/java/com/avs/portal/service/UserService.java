@@ -124,8 +124,9 @@ public class UserService {
 		entity.setPhone(bean.getPhone());
 		entity.setEmail(bean.getEmail());
 		entity.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
 		entity = userRepository.save(entity);
-
+		
 		return entity.toBean();
 	}
 
