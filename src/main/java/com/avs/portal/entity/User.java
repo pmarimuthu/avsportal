@@ -69,10 +69,6 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private UserAddress userAddress;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private UserReferrerMap userReferrerMap;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -92,7 +88,10 @@ public class User {
     private Notification notification;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<LoginHistory> loginHistories = new ArrayList<>();
+    private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
 
 	public UUID getId() {
 		return id;
@@ -157,13 +156,22 @@ public class User {
 		return this;
 	}
 
-	public UserAddress getUserAddress() {
-		return userAddress;
+	User internalAddUserAddress(UserAddress userAddress) {
+		this.userAddresses.add(userAddress);
+		return this;
+	}
+	
+	User internalRemoveUserAddress(UserAddress userAddress) {
+		userAddresses.remove(userAddress);
+		return this;
 	}
 
-	public User setUserAddress(UserAddress userAddress) {
-		this.userAddress = userAddress;
-		return this;
+	public List<UserAddress> getUserAddresses() {
+		return userAddresses;
+	}
+
+	public void setUserAddresses(List<UserAddress> userAddresses) {
+		this.userAddresses = userAddresses;
 	}
 
 	public UserReferrerMap getUserReferrerMap() {
@@ -295,12 +303,12 @@ public class User {
 				.setUserPreferences(userPreferences.toBean())
 				.setUserInformation(userInformation.toBean())
 				.setUserProfile(userProfile.toBean())
-				.setUserAddress(userAddress.toBean())
+				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
 				.setUserReferrerMap(userReferrerMap.toBean())
 				.setUserRoleMap(userRoleMap.toBean())
 				.setUserVerification(userVerification.toBean())
 				.setUserRelationToMeMap(userRelationToMeMap.toBean())
-				.setLoginHistories(loginHistories.stream().map(LoginHistory::toBean).collect(Collectors.toList()))
+				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
 				.setNotification(notification.toBean());
 	}
 
@@ -319,7 +327,7 @@ public class User {
 				", User Preferences: " + userPreferences + 
 				", User Information: " + userInformation + 
 				", User Profile: " + userProfile + 
-				", User Address: " + userAddress + 
+				", User Addresses: " + userAddresses + 
 				", User Referrer Map: " + userReferrerMap + 
 				", User Role Map: " + userRoleMap + 
 				", User Verification: " + userVerification + 

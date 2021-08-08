@@ -28,9 +28,9 @@ import com.avs.portal.entity.UserRelationToMeMap;
 import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.entity.UserVerification;
 import com.avs.portal.enums.LanguageEnum;
+import com.avs.portal.enums.NotificationTypeEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
-import com.avs.portal.repository.LoginHistoryRepository;
 import com.avs.portal.repository.UserRepository;
 
 @Service
@@ -39,19 +39,14 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private LoginHistoryRepository loginHistoryRepository;
-
 	// READ {ALL}
 	public List<UserBean> getUsers() {
-		return userRepository.findAll().stream().map(t -> {
-			try {
-				return t.toBean();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}).collect(Collectors.toList());
+		List<User> list = userRepository.findAll();
+		System.out.println(list.size());
+		for (User user : list) {
+			System.out.println(user.toBean().toString());
+		}
+		return userRepository.findAll().stream().map(User :: toBean).collect(Collectors.toList());
 	}
 
 	// READ {ONE}
@@ -93,7 +88,6 @@ public class UserService {
 		createTempPassword(user);
 		createUserPreferences(user);
 		createUserInformation(user);
-		createUserAddress(user);
 		createUserProfile(user);
 		createUserRoleMap(user);
 		createUserVerification(user);
@@ -101,12 +95,6 @@ public class UserService {
 		createNotification(user);
 		createUserRelationToMeMap(user);
 		
-		/**
-		List<LoginHistory> loginHistories = createLoginHistories(user);
-		for (LoginHistory loginHistory : loginHistories) {
-			loginHistoryRepository.save(loginHistory);
-		}
-		*/
 		user = userRepository.save(user);
 		
 		return user.toBean();
@@ -233,6 +221,7 @@ public class UserService {
 		userPreferences.setAdvertisement(Boolean.FALSE);
 		userPreferences.setVisibility(VisibilityEnum.FRIENDLY);
 		userPreferences.setLanguage(LanguageEnum.ENGLISH);
+		
 		userPreferences.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userPreferences.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
@@ -255,19 +244,6 @@ public class UserService {
 		return userInformation;
 	}
 	
-	// UserAddress :: user_address_07
-	// ------------------------------
-	private UserAddress createUserAddress(User user) {
-		UserAddress userAddress = new UserAddress();
-		userAddress.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userAddress.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userAddress.setUser(user);
-		user.setUserAddress(userAddress);
-		
-		return userAddress;
-	}
-
 	// UserProfile :: user_profile_08
 	// ------------------------------
 	private UserProfile createUserProfile(User user) {
@@ -325,6 +301,10 @@ public class UserService {
 	// -------------------------------
 	private Notification createNotification(User user) {
 		Notification notification = new Notification();
+		notification.setMessageText("Welcome to AVS Portal!");
+		notification.setNotificationType(NotificationTypeEnum.INFORMATION);
+		notification.setIsRead(Boolean.FALSE);
+		
 		notification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		notification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
@@ -332,25 +312,6 @@ public class UserService {
 		user.setNotification(notification);
 		
 		return notification;
-	}
-
-	// LoginHistory :: login_history_13
-	// --------------------------------
-	private List<LoginHistory> createLoginHistories(User user) {
-		LoginHistory loginHistory1 = new LoginHistory();
-		loginHistory1.setConsecutiveFailedLoginCount(0);
-		loginHistory1.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		loginHistory1.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		LoginHistory loginHistory2 = new LoginHistory();
-		loginHistory2.setConsecutiveFailedLoginCount(0);
-		loginHistory2.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		loginHistory2.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		loginHistory1.setUser(user);
-		loginHistory2.setUser(user);
-		
-		return Arrays.asList(loginHistory1, loginHistory2);
 	}
 
 	// UserRelationToMeMap :: user_relation_to_me_map_14

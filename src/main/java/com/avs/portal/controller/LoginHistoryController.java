@@ -35,8 +35,8 @@ public class LoginHistoryController {
 		return "LoginHistoryController is Alive!!";
 	}
 	
-	@PostMapping("/get")
-	public List<LoginHistoryBean> getUserHistories(@RequestBody UserBean bean) {
+	@PostMapping("/list")
+	public List<LoginHistoryBean> getUserLoginHistories(@RequestBody UserBean bean) {
 		if(bean == null || bean.getId() == null )
 			return null;
 		
@@ -49,7 +49,7 @@ public class LoginHistoryController {
 	}
 	
 	@PostMapping("/add")
-	public List<LoginHistoryBean> addUserHistory(@RequestBody LoginHistoryBean bean) {
+	public List<LoginHistoryBean> addUserLoginHistory(@RequestBody LoginHistoryBean bean) {
 		if(bean == null || bean.getUserId() == null)
 			return null;
 		

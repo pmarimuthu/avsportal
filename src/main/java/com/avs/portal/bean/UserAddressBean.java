@@ -12,6 +12,8 @@ public class UserAddressBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private AddressTypeEnum addressType;
 	
 	private String addressLine1;
@@ -33,6 +35,8 @@ public class UserAddressBean implements Serializable {
 	private LocalDateTime createdOn;
 	
 	private LocalDateTime updatedOn;
+	
+	private Boolean isDeleted;
 
 	public UUID getId() {
 		return id;
@@ -45,6 +49,15 @@ public class UserAddressBean implements Serializable {
 
 	public AddressTypeEnum getAddressType() {
 		return addressType;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserAddressBean setUserId(UUID userId) {
+		this.userId = userId;
+		return this;
 	}
 
 	public UserAddressBean setAddressType(AddressTypeEnum addressType) {
@@ -142,11 +155,20 @@ public class UserAddressBean implements Serializable {
 		return this;
 	}
 
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public UserAddressBean setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+		return this;
+	}
+
 	@Override
 	public String toString() {
-		return "UserAddress [ Id: " + id + ", Address Type: " + addressType + ", Address Line1: "
+		return "UserAddress [ Id: " + id + ", User Id: " + userId +  ", Address Type: " + addressType + ", Address Line1: "
 				+ addressLine1 + ", City: " + city + ", State: " + state + ", Country: " + country + ", Pincode: " + pincode
 				+ ", GEO Latitude: " + geoLatitude + ", GEO Longitude: " + geoLongitude + ", IPAddress: " + ipAddress
-				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + ", Is Deleted: " + isDeleted + " ]";
 	}
 }

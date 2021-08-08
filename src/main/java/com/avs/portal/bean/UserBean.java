@@ -36,7 +36,7 @@ public class UserBean implements Serializable {
 	
     private UserProfileBean userProfile;
 	
-    private UserAddressBean userAddress;
+    private Collection<UserAddressBean> userAddresses = Collections.emptyList();
 	
     private UserReferrerMapBean userReferrerMap;
 	
@@ -149,17 +149,17 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public UserAddressBean getUserAddress() {
-		return userAddress;
-	}
-
-	public UserBean setUserAddress(UserAddressBean userAddress) {
-		this.userAddress = userAddress;
-		return this;
-	}
-
 	public UserReferrerMapBean getUserReferrerMap() {
 		return userReferrerMap;
+	}
+
+	public Collection<UserAddressBean> getUserAddresses() {
+		return userAddresses;
+	}
+
+	public UserBean setUserAddresses(Collection<UserAddressBean> userAddresses) {
+		this.userAddresses = userAddresses;
+		return this;
 	}
 
 	public UserBean setUserReferrerMap(UserReferrerMapBean userReferrerMap) {
@@ -241,7 +241,7 @@ public class UserBean implements Serializable {
 				", User Preferences: " + userPreferences + 
 				", User Information: " + userInformation + 
 				", User Profile: " + userProfile + 
-				", User Address: " + userAddress + 
+				", User Addresses: " + userAddresses + 
 				", User Referrer Map: " + userReferrerMap + 
 				", UserRole Map: " + userRoleMap + 
 				", User Verification: " + userVerification + 

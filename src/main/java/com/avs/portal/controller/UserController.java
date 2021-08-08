@@ -29,11 +29,7 @@ public class UserController {
 	
 	@PostMapping("/list")
 	public List<UserBean> listUsers() {
-		List<UserBean> list = userService.getUsers();
-		for (UserBean userBean : list) {
-			System.out.println(CommonUtil.toString(userBean.getCreatedOn()));
-		}
-		return list;
+		return userService.getUsers();
 	}
 	
 	@PostMapping("/get")

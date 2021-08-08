@@ -5,11 +5,15 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.enums.AddressTypeEnum;
@@ -19,13 +23,13 @@ import com.avs.portal.enums.AddressTypeEnum;
 public class UserAddress {
 
 	@Id
-	@Column(name = "id")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
-	@MapsId
-	@OneToOne(mappedBy = "tempPassword")
-	@JoinColumn(name = "userid")   //same name as id @Column
-    private User user;
+	@ManyToOne
+	private User user;
 
 	@Column(name = "address_type")
 	private AddressTypeEnum addressType;
@@ -60,6 +64,9 @@ public class UserAddress {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+
 	public UUID getId() {
 		return id;
 	}
@@ -74,7 +81,13 @@ public class UserAddress {
 	}
 
 	public UserAddress setUser(User user) {
+		if(this.user != null)
+			this.user.internalRemoveUserAddress(this);
+		
 		this.user = user;
+		if(user != null)
+			user.internalAddUserAddress(this);
+		
 		return this;
 	}
 
@@ -177,9 +190,19 @@ public class UserAddress {
 		return this;
 	}
 
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public UserAddress setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+		return this;
+	}
+
 	public UserAddressBean toBean() {
 		return new UserAddressBean()
 				.setId(id)
+				.setUserId(user.getId())
 				.setAddressLine1(addressLine1)
 				.setAddressType(addressType)
 				.setCity(city)
@@ -190,8 +213,8 @@ public class UserAddress {
 				.setGeoLongitude(geoLongitude)
 				.setIpAddress(ipAddress)
 				.setCreatedOn(createdOn.toLocalDateTime())
-				.setUpdatedOn(updatedOn.toLocalDateTime());
+				.setUpdatedOn(updatedOn.toLocalDateTime())
+				.setIsDeleted(isDeleted);
 	}
-
 	
 }
