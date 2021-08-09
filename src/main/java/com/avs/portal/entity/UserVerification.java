@@ -24,7 +24,7 @@ public class UserVerification {
 	private UUID id;
 	
 	@MapsId
-	@OneToOne(mappedBy = "tempPassword")
+	@OneToOne(mappedBy = "userVerification")
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 
@@ -34,7 +34,7 @@ public class UserVerification {
 	@Column(name = "verification_mode")
 	private VerificationModeEnum verificationMode;
 	
-	@Column(name = "verified_by")
+	@Column(name = "verified_by", nullable = false)
 	private UUID verifiedBy;
 	
 	@Column(name = "created_on")
@@ -107,6 +107,7 @@ public class UserVerification {
 	
 	public UserVerificationBean toBean() {
 		return new UserVerificationBean()
+				.setId(id)
 				.setUserId(id)
 				.setVerificationSubject(verificationSubject)
 				.setVerificationMode(verificationMode)
@@ -117,9 +118,15 @@ public class UserVerification {
 
 	@Override
 	public String toString() {
-		return "UserVerification [userId=" + id + ", user=" + user + ", verificationSubject=" + verificationSubject
-				+ ", verificationMode=" + verificationMode + ", verifiedBy=" + verifiedBy + ", createdOn=" + createdOn
-				+ ", updatedOn=" + updatedOn + "]";
+		return "UserVerification [ " + 
+				" Id: " + id + 
+				", User (Id): " + (user == null ? "NULL" : user.getId()) + 
+				", Verification Subject: " + verificationSubject + 
+				", Verification Mode: " + verificationMode + 
+				", Verified By: " + verifiedBy + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				"]";
 	}
 	
 }

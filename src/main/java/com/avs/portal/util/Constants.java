@@ -1,0 +1,10 @@
+package com.avs.portal.util;
+
+public class Constants {
+
+	public static final Object NULL = null;
+	
+	public static final Boolean LOGIN_SUCCESS = Boolean.TRUE;
+	
+	public static final Boolean LOGIN_FAILED = Boolean.FALSE;
+}

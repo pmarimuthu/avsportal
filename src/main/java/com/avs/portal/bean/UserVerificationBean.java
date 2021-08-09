@@ -11,6 +11,8 @@ public class UserVerificationBean implements Serializable {
 
 	private static final long serialVersionUID = 8971866578188742401L;
 
+	private UUID id;
+	
 	private UUID userId;
 	
 	private VerificationSubjectEnum verificationSubject;
@@ -22,6 +24,15 @@ public class UserVerificationBean implements Serializable {
 	private LocalDateTime createdOn;
 	
 	private LocalDateTime updatedOn;
+
+	public UUID getId() {
+		return id;
+	}
+
+	public UserVerificationBean setId(UUID id) {
+		this.id = id;
+		return this;
+	}
 
 	public UUID getUserId() {
 		return userId;
@@ -79,9 +90,15 @@ public class UserVerificationBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserVerificationBean [userId=" + userId + ", verificationSubject=" + verificationSubject
-				+ ", verificationMode=" + verificationMode + ", verifiedBy=" + verifiedBy + ", createdOn=" + createdOn
-				+ ", updatedOn=" + updatedOn + "]";
+		return "\nUserVerificationBean [ "
+				+ "Id: " + id +
+				", UserId: " + userId + 
+				", Verification Subject: " + verificationSubject + 
+				", Verification Mode: " + verificationMode + 
+				", Verified By: " + verifiedBy + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }

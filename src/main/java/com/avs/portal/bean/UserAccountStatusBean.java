@@ -10,6 +10,8 @@ public class UserAccountStatusBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private Boolean isVerified;
 	
 	private Boolean isActive;
@@ -35,6 +37,15 @@ public class UserAccountStatusBean implements Serializable {
 
 	public Boolean getIsVerified() {
 		return isVerified;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserAccountStatusBean setUserId(UUID userId) {
+		this.userId = userId;
+		return this;
 	}
 
 	public UserAccountStatusBean setIsVerified(Boolean isVerified) {
@@ -98,9 +109,17 @@ public class UserAccountStatusBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserAccountStatusBean [ Id: " + id + ", Is Verified: " + isVerified + ", Is Active: "
-				+ isActive + ", Is Locked: " + isLocked + ", Is Blocked: " + isBlocked + ", Is Deleted: " + isDeleted
-				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nUserAccountStatusBean [ " + 
+				"  Id: " + id + 
+				", User Id: " + userId + 
+				", Is Verified: " + isVerified + 
+				", Is Active: "	+ isActive + 
+				", Is Locked: " + isLocked + 
+				", Is Blocked: " + isBlocked + 
+				", Is Deleted: " + isDeleted + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

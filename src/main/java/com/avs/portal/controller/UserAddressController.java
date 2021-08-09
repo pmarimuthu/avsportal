@@ -16,7 +16,7 @@ import com.avs.portal.bean.UserBean;
 import com.avs.portal.service.UserAddressService;
 
 @RestController
-@RequestMapping(path = "/api/useraddress")
+@RequestMapping(path = "/api/user-address")
 public class UserAddressController {
 
 	@Autowired

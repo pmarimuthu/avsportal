@@ -2,7 +2,6 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,12 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.avs.portal.bean.UserBean;
-import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.Notification;
-import com.avs.portal.entity.TempPassword;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
-import com.avs.portal.entity.UserAddress;
 import com.avs.portal.entity.UserCredential;
 import com.avs.portal.entity.UserInformation;
 import com.avs.portal.entity.UserPreferences;
@@ -26,12 +22,12 @@ import com.avs.portal.entity.UserProfile;
 import com.avs.portal.entity.UserReferrerMap;
 import com.avs.portal.entity.UserRelationToMeMap;
 import com.avs.portal.entity.UserRoleMap;
-import com.avs.portal.entity.UserVerification;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.NotificationTypeEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.util.CommonUtil;
 
 @Service
 public class UserService {
@@ -85,12 +81,10 @@ public class UserService {
 		
 		createUserCredential(user);
 		createUserAccountStatus(user);
-		createTempPassword(user);
 		createUserPreferences(user);
 		createUserInformation(user);
 		createUserProfile(user);
 		createUserRoleMap(user);
-		createUserVerification(user);
 		createUserReferrerMap(user);
 		createNotification(user);
 		createUserRelationToMeMap(user);
@@ -170,7 +164,7 @@ public class UserService {
 	// ------------------------------------
 	private UserCredential createUserCredential(User user) {
 		UserCredential userCredential = new UserCredential();
-		userCredential.setPassword(UUID.randomUUID().toString());
+		userCredential.setPassword(CommonUtil.generateTempPassword());
 		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userCredential.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
@@ -197,21 +191,6 @@ public class UserService {
 		
 		return userAccountStatus;
 
-	}
-
-	// TempPassword :: temp_password_04
-	// --------------------------------
-	private TempPassword createTempPassword(User user) {
-		TempPassword tempPassword = new TempPassword();
-		tempPassword.setIsUsed(Boolean.FALSE);
-		tempPassword.setGeneratedPassword(UUID.randomUUID().toString());
-		tempPassword.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		tempPassword.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		tempPassword.setUser(user);
-		user.setTempPassword(tempPassword);
-		
-		return tempPassword;
 	}
 
 	// UserAccountStatus :: user_preferences_05
@@ -269,19 +248,6 @@ public class UserService {
 		user.setUserRoleMap(userRoleMap);
 		
 		return userRoleMap;
-	}
-
-	// UserVerification :: user_verification_10
-	// -------------------------------
-	private UserVerification createUserVerification(User user) {
-		UserVerification userVerification = new UserVerification();
-		userVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userVerification.setUser(user);
-		user.setUserVerification(userVerification);
-		
-		return userVerification;
 	}
 
 	// UserReferrerMap :: user_referrer_map_11

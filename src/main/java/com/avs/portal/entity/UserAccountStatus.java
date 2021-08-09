@@ -51,92 +51,110 @@ public class UserAccountStatus {
 		return id;
 	}
 
-	public void setId(UUID userId) {
+	public UserAccountStatus setId(UUID userId) {
 		this.id = userId;
+		return this;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public UserAccountStatus setUser(User user) {
 		this.user = user;
+		return this;
 	}
 
 	public Boolean getIsVerified() {
 		return isVerified;
 	}
 
-	public void setIsVerified(Boolean isVerified) {
+	public UserAccountStatus setIsVerified(Boolean isVerified) {
 		this.isVerified = isVerified;
+		return this;
 	}
 
 	public Boolean getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(Boolean isActive) {
+	public UserAccountStatus setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+		return this;
 	}
 
 	public Boolean getIsLocked() {
 		return isLocked;
 	}
 
-	public void setIsLocked(Boolean isLocked) {
+	public UserAccountStatus setIsLocked(Boolean isLocked) {
 		this.isLocked = isLocked;
+		return this;
 	}
 
 	public Boolean getIsBlocked() {
 		return isBlocked;
 	}
 
-	public void setIsBlocked(Boolean isBlocked) {
+	public UserAccountStatus setIsBlocked(Boolean isBlocked) {
 		this.isBlocked = isBlocked;
+		return this;
 	}
 
 	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
 
-	public void setIsDeleted(Boolean isDeleted) {
+	public UserAccountStatus setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
+		return this;
 	}
 
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public UserAccountStatus setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+		return this;
 	}
 
 	public Timestamp getUpdatedOn() {
 		return updatedOn;
 	}
 
-	public void setUpdatedOn(Timestamp updatedOn) {
+	public UserAccountStatus setUpdatedOn(Timestamp updatedOn) {
 		this.updatedOn = updatedOn;
+		return this;
 	}
 
 	public UserAccountStatusBean toBean() {
-		UserAccountStatusBean bean = new UserAccountStatusBean();
-		bean.setId(id);
-		bean.setIsActive(isActive);
-		bean.setIsBlocked(isBlocked);
-		bean.setIsDeleted(isDeleted);
-		bean.setIsLocked(isLocked);
-		bean.setIsVerified(isVerified);
-		bean.setCreatedOn(createdOn.toLocalDateTime());
-		bean.setUpdatedOn(updatedOn.toLocalDateTime());
+		UserAccountStatusBean bean = new UserAccountStatusBean()
+				.setId(id)
+				.setUserId(user.getId())
+				.setIsActive(isActive)
+				.setIsBlocked(isBlocked)
+				.setIsDeleted(isDeleted)
+				.setIsLocked(isLocked)
+				.setIsVerified(isVerified)
+				.setCreatedOn(createdOn.toLocalDateTime())
+				.setUpdatedOn(updatedOn.toLocalDateTime());
 		
 		return bean;
 	}
 
 	@Override
 	public String toString() {
-		return "UserAccountStatus [ Id: " + id + ", Is Verified: " + isVerified + ", Is Active: "
-				+ isActive + ", Is Locked: " + isLocked + ", Is Blocked: " + isBlocked + ", Is Deleted: " + isDeleted
-				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + "]";
+		return "UserAccountStatus [ " +
+				"  Id: " + id + 
+				", Is Verified: " + isVerified + 
+				", Is Active: " + isActive + 
+				", Is Locked: " + isLocked + 
+				", Is Blocked: " + isBlocked + 
+				", Is Deleted: " + isDeleted + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
+	
 }

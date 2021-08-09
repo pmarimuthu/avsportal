@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avs.portal.bean.LoginBean;
-import com.avs.portal.bean.LoginHistoryBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.User;
@@ -25,6 +22,7 @@ import com.avs.portal.enums.LoginKeyEnum;
 import com.avs.portal.repository.LoginHistoryRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
+import com.avs.portal.util.Constants;
 
 @RestController
 @RequestMapping(path = "/api/auth")
@@ -111,11 +109,11 @@ public class AuthController {
 			return null;
 		
 		if(user.getUserCredential().getPassword().equals(password)) {
-			doPostLoginAttempt(user, Boolean.TRUE);
+			doPostLoginAttempt(user, Constants.LOGIN_SUCCESS);
 			return user.toBean();
 		}
 		else {
-			doPostLoginAttempt(user, Boolean.FALSE);
+			doPostLoginAttempt(user, Constants.LOGIN_FAILED);
 		}
 		
 		return null;
@@ -128,10 +126,10 @@ public class AuthController {
 		loginHistory.setUserAgent(null);		
 		loginHistory.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		if(flag) {
+		if(flag == Constants.LOGIN_SUCCESS) {
 			loginHistory.setConsecutiveFailedLoginCount(0);
 		}
-		else {
+		else if(flag == Constants.LOGIN_FAILED) {
 			List<LoginHistory> loginHistories = user.getLoginHistories()
 				.stream().sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
 				.collect(Collectors.toList());
@@ -141,6 +139,9 @@ public class AuthController {
 				
 				loginHistory.setConsecutiveFailedLoginCount(recentHistory.getConsecutiveFailedLoginCount() + 1);
 			}
+		}
+		else {
+			System.err.println("Unknown Login Attempt Status.");
 		}
 		
 		loginHistory.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));

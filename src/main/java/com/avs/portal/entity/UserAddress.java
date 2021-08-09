@@ -7,10 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -31,7 +28,7 @@ public class UserAddress {
 	@ManyToOne
 	private User user;
 
-	@Column(name = "address_type")
+	@Column(name = "address_type", nullable = false)
 	private AddressTypeEnum addressType;
 	
 	@Column(name = "address_line1")

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.service.UserService;
-import com.avs.portal.util.CommonUtil;
 
 @RestController
 @RequestMapping(path = "/api/user")

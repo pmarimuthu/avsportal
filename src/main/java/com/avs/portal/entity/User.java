@@ -2,7 +2,6 @@ package com.avs.portal.entity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -297,19 +296,19 @@ public class User {
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime())
 			
-				.setUserCredential(userCredential.toBean())
-				.setUserAccountStatus(userAccountStatus.toBean())
-				.setTempPassword(tempPassword.toBean())
-				.setUserPreferences(userPreferences.toBean())
-				.setUserInformation(userInformation.toBean())
-				.setUserProfile(userProfile.toBean())
+				.setUserCredential(userCredential == null ? null : userCredential.toBean())
+				.setUserAccountStatus(userAccountStatus == null ? null : userAccountStatus.toBean())
+				.setTempPassword(tempPassword == null ? null : tempPassword.toBean())
+				.setUserPreferences(userPreferences == null ? null : userPreferences.toBean())
+				.setUserInformation(userInformation == null ? null : userInformation.toBean())
+				.setUserProfile(userProfile == null ? null : userProfile.toBean())
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
-				.setUserReferrerMap(userReferrerMap.toBean())
+				.setUserReferrerMap(userReferrerMap == null ? null : userReferrerMap.toBean())
 				.setUserRoleMap(userRoleMap.toBean())
-				.setUserVerification(userVerification.toBean())
+				.setUserVerification(userVerification == null ? null : userVerification.toBean())
 				.setUserRelationToMeMap(userRelationToMeMap.toBean())
 				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
-				.setNotification(notification.toBean());
+				.setNotification(notification == null ? null : notification.toBean());
 	}
 
 	@Override
@@ -321,19 +320,19 @@ public class User {
 				", CreatedOn: " + createdOn + 
 				", UpdatedOn: " + updatedOn + 
 				
-				", User Credential: " + userCredential + 
-				", User Account Status: " + userAccountStatus + 
-				", Temp Password: " + tempPassword + 
-				", User Preferences: " + userPreferences + 
-				", User Information: " + userInformation + 
-				", User Profile: " + userProfile + 
-				", User Addresses: " + userAddresses + 
-				", User Referrer Map: " + userReferrerMap + 
-				", User Role Map: " + userRoleMap + 
-				", User Verification: " + userVerification + 
-				", User RelationToMe Map: " + userRelationToMeMap + 
-				", Login History: " + loginHistories +
-				", Notification=" + notification +
+				", User Credential: " + (userCredential != null ? userCredential.toString() : "NULL") + 
+				", User Account Status: " + (userAccountStatus != null ? userAccountStatus.toString() : "NULL") + 
+				", Temp Password: " + (tempPassword != null ? tempPassword.toString() : "NULL") + 
+				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : "NULL") + 
+				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
+				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
+				", User Addresses: " + (userAddresses != null ? userAddresses.toString() : "NULL") + 
+				", User Referrer Map: " + (userReferrerMap != null ? userReferrerMap.toString() : "NULL") + 
+				", User Role Map: " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
+				", User Verification: " + (userVerification != null ? userVerification.toString() : "NULL") + 
+				", User RelationToMe Map: " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "NULL") + 
+				", Login History: " + (loginHistories != null ? loginHistories.toString() : "NULL") +
+				", Notification=" + (notification != null ? notification.toString() : "NULL") +
 				"]";
 	}
 	

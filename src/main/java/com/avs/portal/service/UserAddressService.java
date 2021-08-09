@@ -3,7 +3,6 @@ package com.avs.portal.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,33 +42,33 @@ public class UserAddressService {
 	}
 
 	// CREATE / UPDATE an Address
-	public List<UserAddressBean> addOrEditUserAddress(UserAddressBean bean) {
-		if(bean == null || bean.getUserId() == null)
+	public List<UserAddressBean> addOrEditUserAddress(UserAddressBean addressBean) {
+		if(addressBean == null || addressBean.getUserId() == null)
 			return null;
 		
-		User user = userRepository.findById(bean.getUserId()).orElse(null);
+		User user = userRepository.findById(addressBean.getUserId()).orElse(null);
 		if(user == null)
 			return null;
 		
-		UserAddress userAddress = user.getUserAddresses().stream().filter(address -> address.getAddressType().equals(bean.getAddressType())).findFirst().orElse(null);
+		UserAddress userAddress = user.getUserAddresses().stream().filter(address -> (address.getAddressType() != null && address.getAddressType().equals(addressBean.getAddressType()) )).findFirst().orElse(null);
 		if(userAddress == null) {
 			userAddress = new UserAddress();
+			userAddress.setUser(user);
 		}
 		
-		userAddress.setAddressLine1(bean.getAddressLine1());
-		userAddress.setAddressType(bean.getAddressType());
-		userAddress.setCity(bean.getCity());
-		userAddress.setState(bean.getState());
-		userAddress.setCountry(bean.getCountry());
-		userAddress.setGeoLatitude(bean.getGeoLatitude());
-		userAddress.setGeoLongitude(bean.getGeoLongitude());
-		userAddress.setIpAddress(bean.getIpAddress());
-		userAddress.setPincode(bean.getPincode());
+		userAddress.setAddressLine1(addressBean.getAddressLine1());
+		userAddress.setAddressType(addressBean.getAddressType());
+		userAddress.setCity(addressBean.getCity());
+		userAddress.setState(addressBean.getState());
+		userAddress.setCountry(addressBean.getCountry());
+		userAddress.setGeoLatitude(addressBean.getGeoLatitude());
+		userAddress.setGeoLongitude(addressBean.getGeoLongitude());
+		userAddress.setIpAddress(addressBean.getIpAddress());
+		userAddress.setPincode(addressBean.getPincode());
 		
 		userAddress.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userAddress.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		userAddress.setUser(user);	
 		user = userRepository.save(user);
 		
 		return user.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());
@@ -87,21 +86,8 @@ public class UserAddressService {
 		if(userAddress == null)
 			return null;
 		
-		userAddress.setAddressLine1(bean.getAddressLine1());
-		userAddress.setAddressType(bean.getAddressType());
-		userAddress.setCity(bean.getCity());
-		userAddress.setState(bean.getState());
-		userAddress.setCountry(bean.getCountry());
-		userAddress.setGeoLatitude(bean.getGeoLatitude());
-		userAddress.setGeoLongitude(bean.getGeoLongitude());
-		userAddress.setIpAddress(bean.getIpAddress());
-		userAddress.setPincode(bean.getPincode());
-		
-		userAddress.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userAddress.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userAddress.setUser(user);
-		user.getUserAddresses().add(userAddress);
+		user.getUserAddresses().remove(userAddress);
+		userAddress.setUser(null);
 		
 		user = userRepository.save(user);
 		
