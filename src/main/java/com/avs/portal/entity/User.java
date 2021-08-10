@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -29,6 +30,11 @@ public class User {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;	
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
+    private UserInformation userInformation;
 	
 	@Column(name = "phone", nullable = false, unique = true)
 	private Long phone;
@@ -60,10 +66,6 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private UserInformation userInformation;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private UserProfile userProfile;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -76,18 +78,16 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private UserVerification userVerification;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private UserRelationToMeMap userRelationToMeMap;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Notification notification;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications = new ArrayList<Notification>();
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
@@ -155,24 +155,54 @@ public class User {
 		return this;
 	}
 
-	User internalAddUserAddress(UserAddress userAddress) {
+	List<UserAddress> internalAddUserAddress(UserAddress userAddress) {
 		this.userAddresses.add(userAddress);
-		return this;
+		return this.userAddresses;
 	}
 	
-	User internalRemoveUserAddress(UserAddress userAddress) {
-		userAddresses.remove(userAddress);
-		return this;
+	List<UserAddress> internalRemoveUserAddress(UserAddress userAddress) {
+		this.userAddresses.remove(userAddress);
+		return this.userAddresses;
 	}
 
 	public List<UserAddress> getUserAddresses() {
 		return userAddresses;
 	}
 
-	public void setUserAddresses(List<UserAddress> userAddresses) {
+	public User setUserAddresses(List<UserAddress> userAddresses) {
 		this.userAddresses = userAddresses;
+		return this;
 	}
 
+	public User addUserVerification(UserVerification userVerification) {
+		userVerification.setUser(this);
+		return this;
+	}
+	
+	public User removeUserVerification(UserVerification userVerification) {
+		userVerification.setUser(null);
+		return this;
+	}
+	
+	List<UserVerification> internalAddUserVerification(UserVerification userVerification) {
+		this.userVerifications.add(userVerification);
+		return this.userVerifications;
+	}
+	
+	List<UserVerification> internalRemoveUserVerification(UserVerification userVerification) {
+		this.userVerifications.remove(userVerification);
+		return this.userVerifications;
+	}
+	
+	public List<UserVerification> getUserVerifications() {
+		return userVerifications;
+	}
+	
+	public User setUserVerifications(List<UserVerification> userVerifications) {
+		this.userVerifications = userVerifications;
+		return this;
+	}
+	
 	public UserReferrerMap getUserReferrerMap() {
 		return userReferrerMap;
 	}
@@ -188,15 +218,6 @@ public class User {
 
 	public User setUserRoleMap(UserRoleMap userRoleMap) {
 		this.userRoleMap = userRoleMap;
-		return this;
-	}
-
-	public UserVerification getUserVerification() {
-		return userVerification;
-	}
-
-	public User setUserVerification(UserVerification userVerification) {
-		this.userVerification = userVerification;
 		return this;
 	}
 
@@ -242,16 +263,36 @@ public class User {
 	}
 
 	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
-	
-	public Notification getNotification() {
-		return notification;
+	public List<Notification> getNotifications() {
+		return notifications;
 	}
 
-	public User setNotification(Notification notification) {
-		this.notification = notification;
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
+	}
+
+	public User addNotification(Notification notification) {
+		notification.setUser(this);
+		return this;
+	}
+	
+	public User removeNotification(Notification notification) {
+		notification.setUser(null);
 		return this;
 	}
 
+	User internalAddNotification(Notification notification) {
+		notifications.add(notification);
+		return this;
+	}
+	
+	User internalRemoveNotification(Notification notification) {
+		notifications.remove(notification);
+		return this;
+	}
+
+	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
+	
 	public Long getPhone() {
 		return phone;
 	}
@@ -302,13 +343,13 @@ public class User {
 				.setUserPreferences(userPreferences == null ? null : userPreferences.toBean())
 				.setUserInformation(userInformation == null ? null : userInformation.toBean())
 				.setUserProfile(userProfile == null ? null : userProfile.toBean())
-				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
+				.setUserRelationToMeMap(userRelationToMeMap == null ? null : userRelationToMeMap.toBean())
 				.setUserReferrerMap(userReferrerMap == null ? null : userReferrerMap.toBean())
-				.setUserRoleMap(userRoleMap.toBean())
-				.setUserVerification(userVerification == null ? null : userVerification.toBean())
-				.setUserRelationToMeMap(userRelationToMeMap.toBean())
+				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
+				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
+				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
 				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
-				.setNotification(notification == null ? null : notification.toBean());
+				.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -326,14 +367,14 @@ public class User {
 				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : "NULL") + 
 				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
 				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
-				", User Addresses: " + (userAddresses != null ? userAddresses.toString() : "NULL") + 
-				", User Referrer Map: " + (userReferrerMap != null ? userReferrerMap.toString() : "NULL") + 
-				", User Role Map: " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
-				", User Verification: " + (userVerification != null ? userVerification.toString() : "NULL") + 
-				", User RelationToMe Map: " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "NULL") + 
-				", Login History: " + (loginHistories != null ? loginHistories.toString() : "NULL") +
-				", Notification=" + (notification != null ? notification.toString() : "NULL") +
-				"]";
+				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "EMPTY") + 
+				", User Referrer Map(s): " + (userReferrerMap != null ? userReferrerMap.toString() : "NULL") + 
+				", User Role Map(s): " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
+				", User Address(s): " + (userAddresses != null ? userAddresses.toString() : "EMPTY") + 
+				", User Verification(s): " + (userVerifications != null ? userVerifications.toString() : "EMPTY") + 
+				", Login History(s): " + (loginHistories != null ? loginHistories.toString() : "NULL") +
+				", Notification(s): " + (notifications != null ? notifications.toString() : "NULL") +
+				" ]";
 	}
 	
 }

@@ -12,6 +12,8 @@ public class NotificationBean implements Serializable {
 
 	private UUID id;
 	
+	private UUID userId;
+	
 	private NotificationTypeEnum notificationType;
 	
 	private String messageText;
@@ -28,6 +30,15 @@ public class NotificationBean implements Serializable {
 
 	public NotificationBean setId(UUID id) {
 		this.id = id;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public NotificationBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -78,9 +89,15 @@ public class NotificationBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "NotificationBean [Id: " + id + ", Notification Type: " + notificationType
-				+ ", Message Text: " + messageText + ", Is Read: " + isRead + ", Created On: " + createdOn + ", Updated On: "
-				+ updatedOn + "]";
+		return "NotificationBean [ " + 
+				" Id: " + id + 
+				", User Id: " + userId + 
+				", Notification Type: " + notificationType + 
+				", Message Text: " + messageText + 
+				", Is Read: " + isRead + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }

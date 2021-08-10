@@ -30,7 +30,7 @@ public class UserProfile {
 	private UUID id;
 	
 	@MapsId
-	@OneToOne(mappedBy = "userPreferences")
+	@OneToOne(mappedBy = "userProfile")
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 

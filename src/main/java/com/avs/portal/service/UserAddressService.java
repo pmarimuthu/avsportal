@@ -54,6 +54,7 @@ public class UserAddressService {
 		if(userAddress == null) {
 			userAddress = new UserAddress();
 			userAddress.setUser(user);
+			userAddress.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		}
 		
 		userAddress.setAddressLine1(addressBean.getAddressLine1());
@@ -64,11 +65,10 @@ public class UserAddressService {
 		userAddress.setGeoLatitude(addressBean.getGeoLatitude());
 		userAddress.setGeoLongitude(addressBean.getGeoLongitude());
 		userAddress.setIpAddress(addressBean.getIpAddress());
-		userAddress.setPincode(addressBean.getPincode());
-		
-		userAddress.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userAddress.setPincode(addressBean.getPincode());		
 		userAddress.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
+		user.getUserAddresses().add(userAddress);
 		user = userRepository.save(user);
 		
 		return user.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());

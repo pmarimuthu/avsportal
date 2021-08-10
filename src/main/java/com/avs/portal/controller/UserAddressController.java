@@ -49,7 +49,7 @@ public class UserAddressController {
 	}
 
 	@DeleteMapping("/delete")
-	public List<UserAddressBean> deleteUserAddress(@RequestBody UserAddressBean userAddress) throws Exception {
+	public List<UserAddressBean> deleteUserAddress(@RequestBody UserAddressBean userAddress) {
 		return userAddressService.deleteUserAddress(userAddress);
 	}
 

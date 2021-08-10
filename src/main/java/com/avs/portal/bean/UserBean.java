@@ -36,18 +36,18 @@ public class UserBean implements Serializable {
 	
     private UserProfileBean userProfile;
 	
-    private Collection<UserAddressBean> userAddresses = Collections.emptyList();
-	
     private UserReferrerMapBean userReferrerMap;
 	
     private UserRoleMapBean userRoleMap;
 	
-    private UserVerificationBean userVerification;
-	
     private UserRelationToMeMapBean userRelationToMeMap;
 	
-    private NotificationBean notification;
+    private Collection<UserAddressBean> userAddresses = Collections.emptyList();
+	
+    private Collection<NotificationBean> notifications = Collections.emptyList();
     
+    private Collection<UserVerificationBean> userVerifications = Collections.emptyList();
+	
     private Collection<LoginHistoryBean> loginHistories = Collections.emptyList();
 
 	public UUID getId() {
@@ -161,6 +161,15 @@ public class UserBean implements Serializable {
 		this.userAddresses = userAddresses;
 		return this;
 	}
+	
+	public Collection<UserVerificationBean> getUserVerifications() {
+		return userVerifications;
+	}
+	
+	public UserBean setUserVerifications(Collection<UserVerificationBean> userVerifications) {
+		this.userVerifications = userVerifications;
+		return this;
+	}
 
 	public UserBean setUserReferrerMap(UserReferrerMapBean userReferrerMap) {
 		this.userReferrerMap = userReferrerMap;
@@ -173,15 +182,6 @@ public class UserBean implements Serializable {
 
 	public UserBean setUserRoleMap(UserRoleMapBean userRoleMap) {
 		this.userRoleMap = userRoleMap;
-		return this;
-	}
-
-	public UserVerificationBean getUserVerification() {
-		return userVerification;
-	}
-
-	public UserBean setUserVerification(UserVerificationBean userVerification) {
-		this.userVerification = userVerification;
 		return this;
 	}
 
@@ -209,15 +209,15 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public NotificationBean getNotification() {
-		return notification;
+	public Collection<NotificationBean> getNotifications() {
+		return notifications;
 	}
 
-	public UserBean setNotification(NotificationBean notification) {
-		this.notification = notification;
+	public UserBean setNotifications(Collection<NotificationBean> notifications) {
+		this.notifications = notifications;
 		return this;
 	}
-
+	
 	public boolean isValid(UserBean user) {
 		if(CommonUtil.isValidPhone(user.getPhone()))
 			if(CommonUtil.isValidEmail(user.getEmail()))				
@@ -241,13 +241,13 @@ public class UserBean implements Serializable {
 				", User Preferences: " + userPreferences + 
 				", User Information: " + userInformation + 
 				", User Profile: " + userProfile + 
-				", User Addresses: " + userAddresses + 
 				", User Referrer Map: " + userReferrerMap + 
 				", UserRole Map: " + userRoleMap + 
-				", User Verification: " + userVerification + 
 				", User RelationToMe Map: " + userRelationToMeMap + 
-				", Login Histories: " + loginHistories + 
-				", Notification: " + notification + 
+				", User Addresse(s): " + userAddresses + 
+				", User Verification(s): " + userVerifications + 
+				", Login History(s): " + loginHistories + 
+				", Notification(s): " + notifications + 
 				"]";
 	}
 

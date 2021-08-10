@@ -7,7 +7,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,12 +20,11 @@ public class UserInformation {
 
 	@Id
 	@Column(name = "id")
-	private UUID id;
+	private UUID id;	
 	
 	@MapsId
 	@OneToOne(mappedBy = "userInformation")
-	@JoinColumn(name = "userid")   //same name as id @Column
-    private User user;
+	private User user;
 
 	@Column(name = "firstname")
 	private String firstname;
@@ -124,6 +122,7 @@ public class UserInformation {
 	public UserInformationBean toBean() {
 		UserInformationBean bean = new UserInformationBean();
 		bean.setId(id);
+		bean.setUserId(user.getId());
 		bean.setFirstname(firstname);
 		bean.setLastname(lastname);
 		bean.setGender(gender);

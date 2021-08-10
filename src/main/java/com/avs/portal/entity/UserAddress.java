@@ -26,7 +26,7 @@ public class UserAddress {
 	private UUID id;
 	
 	@ManyToOne
-	private User user;
+	private User user; // ref
 
 	@Column(name = "address_type", nullable = false)
 	private AddressTypeEnum addressType;

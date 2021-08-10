@@ -6,9 +6,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.avs.portal.bean.NotificationBean;
@@ -22,10 +20,8 @@ public class Notification {
 	@Column(name = "id")
 	private UUID id;
 	
-	@MapsId
-	@OneToOne(mappedBy = "notification")
-	@JoinColumn(name = "id")   //same name as id @Column
-    private User user;
+	@ManyToOne
+    private User user; // ref
 
 	@Column(name = "notification_type")
 	private NotificationTypeEnum notificationType;

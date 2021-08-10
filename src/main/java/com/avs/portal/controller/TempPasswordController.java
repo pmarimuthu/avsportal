@@ -15,7 +15,6 @@ import com.avs.portal.bean.TempPasswordBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.TempPassword;
 import com.avs.portal.entity.User;
-import com.avs.portal.repository.TempPasswordRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
 
@@ -25,9 +24,6 @@ public class TempPasswordController {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private TempPasswordRepository tempPasswordRepository;
 	
 	@GetMapping("/health")
 	public String sayHello() {
@@ -48,13 +44,13 @@ public class TempPasswordController {
 		if(tempPassword == null) {
 			tempPassword = new TempPassword();
 			tempPassword.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+			tempPassword.setUser(user);
 		}
 		
 		tempPassword.setIsUsed(Boolean.FALSE);
 		tempPassword.setGeneratedPassword(CommonUtil.generateTempPassword());
 		tempPassword.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		tempPassword.setUser(user);
 		user = userRepository.save(user); // save PARENT only	
 		
 		return tempPassword.toBean();	

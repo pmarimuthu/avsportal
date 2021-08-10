@@ -5,11 +5,12 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.avs.portal.bean.UserVerificationBean;
 import com.avs.portal.enums.VerificationModeEnum;
@@ -20,13 +21,13 @@ import com.avs.portal.enums.VerificationSubjectEnum;
 public class UserVerification {
 
 	@Id
-	@Column(name = "id")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
-	@MapsId
-	@OneToOne(mappedBy = "userVerification")
-	@JoinColumn(name = "userid")   //same name as id @Column
-    private User user;
+	@ManyToOne
+    private User user; // ref
 
 	@Column(name = "verification_subject")
 	private VerificationSubjectEnum verificationSubject;

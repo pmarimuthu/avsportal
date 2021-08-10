@@ -13,6 +13,8 @@ public class UserInformationBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private String firstname;
 	
 	private String lastname;
@@ -33,6 +35,15 @@ public class UserInformationBean implements Serializable {
 
 	public UserInformationBean setId(UUID userId) {
 		this.id = userId;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserInformationBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -101,9 +112,17 @@ public class UserInformationBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserInformation [ Id: " + id + ", Firstname: " + firstname + ", Lastname: "
-				+ lastname + ", Gender: " + gender + ", Date Of Birth: " + dateOfBirth + ", Profession: " + profession
-				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nUserInformation [ " + 
+				" Id: " + id + 
+				", User Id: " + userId + 
+				", Firstname: " + firstname + 
+				", Lastname: " + lastname + 
+				", Gender: " + gender + 
+				", Date Of Birth: " + dateOfBirth + 
+				", Profession: " + profession + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

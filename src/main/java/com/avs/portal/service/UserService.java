@@ -12,18 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.avs.portal.bean.UserBean;
-import com.avs.portal.entity.Notification;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
 import com.avs.portal.entity.UserCredential;
-import com.avs.portal.entity.UserInformation;
 import com.avs.portal.entity.UserPreferences;
-import com.avs.portal.entity.UserProfile;
-import com.avs.portal.entity.UserReferrerMap;
-import com.avs.portal.entity.UserRelationToMeMap;
 import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.enums.LanguageEnum;
-import com.avs.portal.enums.NotificationTypeEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
@@ -79,15 +73,10 @@ public class UserService {
 		user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		createUserCredential(user);
-		createUserAccountStatus(user);
-		createUserPreferences(user);
-		createUserInformation(user);
-		createUserProfile(user);
-		createUserRoleMap(user);
-		createUserReferrerMap(user);
-		createNotification(user);
-		createUserRelationToMeMap(user);
+		defaultUserCredential(user);
+		defaultUserAccountStatus(user);
+		defaultUserPreferences(user);
+		defaultUserRoleMap(user);
 		
 		user = userRepository.save(user);
 		
@@ -162,7 +151,7 @@ public class UserService {
 
 	// UserCredential :: user_credential_02
 	// ------------------------------------
-	private UserCredential createUserCredential(User user) {
+	private UserCredential defaultUserCredential(User user) {
 		UserCredential userCredential = new UserCredential();
 		userCredential.setPassword(CommonUtil.generateTempPassword());
 		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
@@ -176,7 +165,7 @@ public class UserService {
 
 	// UserAccountStatus :: user_account_status_03
 	// -------------------------------------------
-	private UserAccountStatus createUserAccountStatus(User user) {
+	private UserAccountStatus defaultUserAccountStatus(User user) {
 		UserAccountStatus userAccountStatus = new UserAccountStatus();
 		userAccountStatus.setIsDeleted(Boolean.FALSE);
 		userAccountStatus.setIsLocked(Boolean.FALSE);
@@ -195,7 +184,7 @@ public class UserService {
 
 	// UserAccountStatus :: user_preferences_05
 	// -------------------------------------------
-	private UserPreferences createUserPreferences(User user) {
+	private UserPreferences defaultUserPreferences(User user) {
 		UserPreferences userPreferences = new UserPreferences();
 		userPreferences.setAdvertisement(Boolean.FALSE);
 		userPreferences.setVisibility(VisibilityEnum.FRIENDLY);
@@ -210,35 +199,9 @@ public class UserService {
 		return userPreferences;
 	}
 
-	// UserInformation :: user_information_06
-	// --------------------------------------
-	private UserInformation createUserInformation(User user) {
-		UserInformation userInformation = new UserInformation();
-		userInformation.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userInformation.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userInformation.setUser(user);
-		user.setUserInformation(userInformation);
-		
-		return userInformation;
-	}
-	
-	// UserProfile :: user_profile_08
-	// ------------------------------
-	private UserProfile createUserProfile(User user) {
-		UserProfile userProfile = new UserProfile();
-		userProfile.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userProfile.setUser(user);
-		user.setUserProfile(userProfile);
-		
-		return userProfile;
-	}
-
 	// UserRoleMap :: user_role_map_09
 	// -------------------------------
-	private UserRoleMap createUserRoleMap(User user) {
+	private UserRoleMap defaultUserRoleMap(User user) {
 		UserRoleMap userRoleMap = new UserRoleMap();
 		userRoleMap.setRole(RoleEnum.USER);
 		userRoleMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
@@ -249,49 +212,5 @@ public class UserService {
 		
 		return userRoleMap;
 	}
-
-	// UserReferrerMap :: user_referrer_map_11
-	// ---------------------------------------
-	private UserReferrerMap createUserReferrerMap(User user) {
-		UserReferrerMap userReferrerMap = new UserReferrerMap();
-		userReferrerMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userReferrerMap.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userReferrerMap.setUser(user);
-		user.setUserReferrerMap(userReferrerMap);
-		
-		return userReferrerMap;
-	}
-
-	// Notification :: notification_12
-	// -------------------------------
-	private Notification createNotification(User user) {
-		Notification notification = new Notification();
-		notification.setMessageText("Welcome to AVS Portal!");
-		notification.setNotificationType(NotificationTypeEnum.INFORMATION);
-		notification.setIsRead(Boolean.FALSE);
-		
-		notification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		notification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		notification.setUser(user);
-		user.setNotification(notification);
-		
-		return notification;
-	}
-
-	// UserRelationToMeMap :: user_relation_to_me_map_14
-	// -------------------------------------------------
-	private UserRelationToMeMap createUserRelationToMeMap(User user) {
-		UserRelationToMeMap userRelationToMeMap = new UserRelationToMeMap();
-		userRelationToMeMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userRelationToMeMap.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		userRelationToMeMap.setUser(user);
-		user.setUserRelationToMeMap(userRelationToMeMap);
-		
-		return userRelationToMeMap;
-	}
-
 
 }
