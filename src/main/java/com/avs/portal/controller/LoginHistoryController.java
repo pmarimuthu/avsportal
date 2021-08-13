@@ -17,7 +17,7 @@ import com.avs.portal.entity.User;
 import com.avs.portal.repository.UserRepository;
 
 @RestController
-@RequestMapping(path = "/api/loginhistory")
+@RequestMapping(path = "/api/login-history")
 public class LoginHistoryController {
 
 	@Autowired

@@ -10,6 +10,8 @@ public class UserCredentialBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private String password;
 	
 	private LocalDateTime createdOn;
@@ -22,6 +24,15 @@ public class UserCredentialBean implements Serializable {
 
 	public UserCredentialBean setId(UUID userId) {
 		this.id = userId;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserCredentialBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -54,8 +65,13 @@ public class UserCredentialBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserCredentialBean [ Id: " + id + ", Password: " + password + ", Created On: "
-				+ createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nUserCredentialBean [" + 
+				" Id: " + id +  
+				", User Id: " + userId + 
+				", Password: " + password + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

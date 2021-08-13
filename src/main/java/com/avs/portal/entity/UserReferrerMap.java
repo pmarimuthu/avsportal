@@ -26,8 +26,8 @@ public class UserReferrerMap {
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 
-	@Column(name = "referred_by")
-	private UUID referredBy;
+	@Column(name = "referred_by_user_id")
+	private UUID referredByUserId;
 	
 	@Column(name = "created_on")
 	private Timestamp createdOn;
@@ -39,8 +39,9 @@ public class UserReferrerMap {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public UserReferrerMap setId(UUID id) {
 		this.id = id;
+		return this;
 	}
 
 	public User getUser() {
@@ -49,6 +50,15 @@ public class UserReferrerMap {
 
 	public UserReferrerMap setUser(User user) {
 		this.user = user;
+		return this;
+	}
+
+	public UUID getReferredByUserId() {
+		return referredByUserId;
+	}
+
+	public UserReferrerMap setReferredByUserId(UUID referredByUserId) {
+		this.referredByUserId = referredByUserId;
 		return this;
 	}
 
@@ -73,19 +83,20 @@ public class UserReferrerMap {
 	public UserReferrerMapBean toBean() {
 		return new UserReferrerMapBean()
 				.setId(id)
-				.setReferredBy(referredBy)
+				.setUserId(user.getId())
+				.setReferredByUserId(referredByUserId)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
 	}
 
 	@Override
 	public String toString() {
-		return "\nUserReferrerMap [ " + 
-				"userId=" + id + 
-				", user=" + user + 
-				", referredBy=" + referredBy + 
-				", createdOn=" + createdOn + 
-				", updatedOn=" + updatedOn + 
+		return "\nUserReferrerMap [" + 
+				"  Id: " + id +
+				", User Id: " + user.getId() + 
+				", Referred By User Id: " + referredByUserId + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
 				"]";
 	}
 

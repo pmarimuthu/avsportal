@@ -39,45 +39,51 @@ public class UserCredential {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public UserCredential setId(UUID id) {
 		this.id = id;
+		return this;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public UserCredential setUser(User user) {
 		this.user = user;
+		return this;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public UserCredential setPassword(String password) {
 		this.password = password;
+		return this;
 	}
 
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public UserCredential setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+		return this;
 	}
 
 	public Timestamp getUpdatedOn() {
 		return updatedOn;
 	}
 
-	public void setUpdatedOn(Timestamp updatedOn) {
+	public UserCredential setUpdatedOn(Timestamp updatedOn) {
 		this.updatedOn = updatedOn;
+		return this;
 	}
 	
 	public UserCredentialBean toBean() {
 		return new UserCredentialBean()
 		.setId(id)
+		.setUserId(user.getId())
 		.setPassword(password)
 		.setCreatedOn(createdOn.toLocalDateTime())
 		.setUpdatedOn(updatedOn.toLocalDateTime());
@@ -85,8 +91,13 @@ public class UserCredential {
 
 	@Override
 	public String toString() {
-		return "UserCredential [userId=" + id + ", password=" + password + ", createdOn=" + createdOn
-				+ ", updatedOn=" + updatedOn + "]";
+		return "UserCredential [ " + 
+				" Id: " + id + 
+				", UserId: " + user.getId() + 
+				", Password: " + password + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 	

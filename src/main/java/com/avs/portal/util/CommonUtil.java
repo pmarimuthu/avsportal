@@ -6,13 +6,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.util.StringUtils;
 
 public class CommonUtil {
 
 	public static final String DATE_TIME_PATTERN1 = "EEEE d, MMM yy HH:mm:ss";
 	
 	public static final String DATE_TIME_PATTERN2 = "yyyy-MM-dd HH:mm:ss";
+	
+	public static final String PASSWORD_REGEX = "^" + 
+			"(?=.*[0-9])" +
+			"(?=.*[a-z])" + 
+			"(?=.*[A-Z])" +
+			"(?=.*[!@#$%^&*])" +
+			"(?=\\S+$).{8,20}$";
 	
 	
 	public static boolean isValidPhone(Long phone) {
@@ -55,6 +65,34 @@ public class CommonUtil {
 
 	public static String generateTempPassword() {
 		return String.format("%06d", new Random().nextInt(1000000));
+	}
+
+	/**
+	 * It contains at least 8 characters and at most 20 characters.
+	 * It contains at least one digit.
+	 * It contains at least one upper case alphabet.
+	 * It contains at least one lower case alphabet.
+	 * It contains at least one special character which includes !@#$%&*()-+=^.
+	 * It doesn’t contain any white space.
+	 * regex = “^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8, 20}$”
+	 * 
+	 * Ref: https://www.geeksforgeeks.org/how-to-validate-a-password-using-regular-expressions-in-java/
+	 * 
+	 * @param password
+	 * @return
+	 */
+	public static String getValidatedPassword(String password) {
+		password = StringUtils.trimWhitespace(password);
+		
+		if(password.isEmpty()) 
+			return null;
+		
+		Pattern p = Pattern.compile(PASSWORD_REGEX);
+		Matcher m = p.matcher(password);
+		if(m.matches())
+			return password;
+		
+		return null;
 	}
 	
 }

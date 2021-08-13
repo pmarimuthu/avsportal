@@ -19,7 +19,7 @@ import com.avs.portal.repository.UserAccountStatusRepository;
 import com.avs.portal.repository.UserRepository;
 
 @RestController
-@RequestMapping(path = "/api/user-accountstatus")
+@RequestMapping(path = "/api/user-account-status")
 public class UserAccountStatusController {
 
 	@Autowired

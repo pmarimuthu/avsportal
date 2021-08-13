@@ -104,6 +104,7 @@ public class Notification {
 	public NotificationBean toBean() {
 		return new NotificationBean()
 				.setId(id)
+				.setUserId(user == null ? null : user.getId())
 				.setNotificationType(notificationType)
 				.setMessageText(messageText)
 				.setIsRead(isRead)
@@ -115,7 +116,7 @@ public class Notification {
 	public String toString() {
 		return "\nNotification [ " + 
 				"Id: " + id + 
-				", User: " + user + 
+				", User Id: " + (user == null ? "NULL" : user.getId()) + 
 				", Notification Type: " + notificationType + 
 				", Message Text: " + messageText + 
 				", Is Read: " + isRead + 

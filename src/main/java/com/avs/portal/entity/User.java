@@ -31,11 +31,6 @@ public class User {
     @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;	
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    @JoinColumn(name = "user")
-    private UserInformation userInformation;
-	
 	@Column(name = "phone", nullable = false, unique = true)
 	private Long phone;
 	
@@ -50,15 +45,21 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
+    private UserInformation userInformation;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
+    private TempPassword tempPassword;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private UserCredential userCredential;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private UserAccountStatus userAccountStatus;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private TempPassword tempPassword;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -76,9 +77,8 @@ public class User {
     @PrimaryKeyJoinColumn
     private UserRoleMap userRoleMap;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private UserRelationToMeMap userRelationToMeMap;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<UserRelationToMeMap>();
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
@@ -221,11 +221,11 @@ public class User {
 		return this;
 	}
 
-	public UserRelationToMeMap getUserRelationToMeMap() {
+	public List<UserRelationToMeMap> getUserRelationToMeMap() {
 		return userRelationToMeMap;
 	}
 
-	public User setUserRelationToMeMap(UserRelationToMeMap userRelationToMeMap) {
+	public User setUserRelationToMeMap(List<UserRelationToMeMap> userRelationToMeMap) {
 		this.userRelationToMeMap = userRelationToMeMap;
 		return this;
 	}
@@ -343,11 +343,13 @@ public class User {
 				.setUserPreferences(userPreferences == null ? null : userPreferences.toBean())
 				.setUserInformation(userInformation == null ? null : userInformation.toBean())
 				.setUserProfile(userProfile == null ? null : userProfile.toBean())
-				.setUserRelationToMeMap(userRelationToMeMap == null ? null : userRelationToMeMap.toBean())
+				
 				.setUserReferrerMap(userReferrerMap == null ? null : userReferrerMap.toBean())
 				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
+				
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
 				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
+				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()))
 				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
 				.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
 	}

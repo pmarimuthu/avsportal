@@ -14,14 +14,12 @@ import org.springframework.stereotype.Service;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
-import com.avs.portal.entity.UserCredential;
 import com.avs.portal.entity.UserPreferences;
 import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.CommonUtil;
 
 @Service
 public class UserService {
@@ -61,25 +59,24 @@ public class UserService {
 
 	// CREATE
 	@Transactional
-	public UserBean addUser(UserBean bean) throws Exception {
-		if(bean == null)
+	public UserBean addUser(UserBean userBean) {
+		if(userBean == null && !userBean.isValid(userBean))
 			return null;
 
 		// User :: user_01
 		// ---------------
 		User user = new User();
-		user.setPhone(bean.getPhone());
-		user.setEmail(bean.getEmail());
+		user.setPhone(userBean.getPhone());
+		user.setEmail(userBean.getEmail());
 		user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		defaultUserCredential(user);
+
 		defaultUserAccountStatus(user);
 		defaultUserPreferences(user);
 		defaultUserRoleMap(user);
-		
+
 		user = userRepository.save(user);
-		
+
 		return user.toBean();
 	}
 
@@ -142,27 +139,6 @@ public class UserService {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
-	private void onPostCreateNewUser(UserBean user) {
-		System.out.println(user.getId());
-		System.out.println(user.toString());
-
-	}
-
-	// UserCredential :: user_credential_02
-	// ------------------------------------
-	private UserCredential defaultUserCredential(User user) {
-		UserCredential userCredential = new UserCredential();
-		userCredential.setPassword(CommonUtil.generateTempPassword());
-		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		userCredential.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
-		userCredential.setUser(user);
-		user.setUserCredential(userCredential);
-		
-		return userCredential;		
-	}
-
 	// UserAccountStatus :: user_account_status_03
 	// -------------------------------------------
 	private UserAccountStatus defaultUserAccountStatus(User user) {
@@ -204,6 +180,7 @@ public class UserService {
 	private UserRoleMap defaultUserRoleMap(User user) {
 		UserRoleMap userRoleMap = new UserRoleMap();
 		userRoleMap.setRole(RoleEnum.USER);
+		
 		userRoleMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userRoleMap.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		

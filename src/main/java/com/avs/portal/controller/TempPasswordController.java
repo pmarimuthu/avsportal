@@ -1,7 +1,6 @@
 package com.avs.portal.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,65 +12,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.avs.portal.bean.TempPasswordBean;
 import com.avs.portal.bean.UserBean;
-import com.avs.portal.entity.TempPassword;
-import com.avs.portal.entity.User;
-import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.CommonUtil;
+import com.avs.portal.service.TempPasswordService;
 
 @RestController
 @RequestMapping(path = "/api/temp-password")
 public class TempPasswordController {
 
 	@Autowired
-	private UserRepository userRepository;
+	private TempPasswordService tempPasswordService;
 	
 	@GetMapping("/health")
 	public String sayHello() {
 		return "TempPasswordController is Alive!!";
 	}
 	
-	@PostMapping("/update")
-	public TempPasswordBean createOrUpdateTempPassword(@RequestBody UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
-			return null;
-		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-
-		if(user == null)
-			return null;
-		
-		TempPassword tempPassword = user.getTempPassword();
-		if(tempPassword == null) {
-			tempPassword = new TempPassword();
-			tempPassword.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-			tempPassword.setUser(user);
-		}
-		
-		tempPassword.setIsUsed(Boolean.FALSE);
-		tempPassword.setGeneratedPassword(CommonUtil.generateTempPassword());
-		tempPassword.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		user = userRepository.save(user); // save PARENT only	
-		
-		return tempPassword.toBean();	
+	@PostMapping("/list")
+	public List<TempPasswordBean> listAllTempPasswords() {
+		return tempPasswordService.getAllUsersTempPasswords();
+	}
+	
+	@PostMapping("/create")
+	public TempPasswordBean createTempPassword(@RequestBody UserBean userBean) {
+		return tempPasswordService.createTempPassword(userBean);
 	}
 	
 	@DeleteMapping("/delete")
 	public UserBean deleteTempPassword(@RequestBody UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
-			return null;
-		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
-			return null;
-		
-		TempPassword tempPassword = user.getTempPassword();
-		if(tempPassword != null)
-			tempPassword.setUser(null);
-		
-		user.setTempPassword(null);
-		user = userRepository.save(user);
-		return user.toBean();
+		return tempPasswordService.deleteTempPassword(userBean);
 	}
 	
 }

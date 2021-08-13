@@ -2,18 +2,18 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.avs.portal.bean.UserVerificationBean;
 import com.avs.portal.bean.UserBean;
+import com.avs.portal.bean.UserVerificationBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserVerification;
-import com.avs.portal.repository.UserVerificationRepository;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.repository.UserVerificationRepository;
 
 @Service
 public class UserVerificationService {
@@ -25,12 +25,12 @@ public class UserVerificationService {
 	private UserVerificationRepository userVerificationRepository;
 	
 	// READ (ALL)
-	public List<UserVerificationBean> getAllUsersVerifications() {
-		return userVerificationRepository.findAll().stream().map(UserVerification :: toBean).collect(Collectors.toList());
+	public Set<UserVerificationBean> getAllUsersVerifications() {
+		return userVerificationRepository.findAll().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
 	}
 
 	// READ (USER's)
-	public List<UserVerificationBean> getUserVerifications(UserBean userBean) {
+	public Set<UserVerificationBean> getUserVerifications(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
 		
@@ -38,38 +38,38 @@ public class UserVerificationService {
 		if(user == null)
 			return null;
 		
-		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toList());
+		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
 	}
 
 	// CREATE / UPDATE an Verification
-	public List<UserVerificationBean> addOrEditUserVerification(UserVerificationBean bean) {
-		if(bean == null || bean.getUserId() == null)
+	public Set<UserVerificationBean> addOrEditUserVerification(UserVerificationBean userVerificationBean) {
+		if(userVerificationBean == null || userVerificationBean.getUserId() == null)
 			return null;
 		
-		User user = userRepository.findById(bean.getUserId()).orElse(null);
+		User user = userRepository.findById(userVerificationBean.getUserId()).orElse(null);
 		if(user == null)
 			return null;
 		
-		UserVerification userVerification = user.getUserVerifications().stream().filter(entity -> (entity.getVerificationSubject() != null && bean.getVerificationSubject().equals(entity.getVerificationSubject()) )).findFirst().orElse(null);
-		if(userVerification == null) {
-			userVerification = new UserVerification();
-			userVerification.setUser(user);
-			userVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		UserVerification userSubjectVerification = user.getUserVerifications().stream().filter(entity -> (userVerificationBean.getVerificationSubject().equals(entity.getVerificationSubject()) )).findFirst().orElse(null);
+		if(userSubjectVerification == null) {
+			userSubjectVerification = new UserVerification();
+			userSubjectVerification.setUser(user);
+			userSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		}
 		
-		userVerification.setVerificationSubject(bean.getVerificationSubject());
-		userVerification.setVerificationMode(bean.getVerificationMode());
-		userVerification.setVerifiedBy(bean.getVerifiedBy());
-		userVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userSubjectVerification.setVerificationSubject(userVerificationBean.getVerificationSubject());
+		userSubjectVerification.setVerificationMode(userVerificationBean.getVerificationMode());
+		userSubjectVerification.setVerifiedBy(userVerificationBean.getVerifiedBy());
+		userSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		user.getUserVerifications().add(userVerification);
+		user.getUserVerifications().add(userSubjectVerification);
 		
 		user = userRepository.save(user);
 		
-		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toList());
+		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
 	}
 
-	public List<UserVerificationBean> deleteUserVerification(UserVerificationBean bean) {
+	public Set<UserVerificationBean> deleteUserVerification(UserVerificationBean bean) {
 		if(bean == null || bean.getId() == null)
 			return null;
 		
@@ -86,7 +86,7 @@ public class UserVerificationService {
 		
 		user = userRepository.save(user);
 		
-		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toList());
+		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
 	}
 
 }

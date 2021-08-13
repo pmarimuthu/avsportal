@@ -10,6 +10,8 @@ public class TempPasswordBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private String generatedPassword;
 	
 	private Boolean isUsed;
@@ -24,6 +26,15 @@ public class TempPasswordBean implements Serializable {
 
 	public TempPasswordBean setId(UUID userId) {
 		this.id = userId;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public TempPasswordBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -65,8 +76,14 @@ public class TempPasswordBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nTempPasswordBean [ Id: " + id + ", Generated Password: " + generatedPassword
-				+ ", Is Used: " + isUsed + ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nTempPasswordBean [ " + 
+				"  Id: " + id + 
+				", User Id: " + userId + 
+				", Generated Password: " + generatedPassword + 
+				", Is Used: " + isUsed + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

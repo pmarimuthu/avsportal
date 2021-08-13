@@ -141,7 +141,7 @@ public class LoginHistory {
 	public String toString() {
 		return "\nLoginHistory [" +
 				"Id: " + id + 
-				", User: " + user + 
+				", User Id: " + (user == null ? "NULL" : user.getId()) + 
 				", Consecutive Failed Login Count: " + consecutiveFailedLoginCount + 
 				", IPAddress: " + ipAddress + 
 				", Device Type: " + deviceType + 

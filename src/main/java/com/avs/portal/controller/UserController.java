@@ -42,11 +42,8 @@ public class UserController {
 	}
 	
 	@PostMapping("/add")
-	public UserBean addUser(@RequestBody UserBean user) throws Exception {
-		if(user != null && user.isValid(user))
-			return user = userService.addUser(user);
-		
-		throw new Exception("[ERR] Invalid User.");
+	public UserBean addUser(@RequestBody UserBean user) {
+			return userService.addUser(user);
 	}
 	
 	@PutMapping("/edit")

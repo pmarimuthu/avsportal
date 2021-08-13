@@ -13,6 +13,8 @@ public class UserPreferencesBean implements Serializable {
 	
 	private UUID id;
 	
+	private UUID userId;
+	
 	private VisibilityEnum visibilityLevel;
 	
 	private LanguageEnum language;
@@ -30,6 +32,15 @@ public class UserPreferencesBean implements Serializable {
 
 	public UserPreferencesBean setId(UUID userId) {
 		this.id = userId;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserPreferencesBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -80,9 +91,15 @@ public class UserPreferencesBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserPreferencesBean [ Id: " + id + ", Visibility Level: " + visibilityLevel + ", Language: "
-				+ language + ", Advertisement Opt: " + advertisementOpt + ", Created On: " + createdOn + ", Updated On: "
-				+ updatedOn + " ]";
+		return "\nUserPreferencesBean [" + 
+				"  Id: " + id + 
+				", User Id: " + userId + 
+				", Visibility Level: " + visibilityLevel + 
+				", Language: " + language + 
+				", Advertisement Opt: " + advertisementOpt + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }

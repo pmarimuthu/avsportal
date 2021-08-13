@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,10 +21,11 @@ public class UserInformation {
 
 	@Id
 	@Column(name = "id")
-	private UUID id;	
+	private UUID id;
 	
 	@MapsId
 	@OneToOne(mappedBy = "userInformation")
+	@JoinColumn(name = "userid")   //same name as id @Column
 	private User user;
 
 	@Column(name = "firstname")
@@ -136,9 +138,17 @@ public class UserInformation {
 
 	@Override
 	public String toString() {
-		return "UserInformation [userId=" + id + ", user=" + user + ", firstname=" + firstname + ", lastname="
-				+ lastname + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", profession=" + profession
-				+ ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + "]";
+		return "UserInformation [" +
+				"  Id: " + id + 
+				", User Id: " + user.getId() + 
+				", Firstname: " + firstname + 
+				", Lastname: " + lastname + 
+				", Gender: " + gender + 
+				", DateOfBirth: " + dateOfBirth + 
+				", Profession: " + profession + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }

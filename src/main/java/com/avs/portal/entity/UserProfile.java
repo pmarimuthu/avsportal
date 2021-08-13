@@ -187,6 +187,7 @@ public class UserProfile {
 	public UserProfileBean toBean() {
 		return new UserProfileBean()
 				.setId(id)
+				.setUserId(user.getId())
 				.setBirthTimestamp(CommonUtil.toLocalDateTimeOrNull(birthTimestamp))
 				.setCaste(caste)
 				.setKoththiram(koththiram)
@@ -199,6 +200,25 @@ public class UserProfile {
 				.setCreatedOn(CommonUtil.toLocalDateTimeOrNull(createdOn))
 				.setUpdatedOn(CommonUtil.toLocalDateTimeOrNull(updatedOn));
 				
+	}
+
+	@Override
+	public String toString() {
+		return "UserProfile [" + 
+				"  Id: " + id + 
+				", User Id: " + user.getId() + 
+				", Marital Status: " + maritalStatus + 
+				", Religion: " + religion + 
+				", Caste: " + caste + 
+				", Subcaste: " + subcaste + 
+				", Koththiram: " + koththiram + 
+				", PlaceOfBirth: " + placeOfBirth + 
+				", BirthTimestamp: " + birthTimestamp + 
+				", Raasi: " + raasi + 
+				", Natchaththiram: " + natchaththiram + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

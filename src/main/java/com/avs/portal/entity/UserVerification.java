@@ -29,10 +29,10 @@ public class UserVerification {
 	@ManyToOne
     private User user; // ref
 
-	@Column(name = "verification_subject")
+	@Column(name = "verification_subject", nullable = false)
 	private VerificationSubjectEnum verificationSubject;
 	
-	@Column(name = "verification_mode")
+	@Column(name = "verification_mode", nullable = false)
 	private VerificationModeEnum verificationMode;
 	
 	@Column(name = "verified_by", nullable = false)
@@ -121,7 +121,7 @@ public class UserVerification {
 	public String toString() {
 		return "UserVerification [ " + 
 				" Id: " + id + 
-				", User (Id): " + (user == null ? "NULL" : user.getId()) + 
+				", User Id: " + (user == null ? "NULL" : user.getId()) + 
 				", Verification Subject: " + verificationSubject + 
 				", Verification Mode: " + verificationMode + 
 				", Verified By: " + verifiedBy + 

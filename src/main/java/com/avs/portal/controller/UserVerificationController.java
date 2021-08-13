@@ -1,7 +1,7 @@
 package com.avs.portal.controller;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,28 +28,28 @@ public class UserVerificationController {
 	}
 
 	@PostMapping("/list")
-	public List<UserVerificationBean> listAllUserVerifications() {
-		List<UserVerificationBean> list = userVerificationService.getAllUsersVerifications();
+	public Set<UserVerificationBean> listAllUserVerifications() {
+		Set<UserVerificationBean> list = userVerificationService.getAllUsersVerifications();
 		return list;
 	}
 
 	@PostMapping("/get")
-	public List<UserVerificationBean> getUserVerification(@RequestBody UserBean user) {
+	public Set<UserVerificationBean> getUserVerification(@RequestBody UserBean user) {
 		try {
 			return userVerificationService.getUserVerifications(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 	@PostMapping("/update")
-	public List<UserVerificationBean> addOrEditUser(@RequestBody UserVerificationBean userVerification) {
+	public Set<UserVerificationBean> addOrEditUser(@RequestBody UserVerificationBean userVerification) {
 		return userVerificationService.addOrEditUserVerification(userVerification);
 	}
 
 	@DeleteMapping("/delete")
-	public List<UserVerificationBean> deleteUserVerification(@RequestBody UserVerificationBean userVerification) {
+	public Set<UserVerificationBean> deleteUserVerification(@RequestBody UserVerificationBean userVerification) {
 		return userVerificationService.deleteUserVerification(userVerification);
 	}
 

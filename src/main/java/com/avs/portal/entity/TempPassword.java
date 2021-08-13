@@ -99,7 +99,7 @@ public class TempPassword {
 	public String toString() {
 		return "\nTempPassword [ " + 
 				"Id: " + id + 
-				", User: " + user + 
+				", User Id: " +  (user == null ? "NULL" : user.getId()) + 
 				", Generated Password: " + generatedPassword + 
 				", Is Used: " + isUsed + 
 				", Created On: " + createdOn + 

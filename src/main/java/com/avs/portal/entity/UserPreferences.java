@@ -109,6 +109,7 @@ public class UserPreferences {
 	public UserPreferencesBean toBean() {
 		return new UserPreferencesBean()
 				.setId(id)
+				.setUserId(user.getId())
 				.setVisibilityLevel(this.visibility)
 				.setLanguage(language)
 				.setAdvertisementOpt(this.advertisement)
@@ -119,9 +120,15 @@ public class UserPreferences {
 
 	@Override
 	public String toString() {
-		return "UserPreferences [userId=" + id + ", visibility=" + visibility + ", language="
-				+ language + ", advertisement=" + advertisement + ", createdOn=" + createdOn + ", updatedOn="
-				+ updatedOn + "]";
+		return "UserPreferences [" + 
+				" Id: " + id + 
+				", User Id: " + user.getId() + 
+				", Visibility: " + visibility + 
+				", Language: " + language + 
+				", Advertisement: " + advertisement + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

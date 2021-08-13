@@ -6,8 +6,11 @@ import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
 import com.avs.portal.entity.Notification;
+import com.avs.portal.entity.User;
 
 public interface NotificationRepository extends CrudRepository<Notification, UUID> {
 
 	List<Notification> findAll();
+	
+	List<Notification> findByUser(User user);
 }

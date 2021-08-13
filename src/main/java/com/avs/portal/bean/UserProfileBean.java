@@ -18,6 +18,8 @@ public class UserProfileBean implements Serializable {
 
 	private UUID id;
 	
+	private UUID userId;
+	
 	private MaritalStatusEnum maritalStatus;
 	
 	private ReligionEnum religion;
@@ -46,6 +48,15 @@ public class UserProfileBean implements Serializable {
 	
 	public UserProfileBean setId(UUID userId) {
 		this.id = userId;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserProfileBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -150,10 +161,21 @@ public class UserProfileBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserProfileBean [ Id: " + id + ", Marital Status: " + maritalStatus + ", Religion: "
-				+ religion + ", Caste: " + caste + ", Subcaste: " + subcaste + ", Koththiram: " + koththiram
-				+ ", Place Of Birth: " + placeOfBirth + ", Birth Timestamp: " + birthTimestamp + ", Raasi: " + raasi
-				+ ", Natchaththiram: " + natchaththiram + ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nUserProfileBean [ " + 
+				" Id: " + id + 
+				", User Id: " + userId + 
+				", Marital Status: " + maritalStatus + 
+				", Religion: " + religion + 
+				", Caste: " + caste + 
+				", Subcaste: " + subcaste + 
+				", Koththiram: " + koththiram + 
+				", Place Of Birth: " + placeOfBirth + 
+				", Birth Timestamp: " + birthTimestamp + 
+				", Raasi: " + raasi + 
+				", Natchaththiram: " + natchaththiram + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 
 }

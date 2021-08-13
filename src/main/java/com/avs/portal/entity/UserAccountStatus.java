@@ -147,6 +147,7 @@ public class UserAccountStatus {
 	public String toString() {
 		return "UserAccountStatus [ " +
 				"  Id: " + id + 
+				", User Id: " +  (user == null ? "NULL" : user.getId()) + 
 				", Is Verified: " + isVerified + 
 				", Is Active: " + isActive + 
 				", Is Locked: " + isLocked + 

@@ -24,7 +24,7 @@ public class UserRoleMap {
 	private UUID id;
 	
 	@MapsId
-	@OneToOne(mappedBy = "tempPassword")
+	@OneToOne(mappedBy = "userRoleMap")
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 
@@ -92,8 +92,13 @@ public class UserRoleMap {
 
 	@Override
 	public String toString() {
-		return "UserRoleMap [userId=" + id + ", user=" + user + ", role=" + role + ", createdOn=" + createdOn
-				+ ", updatedOn=" + updatedOn + "]";
+		return "UserRoleMap [" + 
+				"  Id: " + id +
+				", User Id: " + user.getId() + 
+				", Role: " + role + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }

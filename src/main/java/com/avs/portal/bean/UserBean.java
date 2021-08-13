@@ -40,7 +40,7 @@ public class UserBean implements Serializable {
 	
     private UserRoleMapBean userRoleMap;
 	
-    private UserRelationToMeMapBean userRelationToMeMap;
+    private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
 	
     private Collection<UserAddressBean> userAddresses = Collections.emptyList();
 	
@@ -185,11 +185,11 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public UserRelationToMeMapBean getUserRelationToMeMap() {
+	public Collection<UserRelationToMeMapBean> getUserRelationToMeMap() {
 		return userRelationToMeMap;
 	}
 
-	public UserBean setUserRelationToMeMap(UserRelationToMeMapBean userRelationToMeMap) {
+	public UserBean setUserRelationToMeMap(Collection<UserRelationToMeMapBean> userRelationToMeMap) {
 		this.userRelationToMeMap = userRelationToMeMap;
 		return this;
 	}
@@ -218,9 +218,9 @@ public class UserBean implements Serializable {
 		return this;
 	}
 	
-	public boolean isValid(UserBean user) {
-		if(CommonUtil.isValidPhone(user.getPhone()))
-			if(CommonUtil.isValidEmail(user.getEmail()))				
+	public boolean isValid(final UserBean userBean) {
+		if(CommonUtil.isValidPhone(userBean.getPhone()))
+			if(CommonUtil.isValidEmail(userBean.getEmail()))				
 				return true;				
 			
 		return false;

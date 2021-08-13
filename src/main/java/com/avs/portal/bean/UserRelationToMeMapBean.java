@@ -13,6 +13,8 @@ public class UserRelationToMeMapBean implements Serializable {
 
 	private UUID id;
 	
+	private UUID userId;
+	
 	private UUID relativeUserId;
 	
 	private RelationToMeEnum relationToMe;
@@ -31,6 +33,15 @@ public class UserRelationToMeMapBean implements Serializable {
 
 	public UserRelationToMeMapBean setId(UUID id) {
 		this.id = id;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserRelationToMeMapBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -90,9 +101,15 @@ public class UserRelationToMeMapBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserRelationToMeMap [ Id: " + id + ", Relative User Id: " + relativeUserId
-				+ ", Relation ToMe: " + relationToMe + ", Verificaion Status: " + verificaionStatus + ", Verified By: "
-				+ verifiedBy + ", Created On: " + createdOn + ", Updated On: " + updatedOn + " ]";
+		return "\nUserRelationToMeMap [" + 
+				"  Id: " + id + 
+				", Relative User Id: " + relativeUserId + 
+				", Relation ToMe: " + relationToMe + 
+				", Verificaion Status: " + verificaionStatus + 
+				", Verified By: " + verifiedBy + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				" ]";
 	}
 	
 }
