@@ -20,23 +20,23 @@ public class UserProfileBean implements Serializable {
 	
 	private UUID userId;
 	
-	private MaritalStatusEnum maritalStatus;
+	private MaritalStatusEnum maritalStatus; // MaritalStatusEnum
 	
-	private ReligionEnum religion;
+	private ReligionEnum religion; // ReligionEnum
 	
-	private CasteEnum caste;
+	private CasteEnum caste; // CasteEnum
 	
-	private SubcasteEnum subcaste;
+	private SubcasteEnum subcaste; // SubcasteEnum
 	
-	private KoththiramEnum koththiram;
+	private KoththiramEnum koththiram; // KoththiramEnum
 	
 	private String placeOfBirth;
 	
 	private LocalDateTime birthTimestamp;
 	
-	private RaasiEnum raasi;
+	private RaasiEnum raasi; // RaasiEnum
 	
-	private NatchaththiramEnum natchaththiram;
+	private NatchaththiramEnum natchaththiram; // NatchaththiramEnum
 	
 	private LocalDateTime createdOn;
 	

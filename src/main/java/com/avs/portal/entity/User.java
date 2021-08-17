@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -81,9 +83,6 @@ public class User {
     private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<UserRelationToMeMap>();
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
-	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -92,6 +91,12 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
 
+	@ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_USERADDRESS_15", 
+        joinColumns = { @JoinColumn(name = "USER_ID") }, 
+        inverseJoinColumns = { @JoinColumn(name = "USERADDRESS_ID") })
+	private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
+	
 	public UUID getId() {
 		return id;
 	}

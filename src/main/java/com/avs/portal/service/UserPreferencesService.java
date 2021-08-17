@@ -40,7 +40,7 @@ public class UserPreferencesService {
 	}
 
 	public UserPreferencesBean createUserPreferences(UserPreferencesBean userPreferencesBean) {
-		if(userPreferencesBean != null || userPreferencesBean.getUserId() == null)
+		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null)
 		return null;
 		
 		User user = userRepository.findById(userPreferencesBean.getUserId()).orElse(null);
@@ -70,7 +70,7 @@ public class UserPreferencesService {
 	}
 
 	public UserPreferencesBean updateUserPreferences(UserPreferencesBean userPreferencesBean) {
-		if(userPreferencesBean != null || userPreferencesBean.getUserId() == null)
+		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null)
 		return null;
 		
 		User user = userRepository.findById(userPreferencesBean.getUserId()).orElse(null);

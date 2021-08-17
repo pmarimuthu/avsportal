@@ -7,18 +7,23 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.avs.portal.bean.LoginBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.User;
 import com.avs.portal.enums.LoginKeyEnum;
+import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.repository.LoginHistoryRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
@@ -37,6 +42,23 @@ public class AuthController {
 	@GetMapping("/health")
 	public String sayHello() {
 		return "AuthController is Alive!!";
+	}
+	
+	@GetMapping("/ip")
+	public String getIPAddress() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+		        .getRequest();
+		
+		String remoteAddress = "Unknown!!";
+		
+        if (request != null) {
+        	remoteAddress = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddress == null || "".equals(remoteAddress)) {
+            	remoteAddress = request.getRemoteAddr();
+            }
+        }
+
+        return remoteAddress;
 	}
 	
 	@PostMapping("/login")
@@ -124,7 +146,9 @@ public class AuthController {
 		loginHistory.setIpAddress(null);
 		loginHistory.setDeviceType(null);
 		loginHistory.setUserAgent(null);		
-		loginHistory.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		loginHistory.setIpAddress(getIPAddress());
+		loginHistory.setUserAgent(getUserAgent());;
+		loginHistory.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));		
 		
 		if(flag == Constants.LOGIN_SUCCESS) {
 			loginHistory.setConsecutiveFailedLoginCount(0);
@@ -153,4 +177,21 @@ public class AuthController {
 		loginHistory = loginHistoryRepository.save(loginHistory);
 		userRepository.save(user);
 	}
+
+	private UserAgentEnum getUserAgent() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+		        .getRequest();
+		
+		String userAgent = "Unknown!!";
+		
+        if (request != null) {
+        	userAgent = request.getHeader("User-Agent");
+            if (userAgent == null || "".equals(userAgent)) {
+            	userAgent = request.getRemoteAddr();
+            }
+        }
+
+        return UserAgentEnum.OTHER;
+	}
+	
 }

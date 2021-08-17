@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.service.UserService;
 
@@ -54,6 +55,11 @@ public class UserController {
 	@DeleteMapping("/delete")
 	public UserBean deleteUser(@RequestBody UserBean user) throws Exception {
 		return userService.deleteUser(user);
+	}
+	
+	@PostMapping("/list/address")
+	public List<UserBean> listUsersByAddress(@RequestBody UserAddressBean userAddressBean) {
+		return userService.getUsersByAddress(userAddressBean);
 	}
 	
 	

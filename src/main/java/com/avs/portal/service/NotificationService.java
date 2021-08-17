@@ -53,6 +53,7 @@ public class NotificationService {
 		Notification userNotification = user.getNotifications().stream().filter(entity -> (entity.getNotificationType() != null && entity.getNotificationType().equals(bean.getNotificationType()) )).findFirst().orElse(null);
 		if(userNotification == null) {
 			userNotification = new Notification();
+			userNotification.setNotificationType(userNotification.getNotificationType());
 			userNotification.setUser(user);
 			userNotification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		}

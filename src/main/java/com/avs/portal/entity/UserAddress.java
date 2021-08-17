@@ -1,13 +1,18 @@
 package com.avs.portal.entity;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -25,8 +30,8 @@ public class UserAddress {
     @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
-	@ManyToOne
-	private User user; // ref
+	@ManyToMany(mappedBy = "userAddresses", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<User> users = Collections.emptyList(); // ref
 
 	@Column(name = "address_type", nullable = false)
 	private AddressTypeEnum addressType;
@@ -73,19 +78,12 @@ public class UserAddress {
 		return this;
 	}
 
-	public User getUser() {
-		return user;
+	public List<User> getUsers() {
+		return users;
 	}
 
-	public UserAddress setUser(User user) {
-		if(this.user != null)
-			this.user.internalRemoveUserAddress(this);
-		
-		this.user = user;
-		if(user != null)
-			user.internalAddUserAddress(this);
-		
-		return this;
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	public AddressTypeEnum getAddressType() {
@@ -199,7 +197,7 @@ public class UserAddress {
 	public UserAddressBean toBean() {
 		return new UserAddressBean()
 				.setId(id)
-				.setUserId(user.getId())
+				.setUsersIds(users.stream().map(User :: getId).collect(Collectors.toList()))
 				.setAddressLine1(addressLine1)
 				.setAddressType(addressType)
 				.setCity(city)

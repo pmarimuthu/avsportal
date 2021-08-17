@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,10 +12,13 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
+import com.avs.portal.entity.UserAddress;
 import com.avs.portal.entity.UserPreferences;
+import com.avs.portal.entity.UserProfile;
 import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
@@ -27,6 +31,9 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private UserAddressService userAddressService;
+	
 	// READ {ALL}
 	public List<UserBean> getUsers() {
 		List<User> list = userRepository.findAll();
@@ -38,20 +45,20 @@ public class UserService {
 	}
 
 	// READ {ONE}
-	public UserBean getUser(UserBean bean) throws Exception {
-		if(bean == null)
+	public UserBean getUser(UserBean userBean) throws Exception {
+		if(userBean == null)
 			return null;
 
-		if(bean.getId() != null) {
-			return getUserById(bean.getId());
+		if(userBean.getId() != null) {
+			return getUserById(userBean.getId());
 		}
 
-		if(bean.getPhone() != null) {
-			return getUserByPhone(bean.getPhone());
+		if(userBean.getPhone() != null) {
+			return getUserByPhone(userBean.getPhone());
 		}
 
-		if(bean.getEmail() != null) {
-			return getUserByEmail(bean.getEmail());
+		if(userBean.getEmail() != null) {
+			return getUserByEmail(userBean.getEmail());
 		}
 
 		return null;
@@ -60,7 +67,7 @@ public class UserService {
 	// CREATE
 	@Transactional
 	public UserBean addUser(UserBean userBean) {
-		if(userBean == null && !userBean.isValid(userBean))
+		if(userBean == null || !userBean.isValid(userBean))
 			return null;
 
 		// User :: user_01
@@ -74,6 +81,7 @@ public class UserService {
 		defaultUserAccountStatus(user);
 		defaultUserPreferences(user);
 		defaultUserRoleMap(user);
+		defaultUserProfile(user);
 
 		user = userRepository.save(user);
 
@@ -188,6 +196,26 @@ public class UserService {
 		user.setUserRoleMap(userRoleMap);
 		
 		return userRoleMap;
+	}
+	
+	private UserProfile defaultUserProfile(User user) {
+		UserProfile userProfile = new UserProfile();
+		
+		userProfile.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		userProfile.setUser(user);
+		user.setUserProfile(userProfile);
+		
+		return userProfile;
+	}
+
+	public List<UserBean> getUsersByAddress(UserAddressBean userAddressBean) {
+		UserAddress userAddress = userAddressService.getUserAddress(userAddressBean);
+		if(userAddress == null)
+			return Collections.emptyList();
+		
+		return userAddress.getUsers().stream().map(User :: toBean).collect(Collectors.toList());
 	}
 
 }

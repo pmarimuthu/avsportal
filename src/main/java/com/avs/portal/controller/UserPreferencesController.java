@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avs.portal.bean.UserBean;
-import com.avs.portal.bean.UserCredentialBean;
 import com.avs.portal.bean.UserPreferencesBean;
-import com.avs.portal.service.UserCredentialService;
 import com.avs.portal.service.UserPreferencesService;
 
 @RestController

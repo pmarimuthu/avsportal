@@ -2,6 +2,8 @@ package com.avs.portal.bean;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import com.avs.portal.enums.AddressTypeEnum;
@@ -12,7 +14,7 @@ public class UserAddressBean implements Serializable {
 	
 	private UUID id;
 	
-	private UUID userId;
+	private List<UUID> usersIds = Collections.emptyList();
 	
 	private AddressTypeEnum addressType;
 	
@@ -51,12 +53,12 @@ public class UserAddressBean implements Serializable {
 		return addressType;
 	}
 
-	public UUID getUserId() {
-		return userId;
+	public List<UUID> getUsersIds() {
+		return usersIds;
 	}
 
-	public UserAddressBean setUserId(UUID userId) {
-		this.userId = userId;
+	public UserAddressBean setUsersIds(List<UUID> usersIds) {
+		this.usersIds = usersIds;
 		return this;
 	}
 
@@ -166,9 +168,21 @@ public class UserAddressBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserAddress [ Id: " + id + ", User Id: " + userId +  ", Address Type: " + addressType + ", Address Line1: "
-				+ addressLine1 + ", City: " + city + ", State: " + state + ", Country: " + country + ", Pincode: " + pincode
-				+ ", GEO Latitude: " + geoLatitude + ", GEO Longitude: " + geoLongitude + ", IPAddress: " + ipAddress
-				+ ", Created On: " + createdOn + ", Updated On: " + updatedOn + ", Is Deleted: " + isDeleted + " ]";
+		return "UserAddress [" + 
+				"  Id: " + id + 
+				", User(s) Ids: " + usersIds +  
+				", Address Type: " + addressType + 
+				", Address Line1: " + addressLine1 + 
+				", City: " + city + 
+				", State: " + state + 
+				", Country: " + country + 
+				", Pincode: " + pincode + 
+				", GEO Latitude: " + geoLatitude + 
+				", GEO Longitude: " + geoLongitude + 
+				", IPAddress: " + ipAddress + 
+				", Created On: " + createdOn + 
+				", Updated On: " + updatedOn + 
+				", Is Deleted: " + isDeleted + 
+				" ]";
 	}
 }

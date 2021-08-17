@@ -8,16 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.avs.portal.bean.TempPasswordBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.bean.UserProfileBean;
-import com.avs.portal.entity.TempPassword;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserProfile;
-import com.avs.portal.repository.TempPasswordRepository;
 import com.avs.portal.repository.UserProfileRepository;
 import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.CommonUtil;
 
 @Service
 public class UserProfileService {
@@ -47,7 +43,7 @@ public class UserProfileService {
 
 	// CREATE
 	public UserProfileBean createUserProfile(UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getId() == null)
+		if(userProfileBean == null || userProfileBean.getUserId() == null)
 			return null;
 
 		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
@@ -61,7 +57,7 @@ public class UserProfileService {
 		}
 		
 		userProfile = new UserProfile();
-		userProfile.setBirthTimestamp(Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
+		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
 		userProfile.setCaste(userProfileBean.getCaste());
 		userProfile.setKoththiram(userProfileBean.getKoththiram());
 		userProfile.setMaritalStatus(userProfileBean.getMaritalStatus());
@@ -84,7 +80,7 @@ public class UserProfileService {
 
 	// UPDATE
 	public UserProfileBean updateUserProfile(UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getId() == null)
+		if(userProfileBean == null || userProfileBean.getUserId() == null)
 			return null;
 
 		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
@@ -97,7 +93,7 @@ public class UserProfileService {
 			return null;
 		}
 		
-		userProfile.setBirthTimestamp(Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
+		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
 		userProfile.setCaste(userProfileBean.getCaste());
 		userProfile.setKoththiram(userProfileBean.getKoththiram());
 		userProfile.setMaritalStatus(userProfileBean.getMaritalStatus());
@@ -107,7 +103,6 @@ public class UserProfileService {
 		userProfile.setReligion(userProfileBean.getReligion());
 		userProfile.setSubcaste(userProfileBean.getSubcaste());
 			
-		userProfile.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		userProfile.setUser(user);

@@ -18,8 +18,16 @@ import com.avs.portal.bean.UserBean;
 import com.avs.portal.bean.UserProfileBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserProfile;
+import com.avs.portal.enums.CasteEnum;
+import com.avs.portal.enums.KoththiramEnum;
+import com.avs.portal.enums.MaritalStatusEnum;
+import com.avs.portal.enums.NatchaththiramEnum;
+import com.avs.portal.enums.RaasiEnum;
+import com.avs.portal.enums.ReligionEnum;
+import com.avs.portal.enums.SubcasteEnum;
 import com.avs.portal.repository.UserProfileRepository;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.service.UserProfileService;
 
 @SuppressWarnings("unused")
 @RestController
@@ -28,6 +36,9 @@ public class UserProfileController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserProfileService userProfileService;
 
 	@Autowired
 	private UserProfileRepository userProfileRepository;
@@ -39,109 +50,27 @@ public class UserProfileController {
 
 	@PostMapping("/list")
 	public List<UserProfileBean> getAllUserProfiles() {
-		return userProfileRepository.findAll().stream().map(UserProfile :: toBean).collect(Collectors.toList());
+		return userProfileService.getAllUserProfiles();
 	}
 
 	@PostMapping("/get")
 	public UserProfileBean getUserProfile(@RequestBody UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
-			return null;
-		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null || user.getUserProfile() == null)
-			return null;
-		
-		return user.getUserProfile().toBean();
+		return userProfileService.getUserProfile(userBean);
 	}
 
 	@PostMapping("/add")
 	public UserProfileBean createUserProfile(@RequestBody UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getUserId() == null)
-			return null;
-
-		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
-		if(user == null) 
-			return null;
-
-		UserProfile userProfile = user.getUserProfile();
-		if(userProfile != null) {
-			System.err.println("UserProfile already exists !! for the User: " + user.getId());
-			return null;
-		}
-		
-		userProfile = new UserProfile();
-		
-		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
-		userProfile.setCaste(userProfileBean.getCaste());
-		userProfile.setKoththiram(userProfileBean.getKoththiram());
-		userProfile.setMaritalStatus(userProfileBean.getMaritalStatus());
-		userProfile.setNatchaththiram(userProfileBean.getNatchaththiram());
-		userProfile.setPlaceOfBirth(userProfileBean.getPlaceOfBirth());
-		userProfile.setRaasi(userProfileBean.getRaasi());
-		userProfile.setReligion(userProfileBean.getReligion());
-		userProfile.setSubcaste(userProfileBean.getSubcaste());
-		
-		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		user.setUserProfile(userProfile);
-		userProfile.setUser(user);
-		
-		userProfile = userProfileRepository.save(userProfile);
-		
-		return userProfile.toBean();
+		return userProfileService.createUserProfile(userProfileBean);
 	}
 	
 	@PutMapping("/edit")
 	public UserProfileBean updateUserProfile(@RequestBody UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getUserId() == null)
-			return null;
-
-		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
-		if(user == null || user.getUserProfile() == null) 
-			return null;
-
-		UserProfile userProfile = user.getUserProfile();
-		if(userProfile == null) {
-			System.err.println("UserProfile doesn't exists !! for the User: " + user.getId());
-			return null;
-		}
-		
-		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
-		userProfile.setCaste(userProfileBean.getCaste());
-		userProfile.setKoththiram(userProfileBean.getKoththiram());
-		userProfile.setMaritalStatus(userProfileBean.getMaritalStatus());
-		userProfile.setNatchaththiram(userProfileBean.getNatchaththiram());
-		userProfile.setPlaceOfBirth(userProfileBean.getPlaceOfBirth());
-		userProfile.setRaasi(userProfileBean.getRaasi());
-		userProfile.setReligion(userProfileBean.getReligion());
-		userProfile.setSubcaste(userProfileBean.getSubcaste());
-		
-		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
-		user.setUserProfile(userProfile);
-		userProfile.setUser(user);
-		
-		user = userRepository.save(user); 
-		
-		return user.getUserProfile().toBean();
+		return userProfileService.updateUserProfile(userProfileBean);
 	}	
 
 	@DeleteMapping("/delete")
 	public UserBean deleteUserProfile(@RequestBody UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
-			return null;
-		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null || user.getUserProfile() == null)
-			return null;
-		
-		UserProfile userProfile = user.getUserProfile();
-		userProfile.setUser(null);
-		user.setUserProfile(null);
-		
-		user = userRepository.save(user);
-		
-		return user.toBean();
+		return userProfileService.deleteTempPassword(userBean);
 	}
 
 }

@@ -13,4 +13,5 @@ public interface LoginHistoryRepository extends CrudRepository<LoginHistory, UUI
 	List<LoginHistory> findAll();
 	
 	List<LoginHistory> findByUser(User user);
+	
 }
