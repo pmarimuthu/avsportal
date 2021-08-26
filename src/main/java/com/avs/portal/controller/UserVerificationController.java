@@ -1,11 +1,12 @@
 package com.avs.portal.controller;
 
-import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,24 +34,19 @@ public class UserVerificationController {
 		return list;
 	}
 
-	@PostMapping("/get")
-	public Set<UserVerificationBean> getUserVerification(@RequestBody UserBean user) {
-		try {
-			return userVerificationService.getUserVerifications(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return Collections.emptySet();
+	@PostMapping("/get/{userId}")
+	public Set<UserVerificationBean> getUserVerification(@PathVariable(name = "userId") String userId) {
+		return userVerificationService.getUserVerifications(new UserBean().setId(UUID.fromString(userId)));
 	}
 
-	@PostMapping("/update")
-	public Set<UserVerificationBean> addOrEditUser(@RequestBody UserVerificationBean userVerification) {
-		return userVerificationService.addOrEditUserVerification(userVerification);
+	@PostMapping("/update/{userId}")
+	public Set<UserVerificationBean> createOrEditUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
+		return userVerificationService.createOrEditUserVerification(new UserBean().setId(UUID.fromString(userId)), userVerificationBean);
 	}
 
-	@DeleteMapping("/delete")
-	public Set<UserVerificationBean> deleteUserVerification(@RequestBody UserVerificationBean userVerification) {
-		return userVerificationService.deleteUserVerification(userVerification);
+	@DeleteMapping("/delete/{userId}")
+	public Set<UserVerificationBean> deleteUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
+		return userVerificationService.deleteUserVerification(new UserBean().setId(UUID.fromString(userId)), userVerificationBean);
 	}
 
 }

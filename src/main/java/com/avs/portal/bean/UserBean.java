@@ -35,6 +35,8 @@ public class UserBean implements Serializable {
     private UserInformationBean userInformation;
 	
     private UserProfileBean userProfile;
+    
+    private UserFamilyMapBean userFamilyMap;
 	
     private UserReferrerMapBean userReferrerMap;
 	
@@ -149,6 +151,15 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
+	public UserFamilyMapBean getUserFamilyMap() {
+		return userFamilyMap;
+	}
+
+	public UserBean setUserFamilyMap(UserFamilyMapBean userFamilyMap) {
+		this.userFamilyMap = userFamilyMap;
+		return this;
+	}
+
 	public UserReferrerMapBean getUserReferrerMap() {
 		return userReferrerMap;
 	}
@@ -240,7 +251,8 @@ public class UserBean implements Serializable {
 				", Temp Password: " + tempPassword + 
 				", User Preferences: " + userPreferences + 
 				", User Information: " + userInformation + 
-				", User Profile: " + userProfile + 
+				", User Profile: " + userProfile +
+				", User Family Map: " + userFamilyMap +
 				", User Referrer Map: " + userReferrerMap + 
 				", UserRole Map: " + userRoleMap + 
 				", User RelationToMe Map: " + userRelationToMeMap + 

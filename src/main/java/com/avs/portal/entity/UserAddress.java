@@ -82,8 +82,9 @@ public class UserAddress {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public UserAddress setUsers(List<User> users) {
 		this.users = users;
+		return this;
 	}
 
 	public AddressTypeEnum getAddressType() {

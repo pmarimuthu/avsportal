@@ -58,9 +58,10 @@ public class TempPasswordService {
 		}
 		
 		tempPassword = new TempPassword();
-		tempPassword.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		tempPassword.setGeneratedPassword(CommonUtil.generateTempPassword());
 		tempPassword.setIsUsed(Boolean.FALSE);
+		
+		tempPassword.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		tempPassword.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		user.setTempPassword(tempPassword);
@@ -68,7 +69,7 @@ public class TempPasswordService {
 		
 		tempPassword = tempPasswordRepository.save(tempPassword);
 		
-		return tempPassword.toBean();
+		return user.getTempPassword().toBean();
 	}
 
 	// DELETE

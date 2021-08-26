@@ -30,10 +30,10 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private UserAddressService userAddressService;
-	
+
 	// READ {ALL}
 	public List<UserBean> getUsers() {
 		List<User> list = userRepository.findAll();
@@ -45,7 +45,7 @@ public class UserService {
 	}
 
 	// READ {ONE}
-	public UserBean getUser(UserBean userBean) throws Exception {
+	public UserBean getUser(UserBean userBean) {
 		if(userBean == null)
 			return null;
 
@@ -66,7 +66,7 @@ public class UserService {
 
 	// CREATE
 	@Transactional
-	public UserBean addUser(UserBean userBean) {
+	public UserBean createUser(UserBean userBean) {
 		if(userBean == null || !userBean.isValid(userBean))
 			return null;
 
@@ -100,9 +100,9 @@ public class UserService {
 		entity.setPhone(bean.getPhone());
 		entity.setEmail(bean.getEmail());
 		entity.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		entity = userRepository.save(entity);
-		
+
 		return entity.toBean();
 	}
 
@@ -125,24 +125,24 @@ public class UserService {
 		return entity != null ? entity.toBean() : null;
 	}
 
-	private UserBean getUserByEmail(String email) throws Exception {
+	private UserBean getUserByEmail(String email) {
 		List<User> entities = userRepository.findByEmail(email);
 		if(entities.size() == 1)
 			return entities.get(0).toBean();
 
 		if(entities.size() > 1)
-			throw new Exception("[ERR] more than one user with same Email.");
+			System.err.println("[ERR] more than one user with same Email.");
 
 		return null;
 	}
 
-	private UserBean getUserByPhone(Long phone) throws Exception {
+	private UserBean getUserByPhone(Long phone) {
 		List<User> entities = userRepository.findByPhone(phone);
 		if(entities.size() == 1)
 			return entities.get(0).toBean();
 
 		if(entities.size() > 1)
-			throw new Exception("[ERR] more than one user with same Phone.");
+			System.err.println("[ERR] more than one user with same Phone.");
 
 		return null;
 	}
@@ -161,7 +161,7 @@ public class UserService {
 
 		userAccountStatus.setUser(user);
 		user.setUserAccountStatus(userAccountStatus);
-		
+
 		return userAccountStatus;
 
 	}
@@ -173,13 +173,13 @@ public class UserService {
 		userPreferences.setAdvertisement(Boolean.FALSE);
 		userPreferences.setVisibility(VisibilityEnum.FRIENDLY);
 		userPreferences.setLanguage(LanguageEnum.ENGLISH);
-		
+
 		userPreferences.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userPreferences.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		userPreferences.setUser(user);
 		user.setUserPreferences(userPreferences);
-		
+
 		return userPreferences;
 	}
 
@@ -188,25 +188,25 @@ public class UserService {
 	private UserRoleMap defaultUserRoleMap(User user) {
 		UserRoleMap userRoleMap = new UserRoleMap();
 		userRoleMap.setRole(RoleEnum.USER);
-		
+
 		userRoleMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userRoleMap.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		userRoleMap.setUser(user);
 		user.setUserRoleMap(userRoleMap);
-		
+
 		return userRoleMap;
 	}
-	
+
 	private UserProfile defaultUserProfile(User user) {
 		UserProfile userProfile = new UserProfile();
-		
+
 		userProfile.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		userProfile.setUser(user);
 		user.setUserProfile(userProfile);
-		
+
 		return userProfile;
 	}
 
@@ -214,8 +214,28 @@ public class UserService {
 		UserAddress userAddress = userAddressService.getUserAddress(userAddressBean);
 		if(userAddress == null)
 			return Collections.emptyList();
-		
+
 		return userAddress.getUsers().stream().map(User :: toBean).collect(Collectors.toList());
+	}
+
+	public UserBean addExistingAddress(UUID userId, UserAddressBean userAddressBean) {
+		User user = userRepository.findById(userId).orElse(null);
+		if(user == null)
+			return null;
+
+		UserAddress userAddress = userAddressService.getUserAddress(userAddressBean);
+		if(userAddress == null) {
+			System.err.println("No Address Found.");
+			return null;
+		}
+		else {
+			user.getUserAddresses().add(userAddress);
+			userAddress.getUsers().add(user);
+			
+			user = userRepository.save(user);
+		}
+		
+		return user.toBean();
 	}
 
 }

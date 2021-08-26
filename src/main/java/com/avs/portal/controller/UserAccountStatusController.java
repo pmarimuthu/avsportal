@@ -1,32 +1,27 @@
 package com.avs.portal.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avs.portal.bean.UserAccountStatusBean;
-import com.avs.portal.entity.User;
-import com.avs.portal.entity.UserAccountStatus;
-import com.avs.portal.repository.UserAccountStatusRepository;
-import com.avs.portal.repository.UserRepository;
+import com.avs.portal.bean.UserBean;
+import com.avs.portal.service.UserAccountStatusService;
 
 @RestController
 @RequestMapping(path = "/api/user-account-status")
 public class UserAccountStatusController {
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private UserAccountStatusRepository userAccountStatusRepository;
+	private UserAccountStatusService userAccountStatusService;
 
 	@GetMapping("/health")
 	public String sayHello() {
@@ -35,38 +30,27 @@ public class UserAccountStatusController {
 
 	@PostMapping("/list")
 	public List<UserAccountStatusBean> getAllUsersAccountStatus() {
-		return userAccountStatusRepository.findAll().stream().map(UserAccountStatus :: toBean).collect(Collectors.toList());
+		return userAccountStatusService.getAllUsersAccountStatus();
+	}
+	
+	@PostMapping("/get/{userId")
+	public UserAccountStatusBean getUserAccountStatus(@PathVariable(name = "userId") String userId) {
+		return userAccountStatusService.getUserAccountStatus(new UserBean().setId(UUID.fromString(userId)));
 	}
 
-	@PostMapping("/update")
-	public UserAccountStatusBean update(@RequestBody UserAccountStatusBean userAccountStatusBean) {
-		if(userAccountStatusBean == null || userAccountStatusBean.getId() == null)
-			return null;
+	@PutMapping("/create/{userId}")
+	public UserBean createAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.createAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
+	}
 
-		UserAccountStatus userAccountStatus = userAccountStatusRepository.findById(userAccountStatusBean.getId()).orElse(null);
-		if(userAccountStatus == null || userAccountStatus.getUser() == null || userAccountStatus.getUser().getId() == null)
-			return null;
+	@PutMapping("/edit/{userId}")
+	public UserAccountStatusBean updateAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.updateAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
+	}
 
-		User user = userRepository.findById(userAccountStatus.getUser().getId()).orElse(null);
-		if(user == null) 
-			return null;
-
-		userAccountStatus = user.getUserAccountStatus();
-
-		userAccountStatus.setIsActive(userAccountStatusBean.getIsActive());
-		userAccountStatus.setIsBlocked(userAccountStatusBean.getIsBlocked());
-		userAccountStatus.setIsDeleted(userAccountStatusBean.getIsDeleted());
-		userAccountStatus.setIsLocked(userAccountStatusBean.getIsLocked());
-		userAccountStatus.setIsVerified(userAccountStatusBean.getIsVerified());
-
-		userAccountStatus.setUser(user);
-		user.setUserAccountStatus(userAccountStatus);
-
-		userAccountStatus.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
-		user = userRepository.save(user); 
-		
-		return user.getUserAccountStatus().toBean();	
+	@PutMapping("/delete/{userId}")
+	public UserBean deleteAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.deleteAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
 	}
 
 }

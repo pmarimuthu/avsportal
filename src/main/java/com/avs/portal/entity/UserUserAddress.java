@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import com.avs.portal.entity.key.UserUserAddressKey;
 
 @Entity
-@Table(schema = "public", name = "user_useraddress_90")
+@Table(schema = "public", name = "user_useraddress_join")
 public class UserUserAddress {
 
 	@EmbeddedId

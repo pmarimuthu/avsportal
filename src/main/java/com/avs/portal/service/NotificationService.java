@@ -42,15 +42,15 @@ public class NotificationService {
 	}
 
 	// CREATE / UPDATE one Notification
-	public List<NotificationBean> addOrEditNotification(NotificationBean bean) {
-		if(bean == null || bean.getUserId() == null)
+	public List<NotificationBean> addOrEditNotification(UserBean userBean, NotificationBean notificationBean) {
+		if(userBean == null || userBean.getId() == null || notificationBean.getNotificationType() == null)
 			return null;
 		
-		User user = userRepository.findById(bean.getUserId()).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
-		Notification userNotification = user.getNotifications().stream().filter(entity -> (entity.getNotificationType() != null && entity.getNotificationType().equals(bean.getNotificationType()) )).findFirst().orElse(null);
+		Notification userNotification = user.getNotifications().stream().filter(entity -> (entity.getNotificationType() != null && entity.getNotificationType().equals(notificationBean.getNotificationType()) )).findFirst().orElse(null);
 		if(userNotification == null) {
 			userNotification = new Notification();
 			userNotification.setNotificationType(userNotification.getNotificationType());
@@ -58,9 +58,9 @@ public class NotificationService {
 			userNotification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		}
 		
-		userNotification.setIsRead(bean.getIsRead());
-		userNotification.setMessageText(bean.getMessageText());
-		userNotification.setNotificationType(bean.getNotificationType());
+		userNotification.setIsRead(notificationBean.getIsRead());
+		userNotification.setMessageText(notificationBean.getMessageText());
+		userNotification.setNotificationType(notificationBean.getNotificationType());
 		userNotification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		user.getNotifications().add(userNotification);
@@ -69,15 +69,15 @@ public class NotificationService {
 		return user.getNotifications().stream().map(Notification :: toBean).collect(Collectors.toList());
 	}
 
-	public List<NotificationBean> deleteNotification(NotificationBean bean) {
-		if(bean == null || bean.getId() == null)
+	public List<NotificationBean> deleteNotification(UserBean userBean, NotificationBean notificationBean) {
+		if(userBean == null || userBean.getId() == null || notificationBean == null)
 			return null;
 		
-		User user = userRepository.findById(bean.getId()).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
-		Notification userNotification = user.getNotifications().stream().filter(entity -> entity.getNotificationType().equals(bean.getNotificationType())).findFirst().orElse(null);
+		Notification userNotification = user.getNotifications().stream().filter(notification -> notification.getId().equals(notificationBean.getId())).findFirst().orElse(null);
 		if(userNotification == null)
 			return null;
 		

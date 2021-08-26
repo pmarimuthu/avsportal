@@ -1,17 +1,18 @@
 package com.avs.portal.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.service.UserService;
 
@@ -21,46 +22,35 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@GetMapping("/health")
 	public String sayHello() {
 		return "UserController is Alive!!";
 	}
-	
+
 	@PostMapping("/list")
 	public List<UserBean> listUsers() {
 		return userService.getUsers();
 	}
-	
-	@PostMapping("/get")
-	public UserBean getUser(@RequestBody UserBean user) {
-		try {
-			return userService.getUser(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+
+	@PostMapping("/get/{userId}")
+	public UserBean getUser(@PathVariable(name = "userId") String userId) {
+		return userService.getUser(new UserBean().setId(UUID.fromString(userId)));
 	}
-	
-	@PostMapping("/add")
-	public UserBean addUser(@RequestBody UserBean user) {
-			return userService.addUser(user);
+
+	@PostMapping("/create")
+	public UserBean createUser(@RequestBody UserBean user) {
+		return userService.createUser(user);
 	}
-	
+
 	@PutMapping("/edit")
-	public UserBean editUser(@RequestBody UserBean user) throws Exception {
+	public UserBean editUser(@RequestBody UserBean user) {
 		return userService.editUser(user);
 	}
-	
-	@DeleteMapping("/delete")
-	public UserBean deleteUser(@RequestBody UserBean user) throws Exception {
-		return userService.deleteUser(user);
+
+	@DeleteMapping("/delete/{userId}")
+	public UserBean deleteUser(@PathVariable(name = "userId") String userId) {
+		return userService.deleteUser(new UserBean().setId(UUID.fromString(userId)));
 	}
-	
-	@PostMapping("/list/address")
-	public List<UserBean> listUsersByAddress(@RequestBody UserAddressBean userAddressBean) {
-		return userService.getUsersByAddress(userAddressBean);
-	}
-	
-	
+
 }

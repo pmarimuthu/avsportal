@@ -42,11 +42,11 @@ public class UserProfileService {
 	}
 
 	// CREATE
-	public UserProfileBean createUserProfile(UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getUserId() == null)
+	public UserProfileBean createUserProfile(UserBean userBean, UserProfileBean userProfileBean) {
+		if(userBean == null || userBean.getId() == null || userProfileBean == null)
 			return null;
 
-		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
@@ -73,17 +73,18 @@ public class UserProfileService {
 		userProfile.setUser(user);
 		user.setUserProfile(userProfile);
 		
+		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 		
 		return user.getUserProfile().toBean();
 	}
 
 	// UPDATE
-	public UserProfileBean updateUserProfile(UserProfileBean userProfileBean) {
-		if(userProfileBean == null || userProfileBean.getUserId() == null)
+	public UserProfileBean updateUserProfile(UserBean userBean, UserProfileBean userProfileBean) {
+		if(userBean == null || userBean.getId() == null || userProfileBean == null)
 			return null;
 
-		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
@@ -108,13 +109,14 @@ public class UserProfileService {
 		userProfile.setUser(user);
 		user.setUserProfile(userProfile);
 		
+		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 		
 		return user.getUserProfile().toBean();
 	}
 
 	// DELETE
-	public UserBean deleteTempPassword(UserBean userBean) {
+	public UserBean deleteTempPassword(UserBean userBean, UserProfileBean userProfileBean) {
 		if(userBean == null || userBean.getId() == null)
 			return userBean;
 
@@ -123,11 +125,11 @@ public class UserProfileService {
 			return null;
 
 		UserProfile userProfile = user.getUserProfile();
-		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		userProfile.setUser(null);
 		user.setUserProfile(null);
 		
+		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 
 		return user.toBean();

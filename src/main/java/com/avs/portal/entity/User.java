@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -57,26 +58,32 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserCredential userCredential;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserAccountStatus userAccountStatus;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserPreferences userPreferences;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserProfile userProfile;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserReferrerMap userReferrerMap;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserRoleMap userRoleMap;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -91,8 +98,11 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
 
+	@ManyToOne
+	private UserFamilyMap userFamilyMap; // ref
+	
 	@ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "USER_USERADDRESS_15", 
+    @JoinTable(name = "user_useraddress_join", 
         joinColumns = { @JoinColumn(name = "USER_ID") }, 
         inverseJoinColumns = { @JoinColumn(name = "USERADDRESS_ID") })
 	private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
@@ -316,6 +326,15 @@ public class User {
 		return this;
 	}
 
+	public UserFamilyMap getUserFamilyMap() {
+		return userFamilyMap;
+	}
+
+	public User setUserFamilyMap(UserFamilyMap userFamilyMap) {
+		this.userFamilyMap = userFamilyMap;
+		return this;
+	}
+
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
@@ -348,6 +367,7 @@ public class User {
 				.setUserPreferences(userPreferences == null ? null : userPreferences.toBean())
 				.setUserInformation(userInformation == null ? null : userInformation.toBean())
 				.setUserProfile(userProfile == null ? null : userProfile.toBean())
+				.setUserFamilyMap(userFamilyMap == null ? null : userFamilyMap.toBean())
 				
 				.setUserReferrerMap(userReferrerMap == null ? null : userReferrerMap.toBean())
 				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
@@ -374,6 +394,7 @@ public class User {
 				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : "NULL") + 
 				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
 				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
+				", User Family Map: " + (userFamilyMap != null ? userFamilyMap.toString() : "NULL") + 
 				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "EMPTY") + 
 				", User Referrer Map(s): " + (userReferrerMap != null ? userReferrerMap.toString() : "NULL") + 
 				", User Role Map(s): " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 

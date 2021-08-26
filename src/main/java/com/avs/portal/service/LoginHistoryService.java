@@ -1,13 +1,13 @@
 package com.avs.portal.service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.avs.portal.bean.LoginHistoryBean;
+import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.User;
 import com.avs.portal.repository.LoginHistoryRepository;
@@ -26,11 +26,11 @@ public class LoginHistoryService {
 		return loginHistoryRepository.findAll().stream().map(LoginHistory :: toBean).collect(Collectors.toList());
 	}
 
-	public List<LoginHistoryBean> getUserLoginHistories(UUID userId) {
-		if(userId == null)
+	public List<LoginHistoryBean> getUserLoginHistories(UserBean userBean) {
+		if(userBean == null || userBean.getId() == null)
 			return null;
 
-		User user = userRepository.findById(userId).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
