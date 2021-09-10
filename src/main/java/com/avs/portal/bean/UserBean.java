@@ -28,8 +28,6 @@ public class UserBean implements Serializable {
 	
     private UserAccountStatusBean userAccountStatus;
 	
-    private TempPasswordBean tempPassword;
-	
     private UserPreferencesBean userPreferences;
 	
     private UserInformationBean userInformation;
@@ -38,7 +36,7 @@ public class UserBean implements Serializable {
     
     private UserFamilyMapBean userFamilyMap;
 	
-    private UserReferrerMapBean userReferrerMap;
+    private UserReferrerBean userReferrer;
 	
     private UserRoleMapBean userRoleMap;
 	
@@ -115,15 +113,6 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public TempPasswordBean getTempPassword() {
-		return tempPassword;
-	}
-
-	public UserBean setTempPassword(TempPasswordBean tempPassword) {
-		this.tempPassword = tempPassword;
-		return this;
-	}
-
 	public UserPreferencesBean getUserPreferences() {
 		return userPreferences;
 	}
@@ -160,8 +149,13 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public UserReferrerMapBean getUserReferrerMap() {
-		return userReferrerMap;
+	public UserReferrerBean getUserReferrer() {
+		return userReferrer;
+	}
+
+	public UserBean setUserReferrer(UserReferrerBean userReferrer) {
+		this.userReferrer = userReferrer;
+		return this;
 	}
 
 	public Collection<UserAddressBean> getUserAddresses() {
@@ -179,11 +173,6 @@ public class UserBean implements Serializable {
 	
 	public UserBean setUserVerifications(Collection<UserVerificationBean> userVerifications) {
 		this.userVerifications = userVerifications;
-		return this;
-	}
-
-	public UserBean setUserReferrerMap(UserReferrerMapBean userReferrerMap) {
-		this.userReferrerMap = userReferrerMap;
 		return this;
 	}
 
@@ -248,12 +237,11 @@ public class UserBean implements Serializable {
 				
 				", User Credential: " + userCredential + 
 				", User Account Status: " + userAccountStatus + 
-				", Temp Password: " + tempPassword + 
 				", User Preferences: " + userPreferences + 
 				", User Information: " + userInformation + 
 				", User Profile: " + userProfile +
 				", User Family Map: " + userFamilyMap +
-				", User Referrer Map: " + userReferrerMap + 
+				", User Referrer Map: " + userReferrer + 
 				", UserRole Map: " + userRoleMap + 
 				", User RelationToMe Map: " + userRelationToMeMap + 
 				", User Addresse(s): " + userAddresses + 

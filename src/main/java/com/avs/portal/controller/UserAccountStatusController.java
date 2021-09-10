@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,12 +34,12 @@ public class UserAccountStatusController {
 		return userAccountStatusService.getAllUsersAccountStatus();
 	}
 	
-	@PostMapping("/get/{userId")
+	@PostMapping("/get/{userId}")
 	public UserAccountStatusBean getUserAccountStatus(@PathVariable(name = "userId") String userId) {
 		return userAccountStatusService.getUserAccountStatus(new UserBean().setId(UUID.fromString(userId)));
 	}
 
-	@PutMapping("/create/{userId}")
+	@PostMapping("/create/{userId}")
 	public UserBean createAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
 		return userAccountStatusService.createAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
 	}
@@ -48,7 +49,7 @@ public class UserAccountStatusController {
 		return userAccountStatusService.updateAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
 	}
 
-	@PutMapping("/delete/{userId}")
+	@DeleteMapping("/delete/{userId}")
 	public UserBean deleteAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
 		return userAccountStatusService.deleteAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
 	}

@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.util.StringUtils;
 
 public class CommonUtil {
@@ -63,8 +64,37 @@ public class CommonUtil {
 		return timestamp.toLocalDateTime();
 	}
 
-	public static String generateTempPassword() {
+	public static String generateSixDigits() {
 		return String.format("%06d", new Random().nextInt(1000000));
+	}
+
+	// "aaAA@@11"
+	public static String generateDefaultPassword() {
+		String lowerChar = RandomStringUtils.randomAlphabetic(1).toLowerCase();
+		String upperChar = lowerChar.toUpperCase();
+		String specialChar = generateSpecialChar();
+		String number = RandomStringUtils.randomNumeric(1);
+				
+		return String.format("%8s", 
+				(lowerChar + lowerChar
+				+ upperChar + upperChar
+				+ specialChar + specialChar
+				+ number + number)
+				);
+	}
+
+	private static String generateSpecialChar() {
+		final String alphabet = "!@#$%^&*";
+		final int N = alphabet.length();
+		Random rd = new Random();
+		int iLength = 1;
+		StringBuilder specialChar = new StringBuilder(iLength);
+		for (int i = 0; i < iLength; i++) {
+			specialChar.append(alphabet.charAt(rd.nextInt(N)));
+		}
+		
+		
+		return specialChar.toString();
 	}
 
 	/**

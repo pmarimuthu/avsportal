@@ -17,6 +17,8 @@ import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
 import com.avs.portal.entity.UserAddress;
+import com.avs.portal.entity.UserCredential;
+import com.avs.portal.entity.UserInformation;
 import com.avs.portal.entity.UserPreferences;
 import com.avs.portal.entity.UserProfile;
 import com.avs.portal.entity.UserRoleMap;
@@ -24,6 +26,7 @@ import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.util.CommonUtil;
 
 @Service
 public class UserService {
@@ -78,7 +81,9 @@ public class UserService {
 		user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
+		defaultUserCredential(user);
 		defaultUserAccountStatus(user);
+		defaultUserInformation(user);
 		defaultUserPreferences(user);
 		defaultUserRoleMap(user);
 		defaultUserProfile(user);
@@ -147,6 +152,20 @@ public class UserService {
 		return null;
 	}
 
+	// UserCredential :: user_credential_02
+	// -------------------------------------------
+	private UserCredential defaultUserCredential(User user) {
+		UserCredential userCredential = new UserCredential()
+				.setPassword(CommonUtil.generateDefaultPassword())
+				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
+				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
+				.setUser(user);
+		
+		user.setUserCredential(userCredential);
+		
+		return userCredential;
+	}
+
 	// UserAccountStatus :: user_account_status_03
 	// -------------------------------------------
 	private UserAccountStatus defaultUserAccountStatus(User user) {
@@ -163,6 +182,20 @@ public class UserService {
 		user.setUserAccountStatus(userAccountStatus);
 
 		return userAccountStatus;
+
+	}
+
+	// UserInformation :: user_information_06
+	// -------------------------------------------
+	private UserInformation defaultUserInformation(User user) {
+		UserInformation userInformation = new UserInformation();
+		userInformation.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userInformation.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+		userInformation.setUser(user);
+		user.setUserInformation(userInformation);
+
+		return userInformation;
 
 	}
 
@@ -231,10 +264,10 @@ public class UserService {
 		else {
 			user.getUserAddresses().add(userAddress);
 			userAddress.getUsers().add(user);
-			
+
 			user = userRepository.save(user);
 		}
-		
+
 		return user.toBean();
 	}
 

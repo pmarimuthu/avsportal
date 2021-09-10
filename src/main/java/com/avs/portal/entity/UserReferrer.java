@@ -11,26 +11,23 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.avs.portal.bean.TempPasswordBean;
+import com.avs.portal.bean.UserReferrerBean;
 
 @Entity
-@Table(schema = "public", name = "temp_password_04")
-public class TempPassword {
+@Table(schema = "public", name = "user_referrer_11")
+public class UserReferrer {
 
 	@Id
 	@Column(name = "id")
 	private UUID id;
 	
 	@MapsId
-	@OneToOne(mappedBy = "tempPassword")
+	@OneToOne(mappedBy = "userReferrer")
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 
-	@Column(name = "generated_password")
-	private String generatedPassword;
-	
-	@Column(name = "is_used")
-	private Boolean isUsed;
+	@Column(name = "referred_by_user_id")
+	private UUID referredByUserId;
 	
 	@Column(name = "created_on")
 	private Timestamp createdOn;
@@ -42,69 +39,65 @@ public class TempPassword {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public UserReferrer setId(UUID id) {
 		this.id = id;
+		return this;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public UserReferrer setUser(User user) {
 		this.user = user;
+		return this;
 	}
 
-	public String getGeneratedPassword() {
-		return generatedPassword;
+	public UUID getReferredByUserId() {
+		return referredByUserId;
 	}
 
-	public void setGeneratedPassword(String generatedPassword) {
-		this.generatedPassword = generatedPassword;
-	}
-
-	public Boolean getIsUsed() {
-		return isUsed;
-	}
-
-	public void setIsUsed(Boolean isUsed) {
-		this.isUsed = isUsed;
+	public UserReferrer setReferredByUserId(UUID referredByUserId) {
+		this.referredByUserId = referredByUserId;
+		return this;
 	}
 
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public UserReferrer setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+		return this;
 	}
 
 	public Timestamp getUpdatedOn() {
 		return updatedOn;
 	}
 
-	public void setUpdatedOn(Timestamp updatedOn) {
+	public UserReferrer setUpdatedOn(Timestamp updatedOn) {
 		this.updatedOn = updatedOn;
+		return this;
 	}
 
-	public TempPasswordBean toBean() {
-		return new TempPasswordBean()
+	public UserReferrerBean toBean() {
+		return new UserReferrerBean()
 				.setId(id)
-				.setGeneratedPassword(generatedPassword)
-				.setIsUsed(isUsed)
+				.setUserId(user.getId())
+				.setReferredByUserId(referredByUserId)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
 	}
 
 	@Override
 	public String toString() {
-		return "\nTempPassword [ " + 
-				"Id: " + id + 
-				", User Id: " +  (user == null ? "NULL" : user.getId()) + 
-				", Generated Password: " + generatedPassword + 
-				", Is Used: " + isUsed + 
+		return "\nUserReferrer [" + 
+				"  Id: " + id +
+				", User Id: " + user.getId() + 
+				", Referred By User Id: " + referredByUserId + 
 				", Created On: " + createdOn + 
 				", Updated On: " + updatedOn + 
 				"]";
 	}
-	
+
 }

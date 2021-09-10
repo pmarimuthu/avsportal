@@ -21,33 +21,38 @@ public class UserCredentialService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private UserCredentialRepository userCredentialRepository;
-	
+
 	// READ {ALL}
 	public List<UserCredentialBean> getAllUsersCredentials() {
-		return userCredentialRepository.findAll().stream().map(UserCredential :: toBean).collect(Collectors.toList());
+		return userRepository.findAll().stream().map(
+				user -> {
+					return user.getUserCredential() != null 
+							? user.getUserCredential().toBean() 
+									: new UserCredentialBean().setUserId(user.getId());
+				}).collect(Collectors.toList());
 	}
 
 	// READ {ONE}
 	public UserCredentialBean getUserCredential(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
-		
+
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null || user.getUserCredential() == null)
 			return null;
-		
+
 		return user.getUserCredential().toBean();
 	}
 
 	// CREATE
-	public UserCredentialBean createUserCredential(UserCredentialBean userCredentialBean) {
-		if(userCredentialBean == null || userCredentialBean.getUserId() == null)
+	public UserCredentialBean createUserCredential(UserBean userBean, UserCredentialBean userCredentialBean) {
+		if(userBean == null || userBean.getId() == null || userCredentialBean == null || !userCredentialBean.getUserId().equals(userBean.getId()))
 			return null;
 
-		User user = userRepository.findById(userCredentialBean.getUserId()).orElse(null);
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 
@@ -66,8 +71,11 @@ public class UserCredentialService {
 
 		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 			.setPassword(CommonUtil.getValidatedPassword(userCredentialBean.getPassword()))
+			.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
 			.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
+		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
 		userCredential.setUser(user);
 		user.setUserCredential(userCredential);
 
@@ -99,8 +107,8 @@ public class UserCredentialService {
 		userCredential = new UserCredential();
 
 		userCredential.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
-			.setPassword(CommonUtil.getValidatedPassword(userCredentialBean.getPassword()))
-			.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		.setPassword(CommonUtil.getValidatedPassword(userCredentialBean.getPassword()))
+		.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
 		userCredential.setUser(user);
 		user.setUserCredential(userCredential);
@@ -111,12 +119,12 @@ public class UserCredentialService {
 	}
 
 	// DELETE
-	public UserBean deleteUserCredential(UserCredentialBean userCredentialBean) {
-		if(userCredentialBean == null || userCredentialBean.getUserId() == null)
+	public UserBean deleteUserCredential(UserBean userBean) {
+		if(userBean == null || userBean.getId() == null)
 			return null;
 
-		User user = userRepository.findById(userCredentialBean.getUserId()).orElse(null);
-		if(user == null || user.getUserInformation() == null)
+		User user = userRepository.findById(userBean.getId()).orElse(null);
+		if(user == null || user.getUserCredential() == null)
 			return null;
 
 		UserCredential userCredential = user.getUserCredential();
@@ -124,12 +132,15 @@ public class UserCredentialService {
 			System.err.println("User Credential does not exists !! for the User: " + user.getId());
 			return null;
 		}
-		
+
+
+		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userCredential.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
 		userCredential.setUser(null);
 		user.setUserCredential(null);
-		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		user = userRepository.save(user);
+		userCredentialRepository.delete(userCredential);
 
 		return user.toBean();
 	}

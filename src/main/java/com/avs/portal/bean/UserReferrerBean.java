@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UserReferrerMapBean implements Serializable {
+public class UserReferrerBean implements Serializable {
 
 	private static final long serialVersionUID = 9055563320640094809L;
 
@@ -22,7 +22,7 @@ public class UserReferrerMapBean implements Serializable {
 		return id;
 	}
 
-	public UserReferrerMapBean setId(UUID userId) {
+	public UserReferrerBean setId(UUID userId) {
 		this.id = userId;
 		return this;
 	}
@@ -31,7 +31,7 @@ public class UserReferrerMapBean implements Serializable {
 		return userId;
 	}
 
-	public UserReferrerMapBean setUserId(UUID userId) {
+	public UserReferrerBean setUserId(UUID userId) {
 		this.userId = userId;
 		return this;
 	}
@@ -40,7 +40,7 @@ public class UserReferrerMapBean implements Serializable {
 		return referredByUserId;
 	}
 
-	public UserReferrerMapBean setReferredByUserId(UUID referredByUserId) {
+	public UserReferrerBean setReferredByUserId(UUID referredByUserId) {
 		this.referredByUserId = referredByUserId;
 		return this;
 	}
@@ -49,7 +49,7 @@ public class UserReferrerMapBean implements Serializable {
 		return createdOn;
 	}
 
-	public UserReferrerMapBean setCreatedOn(LocalDateTime createdOn) {
+	public UserReferrerBean setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 		return this;
 	}
@@ -58,14 +58,14 @@ public class UserReferrerMapBean implements Serializable {
 		return updatedOn;
 	}
 
-	public UserReferrerMapBean setUpdatedOn(LocalDateTime updatedOn) {
+	public UserReferrerBean setUpdatedOn(LocalDateTime updatedOn) {
 		this.updatedOn = updatedOn;
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "\nUserReferrerMapBean [ " + 
+		return "\nUserReferrerBean [ " + 
 				"  Id: " + id + 
 				", User Id: " + userId + 
 				", Referred By User Id: " + referredByUserId + 

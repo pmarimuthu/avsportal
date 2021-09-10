@@ -68,7 +68,9 @@ public class UserAccountStatusService {
 	}
 
 	public List<UserAccountStatusBean> getAllUsersAccountStatus() {
-		return userAccountStatusRepository.findAll().stream().map(UserAccountStatus :: toBean).collect(Collectors.toList());
+		return userRepository.findAll()
+				.stream().map(User :: getUserAccountStatus).collect(Collectors.toList())
+				.stream().map(UserAccountStatus :: toBean).collect(Collectors.toList());
 	}
 
 	public UserBean createAccountStatus(UserBean userBean, UserAccountStatusBean userAccountStatusBean) {
@@ -120,7 +122,7 @@ public class UserAccountStatusService {
 		userAccountStatus.setUser(null);
 		user.setUserAccountStatus(null);
 		
-		user = userRepository.save(user);
+		userRepository.delete(user);
 		
 		return user.toBean();
 				

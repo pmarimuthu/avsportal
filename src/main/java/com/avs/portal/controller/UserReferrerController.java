@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/user-referrer-map")
-public class UserReferrerMapController {
+public class UserReferrerController {
 
 	@GetMapping("/health")
 	public String sayHello() {
-		return "UserReferrerMapController is Alive!!";
+		return "UserReferrerController is Alive!!";
 	}
 
 }

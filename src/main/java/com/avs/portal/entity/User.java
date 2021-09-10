@@ -54,11 +54,6 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
-    private TempPassword tempPassword;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    @JoinColumn(name = "user")
     private UserCredential userCredential;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -79,7 +74,7 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
-    private UserReferrerMap userReferrerMap;
+    private UserReferrer userReferrer;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -131,15 +126,6 @@ public class User {
 
 	public User setUserAccountStatus(UserAccountStatus userAccountStatus) {
 		this.userAccountStatus = userAccountStatus;
-		return this;
-	}
-
-	public TempPassword getTempPassword() {
-		return tempPassword;
-	}
-
-	public User setTempPassword(TempPassword tempPassword) {
-		this.tempPassword = tempPassword;
 		return this;
 	}
 
@@ -218,12 +204,12 @@ public class User {
 		return this;
 	}
 	
-	public UserReferrerMap getUserReferrerMap() {
-		return userReferrerMap;
+	public UserReferrer getUserReferrer() {
+		return userReferrer;
 	}
 
-	public User setUserReferrerMap(UserReferrerMap userReferrerMap) {
-		this.userReferrerMap = userReferrerMap;
+	public User setUserReferrer(UserReferrer userReferrer) {
+		this.userReferrer = userReferrer;
 		return this;
 	}
 
@@ -363,13 +349,12 @@ public class User {
 			
 				.setUserCredential(userCredential == null ? null : userCredential.toBean())
 				.setUserAccountStatus(userAccountStatus == null ? null : userAccountStatus.toBean())
-				.setTempPassword(tempPassword == null ? null : tempPassword.toBean())
 				.setUserPreferences(userPreferences == null ? null : userPreferences.toBean())
 				.setUserInformation(userInformation == null ? null : userInformation.toBean())
 				.setUserProfile(userProfile == null ? null : userProfile.toBean())
 				.setUserFamilyMap(userFamilyMap == null ? null : userFamilyMap.toBean())
 				
-				.setUserReferrerMap(userReferrerMap == null ? null : userReferrerMap.toBean())
+				.setUserReferrer(userReferrer == null ? null : userReferrer.toBean())
 				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
 				
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
@@ -390,13 +375,12 @@ public class User {
 				
 				", User Credential: " + (userCredential != null ? userCredential.toString() : "NULL") + 
 				", User Account Status: " + (userAccountStatus != null ? userAccountStatus.toString() : "NULL") + 
-				", Temp Password: " + (tempPassword != null ? tempPassword.toString() : "NULL") + 
 				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : "NULL") + 
 				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
 				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
 				", User Family Map: " + (userFamilyMap != null ? userFamilyMap.toString() : "NULL") + 
 				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "EMPTY") + 
-				", User Referrer Map(s): " + (userReferrerMap != null ? userReferrerMap.toString() : "NULL") + 
+				", User Referrer Map(s): " + (userReferrer != null ? userReferrer.toString() : "NULL") + 
 				", User Role Map(s): " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
 				", User Address(s): " + (userAddresses != null ? userAddresses.toString() : "EMPTY") + 
 				", User Verification(s): " + (userVerifications != null ? userVerifications.toString() : "EMPTY") + 
