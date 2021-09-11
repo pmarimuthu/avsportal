@@ -83,10 +83,13 @@ public class UserService {
 
 		defaultUserCredential(user);
 		defaultUserAccountStatus(user);
-		defaultUserInformation(user);
 		defaultUserPreferences(user);
-		defaultUserRoleMap(user);
+		defaultUserInformation(user);
 		defaultUserProfile(user);
+		// userFamilyMap, userReferrer
+		
+		defaultUserRoleMap(user);
+		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
 		user = userRepository.save(user);
 

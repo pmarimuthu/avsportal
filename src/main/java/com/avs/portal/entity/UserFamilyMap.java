@@ -1,16 +1,14 @@
 package com.avs.portal.entity;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.avs.portal.bean.UserFamilyMapBean;
@@ -23,38 +21,31 @@ public class UserFamilyMap {
 
 	@Id
     @Column(name = "id", updatable = false, nullable = false)
-	private UUID id;	
-
+	private UUID id;
+	
+	@MapsId
+	@OneToOne(mappedBy = "userFamilyMap")
+	@JoinColumn(name = "userid")   //same name as id @Column
+    private User user;
+	
 	@Column(name = "parent_family_head_id")
 	private UUID parentFamilyHeadId;
 
-	@Column(name = "family_head_id", nullable = false)
+	@Column(name = "family_head_id")
 	private UUID familyHeadId;
 	
-	@Column(name = "title", nullable = false)
+	@Column(name = "title")
 	private FamilyMemberTitleEnum title;
 	
-	@Column(name = "live_status", nullable = false)
-	private LiveStatusEnum liveStatus;
+	@Column(name = "live_status")
+	private LiveStatusEnum liveStatus = LiveStatusEnum.ALIVE;
 	
-	@OneToMany(mappedBy = "userFamilyMap", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> users = new ArrayList<User>();
-
 	@Column(name = "created_on")
 	private Timestamp createdOn;
 	
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 
-	@SuppressWarnings("unused")
-	private UserFamilyMap() {
-		
-	}
-	
-	public UserFamilyMap(UUID id) {
-		this.id = id;
-	}
-	
 	public UUID getId() {
 		return id;
 	}
@@ -100,12 +91,12 @@ public class UserFamilyMap {
 		return this;
 	}
 
-	public List<User> getUsers() {
-		return users;
+	public User getUser() {
+		return user;
 	}
 
-	public UserFamilyMap setUsers(List<User> users) {
-		this.users = users;
+	public UserFamilyMap setUser(User user) {
+		this.user = user;
 		return this;
 	}
 
@@ -126,7 +117,7 @@ public class UserFamilyMap {
 		this.updatedOn = updatedOn;
 		return this;
 	}
-	
+
 	public UserFamilyMapBean toBean() {
 		return new UserFamilyMapBean()
 				.setId(id)
@@ -134,7 +125,7 @@ public class UserFamilyMap {
 				.setFamilyHeadId(familyHeadId)
 				.setLiveStatus(liveStatus)
 				.setTitle(title)
-				.setUserIds((users == null ? null : users.stream().map(User :: getId).collect(Collectors.toList())))
+				.setUserId(user == null ? null : user.getId())
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
 			
@@ -148,7 +139,7 @@ public class UserFamilyMap {
 					", Family Head Id: " + familyHeadId + 
 					", Family Member Title: " + title + 
 					", Alive Status: " + liveStatus + 
-					", Users: " + (users == null ? "NULL" : users.stream().map(User :: getId).collect(Collectors.toList())) + 
+					", User: " + (user == null ? "NULL" : user.getId()) + 
 					", Created On: " + createdOn + 
 					", Updated On: " + updatedOn + 
 					"]";

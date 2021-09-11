@@ -1,8 +1,6 @@
 package com.avs.portal.bean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import com.avs.portal.enums.FamilyMemberTitleEnum;
@@ -20,11 +18,13 @@ public class UserFamilyMapBean {
 	
 	private LiveStatusEnum liveStatus;
 	
-	private List<UUID> userIds = new ArrayList<UUID>();
+	private UUID userId;
 	
 	private LocalDateTime createdOn;
 	
 	private LocalDateTime updatedOn;
+	
+	private String path3;
 
 	public UUID getId() {
 		return id;
@@ -71,12 +71,12 @@ public class UserFamilyMapBean {
 		return this;
 	}
 
-	public List<UUID> getUserIds() {
-		return userIds;
+	public UUID getUserId() {
+		return userId;
 	}
 
-	public UserFamilyMapBean setUserIds(List<UUID> userIds) {
-		this.userIds = userIds;
+	public UserFamilyMapBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -98,17 +98,26 @@ public class UserFamilyMapBean {
 		return this;
 	}
 
+	public String getPath3() {
+		return path3;
+	}
+
+	public void setPath3(String path3) {
+		this.path3 = path3;
+	}
+
 	@Override
 	public String toString() {
 		return "\nUserFamilyMapBean [" + 
-					"  Id: " + id + 
+					"  Id: " + id +
 					", Parent Family Head Id: " + parentFamilyHeadId + 
-					", Family Head Id: " + familyHeadId + 
+					", Family Head Id: " + familyHeadId +
 					", Family Member Title: " + title + 
 					", Alive Status: " + liveStatus + 
-					", Family Members: " + userIds + 
+					", Family Member Id: " + userId + 
 					", Created On: " + createdOn + 
 					", Updated On: " + updatedOn + 
+					", Path3 Parent/Family/User: " + path3 + 
 					"]";
 	}
 		

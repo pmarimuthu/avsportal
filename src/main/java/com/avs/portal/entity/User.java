@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -49,11 +48,6 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
-    private UserInformation userInformation;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    @JoinColumn(name = "user")
     private UserCredential userCredential;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -69,12 +63,17 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
+    private UserInformation userInformation;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
     private UserProfile userProfile;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
-    private UserReferrer userReferrer;
+	private UserFamilyMap userFamilyMap; // ref
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -84,23 +83,94 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<UserRelationToMeMap>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
-	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Notification> notifications = new ArrayList<Notification>();
-	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
-
-	@ManyToOne
-	private UserFamilyMap userFamilyMap; // ref
-	
 	@ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_useraddress_join", 
         joinColumns = { @JoinColumn(name = "USER_ID") }, 
         inverseJoinColumns = { @JoinColumn(name = "USERADDRESS_ID") })
 	private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications = new ArrayList<Notification>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
+
+	List<UserAddress> internalAddUserAddress(UserAddress userAddress) {
+		this.userAddresses.add(userAddress);
+		return this.userAddresses;
+	}
+	
+	List<UserAddress> internalRemoveUserAddress(UserAddress userAddress) {
+		this.userAddresses.remove(userAddress);
+		return this.userAddresses;
+	}
+
+	public User addUserVerification(UserVerification userVerification) {
+		userVerification.setUser(this);
+		return this;
+	}
+	
+	public User removeUserVerification(UserVerification userVerification) {
+		userVerification.setUser(null);
+		return this;
+	}
+	
+	List<UserVerification> internalAddUserVerification(UserVerification userVerification) {
+		this.userVerifications.add(userVerification);
+		return this.userVerifications;
+	}
+	
+	List<UserVerification> internalRemoveUserVerification(UserVerification userVerification) {
+		this.userVerifications.remove(userVerification);
+		return this.userVerifications;
+	}
+	
+	// Ref >>>> https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
+	
+	public User addLoginHistory(LoginHistory loginHistory) {
+		loginHistory.setUser(this);
+		return this;
+	}
+	
+	public User removeLoginHistory(LoginHistory loginHistory) {
+		loginHistory.setUser(null);
+		return this;
+	}
+
+	User internalAddLoginHistory(LoginHistory loginHistory) {
+		loginHistories.add(loginHistory);
+		return this;
+	}
+	
+	User internalRemoveLoginHistory(LoginHistory loginHistory) {
+		loginHistories.remove(loginHistory);
+		return this;
+	}
+
+	public User addNotification(Notification notification) {
+		notification.setUser(this);
+		return this;
+	}
+	
+	public User removeNotification(Notification notification) {
+		notification.setUser(null);
+		return this;
+	}
+
+	User internalAddNotification(Notification notification) {
+		notifications.add(notification);
+		return this;
+	}
+	
+	User internalRemoveNotification(Notification notification) {
+		notifications.remove(notification);
+		return this;
+	}
+
+	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
 	
 	public UUID getId() {
 		return id;
@@ -108,6 +178,42 @@ public class User {
 
 	public User setId(UUID id) {
 		this.id = id;
+		return this;
+	}
+
+	public Long getPhone() {
+		return phone;
+	}
+
+	public User setPhone(Long phone) {
+		this.phone = phone;
+		return this;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public User setEmail(String email) {
+		this.email = email;
+		return this;
+	}
+
+	public Timestamp getCreatedOn() {
+		return createdOn;
+	}
+
+	public User setCreatedOn(Timestamp createdOn) {
+		this.createdOn = createdOn;
+		return this;
+	}
+
+	public Timestamp getUpdatedOn() {
+		return updatedOn;
+	}
+
+	public User setUpdatedOn(Timestamp updatedOn) {
+		this.updatedOn = updatedOn;
 		return this;
 	}
 
@@ -156,60 +262,12 @@ public class User {
 		return this;
 	}
 
-	List<UserAddress> internalAddUserAddress(UserAddress userAddress) {
-		this.userAddresses.add(userAddress);
-		return this.userAddresses;
-	}
-	
-	List<UserAddress> internalRemoveUserAddress(UserAddress userAddress) {
-		this.userAddresses.remove(userAddress);
-		return this.userAddresses;
+	public UserFamilyMap getUserFamilyMap() {
+		return userFamilyMap;
 	}
 
-	public List<UserAddress> getUserAddresses() {
-		return userAddresses;
-	}
-
-	public User setUserAddresses(List<UserAddress> userAddresses) {
-		this.userAddresses = userAddresses;
-		return this;
-	}
-
-	public User addUserVerification(UserVerification userVerification) {
-		userVerification.setUser(this);
-		return this;
-	}
-	
-	public User removeUserVerification(UserVerification userVerification) {
-		userVerification.setUser(null);
-		return this;
-	}
-	
-	List<UserVerification> internalAddUserVerification(UserVerification userVerification) {
-		this.userVerifications.add(userVerification);
-		return this.userVerifications;
-	}
-	
-	List<UserVerification> internalRemoveUserVerification(UserVerification userVerification) {
-		this.userVerifications.remove(userVerification);
-		return this.userVerifications;
-	}
-	
-	public List<UserVerification> getUserVerifications() {
-		return userVerifications;
-	}
-	
-	public User setUserVerifications(List<UserVerification> userVerifications) {
-		this.userVerifications = userVerifications;
-		return this;
-	}
-	
-	public UserReferrer getUserReferrer() {
-		return userReferrer;
-	}
-
-	public User setUserReferrer(UserReferrer userReferrer) {
-		this.userReferrer = userReferrer;
+	public User setUserFamilyMap(UserFamilyMap userFamilyMap) {
+		this.userFamilyMap = userFamilyMap;
 		return this;
 	}
 
@@ -231,8 +289,34 @@ public class User {
 		return this;
 	}
 
+	public List<UserAddress> getUserAddresses() {
+		return userAddresses;
+	}
+
+	public User setUserAddresses(List<UserAddress> userAddresses) {
+		this.userAddresses = userAddresses;
+		return this;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public User setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
+		return this;
+	}
+
+	public List<UserVerification> getUserVerifications() {
+		return userVerifications;
+	}
+
+	public User setUserVerifications(List<UserVerification> userVerifications) {
+		this.userVerifications = userVerifications;
+		return this;
+	}
+
 	public List<LoginHistory> getLoginHistories() {
-		//return Collections.unmodifiableList(loginHistories);
 		return loginHistories;
 	}
 
@@ -240,105 +324,7 @@ public class User {
 		this.loginHistories = loginHistories;
 		return this;
 	}
-	
-	// Ref >>>> https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
-	
-	public User addLoginHistory(LoginHistory loginHistory) {
-		loginHistory.setUser(this);
-		return this;
-	}
-	
-	public User removeLoginHistory(LoginHistory loginHistory) {
-		loginHistory.setUser(null);
-		return this;
-	}
 
-	User internalAddLoginHistory(LoginHistory loginHistory) {
-		loginHistories.add(loginHistory);
-		return this;
-	}
-	
-	User internalRemoveLoginHistory(LoginHistory loginHistory) {
-		loginHistories.remove(loginHistory);
-		return this;
-	}
-
-	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
-	public List<Notification> getNotifications() {
-		return notifications;
-	}
-
-	public void setNotifications(List<Notification> notifications) {
-		this.notifications = notifications;
-	}
-
-	public User addNotification(Notification notification) {
-		notification.setUser(this);
-		return this;
-	}
-	
-	public User removeNotification(Notification notification) {
-		notification.setUser(null);
-		return this;
-	}
-
-	User internalAddNotification(Notification notification) {
-		notifications.add(notification);
-		return this;
-	}
-	
-	User internalRemoveNotification(Notification notification) {
-		notifications.remove(notification);
-		return this;
-	}
-
-	// Ref <<<< https://xebia.com/blog/jpa-implementation-patterns-bidirectional-assocations/
-	
-	public Long getPhone() {
-		return phone;
-	}
-
-	public User setPhone(Long phone) {
-		this.phone = phone;
-		return this;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public User setEmail(String email) {
-		this.email = email;
-		return this;
-	}
-
-	public UserFamilyMap getUserFamilyMap() {
-		return userFamilyMap;
-	}
-
-	public User setUserFamilyMap(UserFamilyMap userFamilyMap) {
-		this.userFamilyMap = userFamilyMap;
-		return this;
-	}
-
-	public Timestamp getCreatedOn() {
-		return createdOn;
-	}
-
-	public User setCreatedOn(Timestamp createdOn) {
-		this.createdOn = createdOn;
-		return this;
-	}
-
-	public Timestamp getUpdatedOn() {
-		return updatedOn;
-	}
-
-	public User setUpdatedOn(Timestamp updatedOn) {
-		this.updatedOn = updatedOn;
-		return this;
-	}
-	
 	public UserBean toBean() {
 		return new UserBean()
 				.setId(id)
@@ -354,7 +340,6 @@ public class User {
 				.setUserProfile(userProfile == null ? null : userProfile.toBean())
 				.setUserFamilyMap(userFamilyMap == null ? null : userFamilyMap.toBean())
 				
-				.setUserReferrer(userReferrer == null ? null : userReferrer.toBean())
 				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
 				
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
@@ -379,13 +364,12 @@ public class User {
 				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
 				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
 				", User Family Map: " + (userFamilyMap != null ? userFamilyMap.toString() : "NULL") + 
+				", User Role Map: " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
 				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "EMPTY") + 
-				", User Referrer Map(s): " + (userReferrer != null ? userReferrer.toString() : "NULL") + 
-				", User Role Map(s): " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
 				", User Address(s): " + (userAddresses != null ? userAddresses.toString() : "EMPTY") + 
+				", Notification(s): " + (notifications != null ? notifications.toString() : "NULL") +
 				", User Verification(s): " + (userVerifications != null ? userVerifications.toString() : "EMPTY") + 
 				", Login History(s): " + (loginHistories != null ? loginHistories.toString() : "NULL") +
-				", Notification(s): " + (notifications != null ? notifications.toString() : "NULL") +
 				" ]";
 	}
 	

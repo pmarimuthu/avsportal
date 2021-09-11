@@ -36,7 +36,7 @@ public class UserBean implements Serializable {
     
     private UserFamilyMapBean userFamilyMap;
 	
-    private UserReferrerBean userReferrer;
+    private UserReferralBean userReferrer;
 	
     private UserRoleMapBean userRoleMap;
 	
@@ -149,11 +149,11 @@ public class UserBean implements Serializable {
 		return this;
 	}
 
-	public UserReferrerBean getUserReferrer() {
+	public UserReferralBean getUserReferrer() {
 		return userReferrer;
 	}
 
-	public UserBean setUserReferrer(UserReferrerBean userReferrer) {
+	public UserBean setUserReferrer(UserReferralBean userReferrer) {
 		this.userReferrer = userReferrer;
 		return this;
 	}

@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,41 @@ public class UserFamilyMapService {
 	private UserFamilyMapRepository userFamilyMapRepository;
 
 	public List<UserFamilyMapBean> listUserFamilyMaps() {
-		return userFamilyMapRepository.findAll().stream().map(UserFamilyMap :: toBean).collect(Collectors.toList());
+		List<UserFamilyMapBean> userFamilyMaps = new ArrayList<>();
+		
+		List<User> users = userRepository.findAll().stream().collect(Collectors.toList());
+		for (User user : users) {
+			UserFamilyMapBean userFamilyMapBean = null;
+			String userName = "", familyHeadName = "", parentFamilyHeadName = "";
+			
+			if(user.getUserFamilyMap() != null) {
+				userFamilyMapBean = user.getUserFamilyMap().toBean();
+				
+				userFamilyMapBean.setId(user.getId());
+				userName = user.getEmail();
+				
+				if(user.getUserFamilyMap().getFamilyHeadId() != null) {
+					User familyHead = userRepository.findById(user.getUserFamilyMap().getFamilyHeadId()).orElse(null);
+					if(familyHead != null) {
+						userFamilyMapBean.setFamilyHeadId(familyHead.getId());
+						familyHeadName = familyHead.getEmail();
+					}
+				}
+				
+				if(user.getUserFamilyMap().getParentFamilyHeadId() != null) {
+					User parentFamilyHead = userRepository.findById(user.getUserFamilyMap().getParentFamilyHeadId()).orElse(null);
+					if(parentFamilyHead != null) {
+						userFamilyMapBean.setParentFamilyHeadId(parentFamilyHead.getId());
+						parentFamilyHeadName = parentFamilyHead.getEmail();
+					}
+				}
+				
+				userFamilyMapBean.setPath3(String.format("%s/%s/%s", parentFamilyHeadName, familyHeadName, userName));
+				userFamilyMaps.add(userFamilyMapBean);
+			}
+		}
+		
+		return userFamilyMaps;
 	}
 
 	public UserFamilyMapBean getUserFamilyMap(UserBean userBean) {
@@ -54,19 +89,19 @@ public class UserFamilyMapService {
 			return userFamilyMap.toBean();
 		}
 
-		userFamilyMap = new UserFamilyMap(user.getId())
+		userFamilyMap = new UserFamilyMap()
 				.setParentFamilyHeadId(userFamilyMapBean.getParentFamilyHeadId())
 				.setFamilyHeadId(
 						userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.HEAD) 
 							? user.getId() 
-							: userFamilyMapBean.getFamilyHeadId()
+							: (userFamilyMapBean.getFamilyHeadId() == null ? null : userFamilyMapBean.getFamilyHeadId())
 						)
 				.setTitle(userFamilyMapBean.getTitle())
 				.setLiveStatus(userFamilyMapBean.getLiveStatus())
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-		userFamilyMap.getUsers().add(user);
+		userFamilyMap.setUser(user);
 		user.setUserFamilyMap(userFamilyMap);
 
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
@@ -120,15 +155,11 @@ public class UserFamilyMapService {
 			return null;
 		}
 		
-		System.err.println(userFamilyMap.getUsers().size());
 		user.setUserFamilyMap(null);
-		userFamilyMap.getUsers().remove(user);
+		userFamilyMap.setUser(null);
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		user = userRepository.save(user);
-		if(userFamilyMap.getUsers().size() == 0) {
-			userFamilyMapRepository.delete(userFamilyMap);
-		}
+		userFamilyMapRepository.delete(userFamilyMap);
 		
 		return user.toBean();		
 
