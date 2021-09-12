@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,7 +25,8 @@ public class UserReferral {
     @Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 	
-	@Column(name = "referral_code")
+	@Column(name = "referral_code", nullable = false, unique = true)
+	@Size(min = 6, max = 6)
 	private String referralCode;
 	
 	@Column(name = "referrer", nullable = false)

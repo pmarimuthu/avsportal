@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.avs.portal.bean.UserBean;
@@ -23,7 +24,7 @@ public class UserReferralService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private UserReferralRepository userReferralRepository;
 
@@ -36,7 +37,7 @@ public class UserReferralService {
 	public List<UserReferralBean> getUserReferrals(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return Collections.emptyList();
-		
+
 		return userReferralRepository.findByReferrer(userBean.getId()).stream().map(UserReferral :: toBean).collect(Collectors.toList());
 	}
 
@@ -44,20 +45,21 @@ public class UserReferralService {
 	public UserReferralBean createUserReferral(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
-		
+
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
-		
-		UserReferral userReferral = new UserReferral()
+
+		UserReferral userReferral;
+		userReferral = new UserReferral()
 				.setReferrer(userBean.getId())
 				.setReferralCode(CommonUtil.generateSixDigits())
 				.setStatus(UserReferralStatusEnum.UNAVAILED)
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		userReferral = userReferralRepository.save(userReferral);
-		
+
 		return userReferral.toBean();
 	}
 
@@ -65,34 +67,34 @@ public class UserReferralService {
 	public UserReferralBean editUserReferral(UserReferralBean userReferralBean) {
 		if(userReferralBean == null || userReferralBean.getId() == null)
 			return null;
-		
+
 		UserReferral userReferral = userReferralRepository.findById(userReferralBean.getId()).orElse(null);
 		if(userReferral == null) {
 			System.err.println("UserReferral doesn't exists to Edit.");
 			return null;
 		}
-		
+
 		userReferral.setStatus(UserReferralStatusEnum.UNAVAILED)
-			.setReferee(userReferralBean.getReferee())
-			.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+		.setReferee(userReferralBean.getReferee())
+		.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
 		userReferral = userReferralRepository.save(userReferral);
-		
+
 		return userReferral.toBean();
 	}
-	
+
 	// DELETE
 	public UserReferralBean deleteUserReferral(UserBean userBean, UserReferralBean userReferralBean) {
 		if(userBean == null || userBean.getId() == null || userReferralBean == null || !userBean.getId().equals(userReferralBean.getReferrer()))
 			return null;
-		
+
 		UserReferral userReferral = userReferralRepository.findById(userReferralBean.getId()).orElse(null);
 		if(userReferral == null)
 			return null;
-		
+
 		userReferralRepository.delete(userReferral);
-		
+
 		return userReferral.toBean();				
 	}
-	
+
 }
