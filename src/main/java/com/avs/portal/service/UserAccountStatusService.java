@@ -12,7 +12,6 @@ import com.avs.portal.bean.UserAccountStatusBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
-import com.avs.portal.repository.UserAccountStatusRepository;
 import com.avs.portal.repository.UserRepository;
 
 @Service
@@ -20,9 +19,6 @@ public class UserAccountStatusService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private UserAccountStatusRepository userAccountStatusRepository;
 	
 	public UserAccountStatusBean getUserAccountStatus(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
