@@ -96,4 +96,22 @@ public class UserReferralService {
 		return userReferral.toBean();				
 	}
 
+	// --------- Business APIs --------- 
+	
+	public UserReferralBean activateReferee(UserReferralBean userReferralBean) {
+		if(userReferralBean == null || userReferralBean.getReferralCode() == null || userReferralBean.getReferralCode().length() != 6)
+			return null;
+		
+		UserReferral userReferral = userReferralRepository.findByReferralCode(userReferralBean.getReferralCode()).orElse(null);
+		if(userReferral == null || !userReferral.getStatus().equals(UserReferralStatusEnum.UNAVAILED))
+			return null;
+		
+		userReferral.setStatus(UserReferralStatusEnum.AVAILED);
+		userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		userReferral = userReferralRepository.save(userReferral);
+		
+		return userReferral.toBean();		
+	}
+
 }

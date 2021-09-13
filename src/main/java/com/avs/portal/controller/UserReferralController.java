@@ -53,5 +53,12 @@ public class UserReferralController {
 	public UserReferralBean deleteUserReferral(@PathVariable(name = "userId") String userId, @RequestBody UserReferralBean userReferralBean) {
 		return userReferralService.deleteUserReferral(new UserBean().setId(UUID.fromString(userId)), userReferralBean);
 	}
+	
+	// --------- Business APIs --------- 
+
+	@PostMapping("/activate/{referralCode}")
+	public UserReferralBean activateReferee(@PathVariable(name = "referralCode") String referralCode) {
+		return userReferralService.activateReferee(new UserReferralBean().setReferralCode(referralCode));
+	}
 
 }
