@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
@@ -71,7 +70,7 @@ public class UserService {
 	@Transactional
 	public UserBean createUser(UserBean userBean) {
 		if(userBean == null || !userBean.isValid(userBean))
-			return null;
+			return userBean;
 
 		// User :: user_01
 		// ---------------
@@ -87,13 +86,11 @@ public class UserService {
 		defaultUserInformation(user);
 		defaultUserProfile(user);
 		// userFamilyMap, userReferrer
-		
+
 		defaultUserRoleMap(user);
 		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
-		user = userRepository.save(user);
-
-		return user.toBean();
+		return userRepository.save(user).toBean();
 	}
 
 	// UPDATE
@@ -163,9 +160,9 @@ public class UserService {
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUser(user);
-		
+
 		user.setUserCredential(userCredential);
-		
+
 		return userCredential;
 	}
 

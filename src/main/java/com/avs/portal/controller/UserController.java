@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.service.UserService;
@@ -35,12 +36,23 @@ public class UserController {
 
 	@PostMapping("/get/{userId}")
 	public UserBean getUser(@PathVariable(name = "userId") String userId) {
-		return userService.getUser(new UserBean().setId(UUID.fromString(userId)));
+		try {
+			return userService.getUser(new UserBean().setId(UUID.fromString(userId)));
+		} catch (Exception e) {
+			throw new ResponseStatusException(200, "Unable to find User: " + userId, e);
+		}
 	}
 
 	@PostMapping("/create")
-	public UserBean createUser(@RequestBody UserBean user) {
-		return userService.createUser(user);
+	public UserBean createUser(@RequestBody UserBean userBean) {
+		try {
+			return userService.createUser(userBean);
+		} catch (Exception e) {
+			userBean.setHasError(true);
+			userBean.getCustomErrorMessages().add("Email/Phone already exists.");
+			//userBean.getCustomErrorMessages().add(e.getLocalizedMessage());
+		}
+		return userBean;
 	}
 
 	@PutMapping("/edit")

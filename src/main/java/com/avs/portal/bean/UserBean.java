@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import com.avs.portal.util.CommonUtil;
 
-public class UserBean implements Serializable {
+public class UserBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = -5996259344239551268L;
 	
@@ -218,17 +218,24 @@ public class UserBean implements Serializable {
 		return this;
 	}
 	
-	public boolean isValid(final UserBean userBean) {
-		if(CommonUtil.isValidPhone(userBean.getPhone()))
-			if(CommonUtil.isValidEmail(userBean.getEmail()))				
-				return true;				
-			
-		return false;
+	public boolean isValid(UserBean userBean) {
+		boolean flag = true;
+		if(!CommonUtil.isValidPhone(userBean.getPhone())) {
+			userBean.getCustomErrorMessages().add("Invalid Phone number");
+			flag = false;
+		}
+		if(!CommonUtil.isValidEmail(userBean.getEmail())) {
+			userBean.getCustomErrorMessages().add("Invalid Email address");
+			flag = false;
+		}
+		userBean.setHasError(flag);
+		return flag;
 	}
 
 	@Override
 	public String toString() {
-		return "\nUserBean [ " +
+		return super.toString() + 
+				"\nUserBean [ " +
 				"Id: " + id + 
 				", Phone: " + phone + 
 				", Email: " + email + 
@@ -249,6 +256,7 @@ public class UserBean implements Serializable {
 				", Login History(s): " + loginHistories + 
 				", Notification(s): " + notifications + 
 				"]";
+		
 	}
 
 }

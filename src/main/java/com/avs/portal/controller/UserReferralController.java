@@ -60,5 +60,10 @@ public class UserReferralController {
 	public UserReferralBean activateReferee(@PathVariable(name = "referralCode") String referralCode) {
 		return userReferralService.activateReferee(new UserReferralBean().setReferralCode(referralCode));
 	}
+	
+	@PostMapping("/join/{referralCode}")
+	public UserBean joinUser(@PathVariable(name = "referralCode") String referralCode, @RequestBody UserBean userBean) {
+		return userReferralService.joinUser(new UserReferralBean().setReferralCode(referralCode), userBean);
+	}
 
 }

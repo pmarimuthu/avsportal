@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ public class UserReferralService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private UserReferralRepository userReferralRepository;
@@ -97,21 +102,51 @@ public class UserReferralService {
 	}
 
 	// --------- Business APIs --------- 
-	
+
 	public UserReferralBean activateReferee(UserReferralBean userReferralBean) {
 		if(userReferralBean == null || userReferralBean.getReferralCode() == null || userReferralBean.getReferralCode().length() != 6)
 			return null;
-		
+
 		UserReferral userReferral = userReferralRepository.findByReferralCode(userReferralBean.getReferralCode()).orElse(null);
 		if(userReferral == null || !userReferral.getStatus().equals(UserReferralStatusEnum.UNAVAILED))
 			return null;
-		
+
 		userReferral.setStatus(UserReferralStatusEnum.AVAILED);
 		userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		userReferral = userReferralRepository.save(userReferral);
-		
+
 		return userReferral.toBean();		
+	}
+
+	@Transactional
+	public UserBean joinUser(UserReferralBean userReferralBean, UserBean userBean) {
+		UserBean createdUserBean = new UserBean();
+		if(userReferralBean == null || userReferralBean.getReferralCode() == null || userReferralBean.getReferralCode().length() != 6 
+				|| userBean == null) {
+			createdUserBean.setHasError(true);
+			createdUserBean.getCustomErrorMessages().add("Invalid Inputs");
+			return createdUserBean;
+		}
+
+		UserReferral userReferral = userReferralRepository.findByReferralCode(userReferralBean.getReferralCode()).orElse(null);
+		if(userReferral == null || !userReferral.getStatus().equals(UserReferralStatusEnum.UNAVAILED)) {
+			createdUserBean.setHasError(true);
+			createdUserBean.getCustomErrorMessages().add("Referral Code is already Availed/Expired");
+			return createdUserBean;
+		}
+		
+		try {
+			userReferral.setStatus(UserReferralStatusEnum.AVAILED);
+			userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+			userReferral = userReferralRepository.save(userReferral);
+			return userService.createUser(userBean);
+		} catch (Exception e) {
+			userBean.setHasError(true);
+			userBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		}
+		return userBean;
 	}
 
 }
