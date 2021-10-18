@@ -22,12 +22,12 @@ public class AuthController {
 
 	@Autowired
 	private AuthService authService;
-	
+
 	@GetMapping("/health")
 	public String sayHello() {
 		return "AuthController is Alive!!";
 	}
-	
+
 	@PostMapping("/login")
 	public UserBean attemptLogin(@RequestBody LoginBean loginBean) {
 		return authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
@@ -35,34 +35,34 @@ public class AuthController {
 
 	private String getIPAddress() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-		        .getRequest();
-		
-		String remoteAddress = "Unknown!!";
-		
-        if (request != null) {
-        	remoteAddress = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddress == null || "".equals(remoteAddress)) {
-            	remoteAddress = request.getRemoteAddr();
-            }
-        }
+				.getRequest();
 
-        return remoteAddress;
+		String remoteAddress = "Unknown!!";
+
+		if (request != null) {
+			remoteAddress = request.getHeader("X-FORWARDED-FOR");
+			if (remoteAddress == null || "".equals(remoteAddress)) {
+				remoteAddress = request.getRemoteAddr();
+			}
+		}
+
+		return remoteAddress;
 	}
-	
+
 	private UserAgentEnum getUserAgent() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-		        .getRequest();
-		
-		String userAgent = "Unknown!!";
-		
-        if (request != null) {
-        	userAgent = request.getHeader("User-Agent");
-            if (userAgent == null || "".equals(userAgent)) {
-            	userAgent = request.getRemoteAddr();
-            }
-        }
+				.getRequest();
 
-        return UserAgentEnum.OTHER;
+		String userAgent = "Unknown!!";
+
+		if (request != null) {
+			userAgent = request.getHeader("User-Agent");
+			if (userAgent == null || "".equals(userAgent)) {
+				userAgent = request.getRemoteAddr();
+			}
+		}
+
+		return UserAgentEnum.OTHER;
 	}
-	
+
 }

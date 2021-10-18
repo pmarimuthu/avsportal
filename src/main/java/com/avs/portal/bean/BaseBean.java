@@ -5,17 +5,17 @@ import java.util.List;
 
 public class BaseBean {
 
-	private Boolean hasError;
+	private boolean hasError = false;
 	
 	private List<String> customErrorMessages = new ArrayList<>();
 	
 	private Throwable throwable;
 
-	public Boolean getHasError() {
+	public boolean getHasError() {
 		return hasError;
 	}
 
-	public BaseBean setHasError(Boolean hasError) {
+	public BaseBean setHasError(boolean hasError) {
 		this.hasError = hasError;
 		return this;
 	}

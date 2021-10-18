@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -98,6 +99,15 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
 
+	@Transient
+	private boolean hasError = false;
+	
+	@Transient
+	private List<String> customErrorMessages = new ArrayList<>();
+	
+	@Transient
+	private Throwable throwable;
+	
 	List<UserAddress> internalAddUserAddress(UserAddress userAddress) {
 		this.userAddresses.add(userAddress);
 		return this.userAddresses;
@@ -325,8 +335,32 @@ public class User {
 		return this;
 	}
 
+	public boolean isHasError() {
+		return hasError;
+	}
+
+	public void setHasError(boolean hasError) {
+		this.hasError = hasError;
+	}
+
+	public List<String> getCustomErrorMessages() {
+		return customErrorMessages;
+	}
+
+	public void setCustomErrorMessages(List<String> customErrorMessages) {
+		this.customErrorMessages = customErrorMessages;
+	}
+
+	public Throwable getThrowable() {
+		return throwable;
+	}
+
+	public void setThrowable(Throwable throwable) {
+		this.throwable = throwable;
+	}
+
 	public UserBean toBean() {
-		return new UserBean()
+		UserBean userBean = new UserBean()
 				.setId(id)
 				.setPhone(phone)
 				.setEmail(email)
@@ -347,6 +381,12 @@ public class User {
 				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()))
 				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
 				.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
+		
+		userBean.setHasError(hasError);
+		userBean.setCustomErrorMessages(customErrorMessages);
+		userBean.setThrowable(throwable);
+		
+		return userBean;		
 	}
 
 	@Override

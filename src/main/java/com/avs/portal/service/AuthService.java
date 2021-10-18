@@ -31,11 +31,13 @@ public class AuthService {
 	private LoginHistoryRepository loginHistoryRepository;
 	
 	public UserBean attemptLogin(LoginBean loginBean, String ipAddress, UserAgentEnum userAgentEnum) {
-		
-		UserBean userBean = new UserBean();
+
 		if(loginBean == null || loginBean.getLoginId() == null || loginBean.getPassword() == null) {
-			userBean.setHasError(true);
+			UserBean userBean = new UserBean()
+					.setHasError(true);
+			
 			userBean.getCustomErrorMessages().add("Invalid Inputs");
+			
 			return userBean;
 		}
 		
@@ -74,8 +76,10 @@ public class AuthService {
 		}
 		
 		if(keyType == null) {
-			userBean.setHasError(true);
+			UserBean userBean = new UserBean()
+					.setHasError(true);
 			userBean.getCustomErrorMessages().add("Invalid Inputs");
+			
 			return userBean;
 		}
 		
@@ -103,24 +107,22 @@ public class AuthService {
 		}
 		
 		if(user == null) {
-			userBean.setHasError(true);
+			UserBean userBean = new UserBean().setHasError(true);
 			userBean.getCustomErrorMessages().add("Invalid Credential");
 			return userBean;
 		}
 		
 		if(user.getUserCredential().getPassword().equals(password)) {
-			userBean = doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_SUCCESS);
-			return userBean;
+			return doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_SUCCESS);
 		}
 		else {
-			userBean = doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_FAILED);
-			return userBean;
+			return doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_FAILED);
 		}
 		
 	}
 
 	private UserBean doPostLoginAttempt(User user, String ipAddress, UserAgentEnum userAgentEnum, Boolean flag) {
-		UserBean userBean = new UserBean();
+		UserBean userBean = user.toBean();
 		
 		LoginHistory loginHistory = new LoginHistory();
 		loginHistory.setIpAddress(ipAddress);
@@ -138,16 +140,16 @@ public class AuthService {
 			if(loginHistories != null && loginHistories.size() > 0) {
 				LoginHistory recentHistory = loginHistories.get(0);				
 				loginHistory.setConsecutiveFailedLoginCount(recentHistory.getConsecutiveFailedLoginCount() + 1);
-				userBean.setHasError(true);
-				userBean.getCustomErrorMessages().clear();
-				userBean.getCustomErrorMessages().add("Login attempt failed.");
-				userBean.getCustomErrorMessages().add("Consecutive failed attempt count: " + loginHistory.getConsecutiveFailedLoginCount());
+				user.setHasError(true);
+				user.getCustomErrorMessages().clear();
+				user.getCustomErrorMessages().add("Login attempt failed.");
+				user.getCustomErrorMessages().add("Consecutive failed attempt count: " + loginHistory.getConsecutiveFailedLoginCount());
 			}
 		}
 		else {
-			userBean.setHasError(true);
-			userBean.getCustomErrorMessages().clear();
-			userBean.getCustomErrorMessages().add("[TODO] Unknown Login Attempt Status.");
+			user.setHasError(true);
+			user.getCustomErrorMessages().clear();
+			user.getCustomErrorMessages().add("[TODO] Unknown Login Attempt Status.");
 		}
 		
 		loginHistory.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
@@ -159,7 +161,7 @@ public class AuthService {
 		loginHistory = loginHistoryRepository.save(loginHistory);
 		userRepository.save(user);
 		
-		return userBean;
+		return user.toBean();
 	}
 
 }

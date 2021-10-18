@@ -1,8 +1,10 @@
 package com.avs.portal.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,8 +52,8 @@ public class UserController {
 		} catch (Exception e) {
 			userBean.setHasError(true);
 			userBean.getCustomErrorMessages().add("Email/Phone already exists.");
-			//userBean.getCustomErrorMessages().add(e.getLocalizedMessage());
 		}
+		
 		return userBean;
 	}
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import com.avs.portal.util.CommonUtil;
@@ -11,44 +12,44 @@ import com.avs.portal.util.CommonUtil;
 public class UserBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = -5996259344239551268L;
-	
+
 	private UUID id;
-	
+
 	private Long phone;
-	
+
 	private String email;
-	
+
 	private LocalDateTime createdOn;
-	
+
 	private LocalDateTime updatedOn;
-	
+
 	// Relations
-	
-    private UserCredentialBean userCredential;
-	
-    private UserAccountStatusBean userAccountStatus;
-	
-    private UserPreferencesBean userPreferences;
-	
-    private UserInformationBean userInformation;
-	
-    private UserProfileBean userProfile;
-    
-    private UserFamilyMapBean userFamilyMap;
-	
-    private UserReferralBean userReferrer;
-	
-    private UserRoleMapBean userRoleMap;
-	
-    private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
-	
-    private Collection<UserAddressBean> userAddresses = Collections.emptyList();
-	
-    private Collection<NotificationBean> notifications = Collections.emptyList();
-    
-    private Collection<UserVerificationBean> userVerifications = Collections.emptyList();
-	
-    private Collection<LoginHistoryBean> loginHistories = Collections.emptyList();
+
+	private UserCredentialBean userCredential;
+
+	private UserAccountStatusBean userAccountStatus;
+
+	private UserPreferencesBean userPreferences;
+
+	private UserInformationBean userInformation;
+
+	private UserProfileBean userProfile;
+
+	private UserFamilyMapBean userFamilyMap;
+
+	private UserReferralBean userReferrer;
+
+	private UserRoleMapBean userRoleMap;
+
+	private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
+
+	private Collection<UserAddressBean> userAddresses = Collections.emptyList();
+
+	private Collection<NotificationBean> notifications = Collections.emptyList();
+
+	private Collection<UserVerificationBean> userVerifications = Collections.emptyList();
+
+	private Collection<LoginHistoryBean> loginHistories = Collections.emptyList();
 
 	public UUID getId() {
 		return id;
@@ -166,11 +167,11 @@ public class UserBean extends BaseBean implements Serializable {
 		this.userAddresses = userAddresses;
 		return this;
 	}
-	
+
 	public Collection<UserVerificationBean> getUserVerifications() {
 		return userVerifications;
 	}
-	
+
 	public UserBean setUserVerifications(Collection<UserVerificationBean> userVerifications) {
 		this.userVerifications = userVerifications;
 		return this;
@@ -203,7 +204,7 @@ public class UserBean extends BaseBean implements Serializable {
 		loginHistories.add(bean);
 		return loginHistories;
 	}
-	
+
 	public UserBean setLoginHistories(Collection<LoginHistoryBean> loginHistories) {
 		this.loginHistories = loginHistories;
 		return this;
@@ -218,18 +219,39 @@ public class UserBean extends BaseBean implements Serializable {
 		return this;
 	}
 	
-	public boolean isValid(UserBean userBean) {
-		boolean flag = true;
+	
+
+	@Override
+	public UserBean setHasError(boolean hasError) {
+		super.setHasError(hasError);
+		return this;
+	}
+
+	@Override
+	public UserBean setCustomErrorMessages(List<String> customErrorMessages) {
+		super.setCustomErrorMessages(customErrorMessages);
+		return this;
+	}
+
+	@Override
+	public UserBean setThrowable(Throwable throwable) {
+		super.setThrowable(throwable);
+		return this;
+	}
+
+	public UserBean getValidatedUserBean(UserBean userBean) {
+		boolean hasError = false;
 		if(!CommonUtil.isValidPhone(userBean.getPhone())) {
 			userBean.getCustomErrorMessages().add("Invalid Phone number");
-			flag = false;
+			hasError = true;
 		}
 		if(!CommonUtil.isValidEmail(userBean.getEmail())) {
 			userBean.getCustomErrorMessages().add("Invalid Email address");
-			flag = false;
+			hasError = true;
 		}
-		userBean.setHasError(flag);
-		return flag;
+		userBean.setHasError(hasError);
+		
+		return userBean;
 	}
 
 	@Override
@@ -241,7 +263,7 @@ public class UserBean extends BaseBean implements Serializable {
 				", Email: " + email + 
 				", CreatedOn: " + createdOn + 
 				", UpdatedOn: " + updatedOn + 
-				
+
 				", User Credential: " + userCredential + 
 				", User Account Status: " + userAccountStatus + 
 				", User Preferences: " + userPreferences + 
@@ -256,7 +278,7 @@ public class UserBean extends BaseBean implements Serializable {
 				", Login History(s): " + loginHistories + 
 				", Notification(s): " + notifications + 
 				"]";
-		
+
 	}
 
 }

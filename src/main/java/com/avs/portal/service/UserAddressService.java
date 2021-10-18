@@ -94,8 +94,6 @@ public class UserAddressService {
 	}
 
 	public List<UserAddressBean> attachUserWithUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
-		System.out.println(userBean.toString());
-		System.out.println(userAddressBean.toString());
 		
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
 			return null;

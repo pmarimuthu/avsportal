@@ -39,10 +39,6 @@ public class UserService {
 	// READ {ALL}
 	public List<UserBean> getUsers() {
 		List<User> list = userRepository.findAll();
-		System.out.println(list.size());
-		for (User user : list) {
-			System.out.println(user.toBean().toString());
-		}
 		return userRepository.findAll().stream().map(User :: toBean).collect(Collectors.toList());
 	}
 
@@ -69,8 +65,12 @@ public class UserService {
 	// CREATE
 	@Transactional
 	public UserBean createUser(UserBean userBean) {
-		if(userBean == null || !userBean.isValid(userBean))
+		if(userBean == null)
 			return userBean;
+		
+		 userBean = userBean.getValidatedUserBean(userBean);
+		 if(userBean.getHasError())
+			 return userBean;
 
 		// User :: user_01
 		// ---------------
