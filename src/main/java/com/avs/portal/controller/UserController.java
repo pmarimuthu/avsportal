@@ -1,11 +1,13 @@
 package com.avs.portal.controller;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,16 @@ public class UserController {
 	@PostMapping("/list")
 	public List<UserBean> listUsers() {
 		return userService.getUsers();
+	}
+
+	@PostMapping("/list/{userId}")
+	public List<UserBean> listUsers(@PathVariable(name = "userId") String userId) {
+		UserBean userBean = this.getUser(userId);
+		if(userBean != null && !userBean.getHasError()) {
+			return userService.getUsers();
+		}
+		
+		throw new ResponseStatusException(HttpStatus.OK, "Unable to find User: " + userId);
 	}
 
 	@PostMapping("/get/{userId}")
