@@ -2,6 +2,7 @@ package com.avs.portal.entity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -379,7 +380,13 @@ public class User {
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
 				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
 				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()))
-				.setLoginHistories(loginHistories.stream().map(LoginHistory :: toBean).collect(Collectors.toList()))
+				
+				.setLoginHistories(loginHistories.stream()
+						.sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
+						.map(LoginHistory :: toBean)
+						.limit(10).
+						collect(Collectors.toList()))
+				
 				.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
 		
 		userBean.setHasError(hasError);

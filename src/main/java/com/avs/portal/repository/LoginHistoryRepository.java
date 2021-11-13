@@ -14,4 +14,6 @@ public interface LoginHistoryRepository extends CrudRepository<LoginHistory, UUI
 	
 	List<LoginHistory> findByUser(User user);
 	
+	List<LoginHistory> findFirst10ByUserOrderByUpdatedOnDesc(User user);
+	
 }

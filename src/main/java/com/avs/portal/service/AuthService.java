@@ -124,6 +124,11 @@ public class AuthService {
 	private UserBean doPostLoginAttempt(User user, String ipAddress, UserAgentEnum userAgentEnum, Boolean flag) {
 		UserBean userBean = user.toBean();
 		
+		List<LoginHistory> loginHistories = user.getLoginHistories()
+				.stream().sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
+				.limit(10)
+				.collect(Collectors.toList());
+		
 		LoginHistory loginHistory = new LoginHistory();
 		loginHistory.setIpAddress(ipAddress);
 		loginHistory.setUserAgent(userAgentEnum);
@@ -133,10 +138,6 @@ public class AuthService {
 			loginHistory.setConsecutiveFailedLoginCount(0);
 		}
 		else if(flag == Constants.LOGIN_FAILED) {
-			List<LoginHistory> loginHistories = user.getLoginHistories()
-				.stream().sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
-				.collect(Collectors.toList());
-			
 			if(loginHistories != null && loginHistories.size() > 0) {
 				LoginHistory recentHistory = loginHistories.get(0);				
 				loginHistory.setConsecutiveFailedLoginCount(recentHistory.getConsecutiveFailedLoginCount() + 1);
