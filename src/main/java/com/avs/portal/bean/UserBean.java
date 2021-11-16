@@ -50,6 +50,8 @@ public class UserBean extends BaseBean implements Serializable {
 	private Collection<UserVerificationBean> userVerifications = Collections.emptyList();
 
 	private Collection<LoginHistoryBean> loginHistories = Collections.emptyList();
+	
+	private String imageSrc = "https://source.unsplash.com/random/128x128";
 
 	public UUID getId() {
 		return id;
@@ -218,8 +220,14 @@ public class UserBean extends BaseBean implements Serializable {
 		this.notifications = notifications;
 		return this;
 	}
-	
-	
+
+	public String getImageSrc() {
+		return imageSrc;
+	}
+
+	public void setImageSrc(String imageSrc) {
+		this.imageSrc = imageSrc;
+	}
 
 	@Override
 	public UserBean setHasError(boolean hasError) {

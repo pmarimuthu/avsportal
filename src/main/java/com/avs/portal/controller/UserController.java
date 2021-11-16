@@ -1,11 +1,9 @@
 package com.avs.portal.controller;
 
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,11 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.avs.portal.bean.UserBean;
+import com.avs.portal.bean.UserVerificationBean;
+import com.avs.portal.enums.VerificationModeEnum;
+import com.avs.portal.enums.VerificationSubjectEnum;
+import com.avs.portal.mail.EmailService;
 import com.avs.portal.service.UserService;
+import com.avs.portal.service.UserVerificationService;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -27,6 +31,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserVerificationService userVerificationService;
 
 	@GetMapping("/health")
 	public String sayHello() {
@@ -57,16 +64,57 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/create")
-	public UserBean createUser(@RequestBody UserBean userBean) {
+	@PostMapping("/find")
+	public UserBean findUser(@RequestBody UserBean userBean) {
+		UserBean foundUser = new UserBean();
+		
 		try {
-			return userService.createUser(userBean);
+			List<UserBean> users = userService.getUsersByIdOrEmailAndPhone(userBean);
+			
+			if(users.size() > 1) {
+				System.err.println("Duplicate Users Found. " + users.toString());
+				throw new ResponseStatusException(HttpStatus.OK, "Duplicate Users Found. " + users.size());
+			}
+			
+			if(!users.isEmpty()) {
+				String otpString = EmailService.sendOTP(users.get(0));
+				users.get(0).setExtraInfo(otpString);
+				return users.get(0);
+			}
+			
+			foundUser.setHasError(true);
+			foundUser.getCustomErrorMessages().add("User Not Found");
+			
 		} catch (Exception e) {
-			userBean.setHasError(true);
-			userBean.getCustomErrorMessages().add("Email/Phone already exists.");
+			foundUser.setHasError(true);
+			foundUser.getCustomErrorMessages().add("User not found.");
+			foundUser.setThrowable(e);
 		}
 		
-		return userBean;
+		return foundUser;
+	}
+
+	@PostMapping("/create")
+	public UserBean createUser(@RequestBody UserBean userBean) {
+		UserBean createdUserBean = new UserBean();
+		try {
+			createdUserBean = userService.createUser(userBean);
+			if(createdUserBean.getHasError() == false)
+				doPostCreate(createdUserBean);
+		} catch (Exception e) {
+			createdUserBean.setHasError(true);
+			createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		}
+		
+		return createdUserBean;
+	}
+
+	private void doPostCreate(UserBean user) {
+		try {
+			EmailService.sendConfirmEmailAddress(user);
+		} catch (Exception e) {
+			System.err.println("Unable to send email: " + e.getMessage());
+		}
 	}
 
 	@PutMapping("/edit")
@@ -78,5 +126,28 @@ public class UserController {
 	public UserBean deleteUser(@PathVariable(name = "userId") String userId) {
 		return userService.deleteUser(new UserBean().setId(UUID.fromString(userId)));
 	}
+	
+	@GetMapping(path = "/verify/email/{userId}")
+	public @ResponseBody UserBean verifyUserEmail(@PathVariable(name = "userId") String userId) {
+		try {
+			UserBean userBean = userService.getUser(new UserBean().setId(UUID.fromString(userId)));
+			if(userBean == null || userBean.getId() == null)
+				throw new ResponseStatusException(200, "Unable to find User: " + userId, null);
+			
+			UserVerificationBean verificationBean = new UserVerificationBean();
+			verificationBean.setVerificationMode(VerificationModeEnum.EMAIL);
+			verificationBean.setVerificationSubject(VerificationSubjectEnum.USER);
+			verificationBean.setVerifiedBy(null);
+			verificationBean.setVerifiedBy(UUID.fromString("5e114a10-6275-47f5-bf3b-a9c0e8233f62")); // ADMIN
+			
+			userVerificationService.createOrEditUserVerification(userBean, verificationBean);
+			
+			return userBean;
+			
+		} catch (Exception e) {
+			throw new ResponseStatusException(200, "Unable to find User: " + userId, e);
+		}
+	}
 
+	
 }

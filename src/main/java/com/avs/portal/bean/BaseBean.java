@@ -10,6 +10,8 @@ public class BaseBean {
 	private List<String> customErrorMessages = new ArrayList<>();
 	
 	private Throwable throwable;
+	
+	private String extraInfo;
 
 	public boolean getHasError() {
 		return hasError;
@@ -38,12 +40,21 @@ public class BaseBean {
 		return this;
 	}
 
+	public String getExtraInfo() {
+		return extraInfo;
+	}
+
+	public void setExtraInfo(String extraInfo) {
+		this.extraInfo = extraInfo;
+	}
+
 	@Override
 	public String toString() {
 		return "\n AbstractBean [ " +
 				"Has Error: " + hasError + 
 				", Custom Error Messages: " + customErrorMessages + 
 				", Throwable: "	+ throwable + 
+				", ExtraInfo: "	+ extraInfo + 
 				"\n ]";
 	}
 	

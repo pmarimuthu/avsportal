@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.avs.portal.bean.UserAddressBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
@@ -36,9 +37,19 @@ public class UserService {
 	@Autowired
 	private UserAddressService userAddressService;
 
+	// FIND (Id or Email & Phone)
+	public List<UserBean> getUsersByIdOrEmailAndPhone(UserBean userBean) {
+		if(userBean == null || (userBean.getId() == null && userBean.getEmail() == null) || (userBean.getPhone() == null))
+			return null;
+
+		return userRepository.findByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone())
+				.stream()
+				.map(User :: toBean)
+				.collect(Collectors.toList());
+	}
+
 	// READ {ALL}
 	public List<UserBean> getUsers() {
-		List<User> list = userRepository.findAll();
 		return userRepository.findAll().stream().map(User :: toBean).collect(Collectors.toList());
 	}
 
@@ -67,10 +78,10 @@ public class UserService {
 	public UserBean createUser(UserBean userBean) {
 		if(userBean == null)
 			return userBean;
-		
-		 userBean = userBean.getValidatedUserBean(userBean);
-		 if(userBean.getHasError())
-			 return userBean;
+
+		userBean = userBean.getValidatedUserBean(userBean);
+		if(userBean.getHasError())
+			return userBean;
 
 		// User :: user_01
 		// ---------------
@@ -90,7 +101,9 @@ public class UserService {
 		defaultUserRoleMap(user);
 		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
-		return userRepository.save(user).toBean();
+		user = userRepository.save(user);
+
+		return user.toBean();
 	}
 
 	// UPDATE
