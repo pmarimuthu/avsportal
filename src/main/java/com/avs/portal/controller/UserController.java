@@ -98,15 +98,27 @@ public class UserController {
 	public UserBean createUser(@RequestBody UserBean userBean) {
 		UserBean createdUserBean = new UserBean();
 		try {
-			createdUserBean = userService.createUser(userBean);
-			if(createdUserBean.getHasError() == false)
-				doPostCreate(createdUserBean);
+			final UserBean createdUserBean2 = userService.createUser(userBean);
+			if(createdUserBean2.getHasError() == false) {
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						doPostCreate(createdUserBean2);
+						System.out.println("Post Create done.");
+					}
+				}).start();
+				System.out.println("Created! Post Create Triggered ...");
+				return createdUserBean2;
+			}
 		} catch (Exception e) {
 			createdUserBean.setHasError(true);
 			createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+			System.out.println(e.getMessage());
+			return createdUserBean;
 		}
 		
-		return createdUserBean;
+		return null;
 	}
 
 	private void doPostCreate(UserBean user) {
@@ -140,7 +152,7 @@ public class UserController {
 			verificationBean.setVerifiedBy(null);
 			verificationBean.setVerifiedBy(UUID.fromString("5e114a10-6275-47f5-bf3b-a9c0e8233f62")); // ADMIN
 			
-			userVerificationService.createOrEditUserVerification(userBean, verificationBean);
+			Set<UserVerificationBean> userVerifications = userVerificationService.createOrEditUserVerification(userBean, verificationBean);
 			
 			return userBean;
 			

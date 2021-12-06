@@ -11,6 +11,13 @@ public class EmailService {
 	
 	public static String DEFAULT_CALLBACK_URL = "http://localhost:4000";
 		
+	/***
+	 * Normally, To change any sensitive data, user needs OTP to authenticate.
+	 * 
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
 	public static String sendOTP(UserBean user) throws Exception {
 
 		if(user == null || user.getId() == null)
@@ -34,9 +41,11 @@ public class EmailService {
 						.replace("kanaksan.user.information.firstname", "Firstname")
 						.replace("kanaksan.email.message.body.lineone", 
 								"OTP to change your <span style=\"color: rgb(255, 105, 0); font-weight: bold;\">Kanaksan</span> account details.")
-						.replace("kanaksan.email.message.body.linetwo", "")
+						.replace("kanaksan.email.message.body.linetwo", "This OTP is valid until HH:MM:SS")
 						.replace("kanaksan.email.callback.url" , DEFAULT_CALLBACK_URL)
-						.replace("kanaksan.email.callback.message", "")
+						
+						.replace("kanaksan.email.callback.blockORnone", "none")
+						.replace("kanaksan.email.callback.message", "Message Callback")
 						.replace("kanaksan.user.uuid", user.getId().toString())
 
 						.replace("kanaksan.email.callback.blockORnone", "none")
@@ -61,6 +70,12 @@ public class EmailService {
 	
 	}
 
+	/***
+	 * Normally, POST CREATE we need Email confirmation from new user.
+	 * 
+	 * @param user
+	 * @throws Exception
+	 */
 	public static void sendConfirmEmailAddress(UserBean user) throws Exception {
 		if(user == null || user.getId() == null)
 			return;

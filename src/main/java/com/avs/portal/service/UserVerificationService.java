@@ -63,6 +63,10 @@ public class UserVerificationService {
 			userSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 			
 			user.getUserVerifications().add(userSubjectVerification);
+			System.out.println("New UserVerification");
+		}
+		else {
+			System.out.println("Existing UserVerification");
 		}
 		
 		userSubjectVerification.setVerificationMode(userVerificationBean.getVerificationMode());
