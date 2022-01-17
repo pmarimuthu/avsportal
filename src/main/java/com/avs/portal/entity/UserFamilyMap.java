@@ -17,10 +17,10 @@ import com.avs.portal.enums.LiveStatusEnum;
 
 @Entity
 @Table(schema = "public", name = "user_family_map_15")
-public class UserFamilyMap {
+public class UserFamilyMap extends BaseEntity {
 
 	@Id
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id")
 	private UUID id;
 	
 	@MapsId
@@ -119,7 +119,7 @@ public class UserFamilyMap {
 	}
 
 	public UserFamilyMapBean toBean() {
-		return new UserFamilyMapBean()
+		UserFamilyMapBean userFamilyMapBean = new UserFamilyMapBean()
 				.setId(id)
 				.setParentFamilyHeadId(parentFamilyHeadId)
 				.setFamilyHeadId(familyHeadId)
@@ -128,6 +128,13 @@ public class UserFamilyMap {
 				.setUserId(user == null ? null : user.getId())
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		userFamilyMapBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userFamilyMapBean;
 			
 	}
 

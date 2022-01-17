@@ -20,11 +20,11 @@ public class UserAccountStatusService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	public UserAccountStatusBean getUserAccountStatus(UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
+	public UserAccountStatusBean getUserAccountStatus(UserAccountStatusBean userAccountStatusBean) {
+		if(userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
 			return null;
 		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
+		User user = userRepository.findById(userAccountStatusBean.getUserId()).orElse(null);
 		if(user == null)
 			return null;
 		
@@ -35,17 +35,18 @@ public class UserAccountStatusService {
 		return userAccountStatus.toBean();
 	}
 	
-	public UserAccountStatusBean updateAccountStatus(UserBean userBean, UserAccountStatusBean userAccountStatusBean) {
-		if(userBean == null || userBean.getId() == null || userAccountStatusBean == null || userAccountStatusBean.getId() == null)
+	public UserAccountStatusBean updateAccountStatus(UserAccountStatusBean userAccountStatusBean) {
+		if(userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
 			return null;
 
-		User user = userRepository.findById(userBean.getId()).orElse(null);
+		User user = userRepository.findById(userAccountStatusBean.getUserId()).orElse(null);
 		if(user == null) 
 			return null;
 
 		UserAccountStatus userAccountStatus = user.getUserAccountStatus();
-		if(userAccountStatus == null)
+		if(userAccountStatus == null) {
 			return null;
+		}
 
 		userAccountStatus.setIsActive(userAccountStatusBean.getIsActive());
 		userAccountStatus.setIsBlocked(userAccountStatusBean.getIsBlocked());
@@ -69,21 +70,20 @@ public class UserAccountStatusService {
 				.stream().map(UserAccountStatus :: toBean).collect(Collectors.toList());
 	}
 
-	public UserBean createAccountStatus(UserBean userBean, UserAccountStatusBean userAccountStatusBean) {
-		if(userBean == null || userBean.getId() == null || userAccountStatusBean == null)
+	public UserBean createAccountStatus(UserAccountStatusBean userAccountStatusBean) {
+		if(userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
 		return null;
 		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
+		User user = userRepository.findById(userAccountStatusBean.getUserId()).orElse(null);
 		if(user == null)
 			return null;
 		
 		UserAccountStatus userAccountStatus = user.getUserAccountStatus();
-		if(userAccountStatus != null) {
-			System.err.println("UserAccountStatus already exists for the User: " + user.getId());
-			return null;
+		if(userAccountStatus == null) {
+			userAccountStatus = new UserAccountStatus();
 		}
 		
-		userAccountStatus = new UserAccountStatus()
+		userAccountStatus
 				.setIsActive(userAccountStatusBean.getIsActive())
 				.setIsBlocked(userAccountStatusBean.getIsBlocked())
 				.setIsLocked(userAccountStatusBean.getIsLocked())
@@ -101,17 +101,17 @@ public class UserAccountStatusService {
 		
 	}
 
-	public UserBean deleteAccountStatus(UserBean userBean, UserAccountStatusBean userAccountStatusBean) {
-		if(userBean == null || userBean.getId() == null || userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
+	public UserBean deleteAccountStatus(UserAccountStatusBean userAccountStatusBean) {
+		if(userAccountStatusBean == null || userAccountStatusBean.getId() != null ||userAccountStatusBean.getUserId() == null)
 			return null;
 		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
+		User user = userRepository.findById(userAccountStatusBean.getUserId()).orElse(null);
+		if(user == null) {
 			return null;
+		}
 		
 		UserAccountStatus userAccountStatus = user.getUserAccountStatus();
 		if(!userAccountStatus.getId().equals(userAccountStatusBean.getId())) {
-			System.err.println("AccountStatus not belongs to the User: " + userBean.getId());
 			return null;
 		}
 		

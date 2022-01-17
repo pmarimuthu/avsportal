@@ -19,7 +19,7 @@ import com.avs.portal.util.CommonUtil;
 
 @Entity
 @Table(schema = "public", name = "login_history_13")
-public class LoginHistory {
+public class LoginHistory extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -126,7 +126,7 @@ public class LoginHistory {
 	}
 
 	public LoginHistoryBean toBean() {
-		return new LoginHistoryBean()
+		LoginHistoryBean loginHistoryBean = new LoginHistoryBean()
 				.setId(id)
 				.setUserId(user.getId())
 				.setConsecutiveFailedLoginCount(consecutiveFailedLoginCount)
@@ -135,6 +135,13 @@ public class LoginHistory {
 				.setUserAgent(userAgent)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		loginHistoryBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return loginHistoryBean;
 	}
 
 	@Override

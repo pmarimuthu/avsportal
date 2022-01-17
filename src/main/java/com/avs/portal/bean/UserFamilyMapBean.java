@@ -1,30 +1,31 @@
 package com.avs.portal.bean;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.avs.portal.enums.FamilyMemberTitleEnum;
 import com.avs.portal.enums.LiveStatusEnum;
 
-public class UserFamilyMapBean {
+public class UserFamilyMapBean extends BaseBean implements Serializable {
 	
+	private static final long serialVersionUID = 1617763884379262944L;
+
 	private UUID id;	
 
-	private UUID parentFamilyHeadId;
-
-	private UUID familyHeadId;
+	private UUID userId;
 	
 	private FamilyMemberTitleEnum title;
 	
-	private LiveStatusEnum liveStatus;
+	private UUID familyHeadId;
 	
-	private UUID userId;
+	private UUID parentFamilyHeadId;
+	
+	private LiveStatusEnum liveStatus;
 	
 	private LocalDateTime createdOn;
 	
 	private LocalDateTime updatedOn;
-	
-	private String path3;
 
 	public UUID getId() {
 		return id;
@@ -98,26 +99,17 @@ public class UserFamilyMapBean {
 		return this;
 	}
 
-	public String getPath3() {
-		return path3;
-	}
-
-	public void setPath3(String path3) {
-		this.path3 = path3;
-	}
-
 	@Override
 	public String toString() {
 		return "\nUserFamilyMapBean [" + 
-					"  Id: " + id +
-					", Parent Family Head Id: " + parentFamilyHeadId + 
-					", Family Head Id: " + familyHeadId +
-					", Family Member Title: " + title + 
-					", Alive Status: " + liveStatus + 
-					", Family Member Id: " + userId + 
+					"  \n\t Id: " + id +
+					", \n\t UserId: " + userId +
+					", \n\t Title: " + title +
+					", \n\t Family-Head-ID: " + familyHeadId + 
+					", \n\t Parent-Family-Head-ID: " + parentFamilyHeadId +
+					", \n\t Alive Status: " + liveStatus + 
 					", Created On: " + createdOn + 
-					", Updated On: " + updatedOn + 
-					", Path3 Parent/Family/User: " + path3 + 
+					", Updated On: " + updatedOn +
 					"]";
 	}
 		

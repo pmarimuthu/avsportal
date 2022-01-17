@@ -12,6 +12,10 @@ public enum FamilyMemberTitleEnum {
 	private FamilyMemberTitleEnum(final String text) {
 		this.text = text;
 	}
+	
+	public String getText() {
+		return this.text;
+	}
 
 	@Override
 	public String toString() {

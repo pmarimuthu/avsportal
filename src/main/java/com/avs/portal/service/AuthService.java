@@ -51,7 +51,6 @@ public class AuthService {
 			userUUID = UUID.fromString(loginId);
 			keyType = LoginKeyEnum.UUID;
 		} catch (Exception e) {
-			//System.err.println("given loginId is not a UUID");
 		}
 		
 		Long phone = null;
@@ -62,7 +61,6 @@ public class AuthService {
 				
 			}
 		} catch (NumberFormatException e) {
-			//System.err.println("given loginId is not a PHONE Number");
 		}
 		
 		String email = null;
@@ -72,7 +70,6 @@ public class AuthService {
 				keyType = LoginKeyEnum.EMAIL;
 			}			
 		} catch (NumberFormatException e) {
-			//System.err.println("given loginId is not a EMAIL");
 		}
 		
 		if(keyType == null) {
@@ -160,7 +157,7 @@ public class AuthService {
 		user.getLoginHistories().add(loginHistory);
 		
 		loginHistory = loginHistoryRepository.save(loginHistory);
-		userRepository.save(user);
+		user = userRepository.save(user);
 		
 		return user.toBean();
 	}

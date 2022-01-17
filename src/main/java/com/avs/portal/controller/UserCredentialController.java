@@ -45,7 +45,7 @@ public class UserCredentialController {
 	}
 
 	@PutMapping("/update")
-	public UserCredentialBean updateUserCredential(@RequestBody UserCredentialBean userCredentialBean) {
+	public UserBean updateUserCredential(@RequestBody UserCredentialBean userCredentialBean) {
 		return userCredentialService.updateUserCredential(userCredentialBean);
 	}
 	

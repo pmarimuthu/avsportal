@@ -45,20 +45,24 @@ public class SendEmailSSL {
 		props.put("kanaksan.mail.content", getEmailContentTemplate());
 
 		props.put("<content-id>", "<logocid>");
-		props.put("kanaksan.mail.attach.file", "C:/zdrive/git/avsportal/src/main/resources/static/assets/logo.PNG");
+		props.put("kanaksan.mail.attach.file", "D:\\Tutorials\\avsportal\\src\\main\\resources\\static\\assets\\logo.PNG");
 
 		
 		return props;
 	}
 
 	public static String getEmailContentTemplate() throws Exception {
-		File file = new File("C:/zdrive/git/avsportal/src/main/resources/static/assets/mail.html");
+		File file = new File("D:\\Tutorials\\avsportal\\src\\main\\resources\\static\\assets\\mail.html");
 		//new File(new SendEmailSSL().getClass().getResource("assets/mail.html").getFile());
 		InputStream inputStream = new FileInputStream(file);
 		return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 	}
 
 	public static void sendGmailSSL(Properties props) throws Exception {
+		
+		File file = new File(".");
+		System.out.println(file.getAbsolutePath() + "\n" + file.getCanonicalPath());
+		
 		Authenticator authenticator = new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(props.getProperty("mail.smtp.username"), props.getProperty("mail.smtp.appPassword"));
@@ -94,8 +98,6 @@ public class SendEmailSSL {
 		multipart.addBodyPart(imagePart);
 		message.setContent(multipart);
 		Transport.send(message);
-		
-		System.err.println("Sent! " + props.getProperty("kanaksan.mail.subject"));
 	}
 }
 

@@ -18,7 +18,7 @@ import com.avs.portal.enums.VerificationSubjectEnum;
 
 @Entity
 @Table(schema = "public", name = "user_verification_10")
-public class UserVerification {
+public class UserVerification extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -107,7 +107,7 @@ public class UserVerification {
 	}
 	
 	public UserVerificationBean toBean() {
-		return new UserVerificationBean()
+		UserVerificationBean userVerificationBean = new UserVerificationBean()
 				.setId(id)
 				.setUserId(id)
 				.setVerificationSubject(verificationSubject)
@@ -115,6 +115,13 @@ public class UserVerification {
 				.setVerifiedBy(verifiedBy)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		userVerificationBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userVerificationBean;
 	}
 
 	@Override

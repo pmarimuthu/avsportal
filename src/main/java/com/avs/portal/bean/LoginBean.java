@@ -2,7 +2,7 @@ package com.avs.portal.bean;
 
 import java.io.Serializable;
 
-public class LoginBean implements Serializable {
+public class LoginBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 4858178880110583705L;
 	

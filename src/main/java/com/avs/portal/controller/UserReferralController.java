@@ -64,7 +64,6 @@ public class UserReferralController {
 	@PostMapping("/join/{referralCode}")
 	public UserBean joinUser(@PathVariable(name = "referralCode") String referralCode, @RequestBody UserBean userBean) {
 		UserBean theUserBean = userReferralService.joinUser(new UserReferralBean().setReferralCode(referralCode), userBean);
-		System.err.println(theUserBean.getCustomErrorMessages());
 		return theUserBean;
 	}
 

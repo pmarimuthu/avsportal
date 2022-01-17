@@ -55,7 +55,6 @@ public class UserInformationService {
 		
 		UserInformation userInformation = user.getUserInformation();
 		if(userInformation != null) {
-			System.err.println("User Information exists !! " + userInformation.getId());
 			return null;
 		}
 		
@@ -77,7 +76,7 @@ public class UserInformationService {
 	}
 
 	// UPDATE
-	public UserInformationBean updateUserInformation(UserInformationBean userInformationBean) {
+	public UserBean updateUserInformation(UserInformationBean userInformationBean) {
 		if(userInformationBean == null || userInformationBean.getUserId() == null)
 			return null;
 
@@ -87,7 +86,6 @@ public class UserInformationService {
 		
 		UserInformation userInformation = user.getUserInformation();
 		if(userInformation == null) {
-			System.err.println("User Information does not exists !! ");
 			return null;
 		}
 		
@@ -103,7 +101,7 @@ public class UserInformationService {
 		
 		userInformation = userInformationRepository.save(userInformation);
 		
-		return userInformation.toBean();
+		return user.toBean();
 	}
 	
 	// DELETE

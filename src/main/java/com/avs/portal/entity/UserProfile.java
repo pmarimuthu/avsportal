@@ -23,7 +23,7 @@ import com.avs.portal.util.CommonUtil;
 
 @Entity
 @Table(schema = "public", name = "user_profile_08")
-public class UserProfile {
+public class UserProfile extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -185,7 +185,7 @@ public class UserProfile {
 	}
 
 	public UserProfileBean toBean() {
-		return new UserProfileBean()
+		UserProfileBean userProfileBean = new UserProfileBean()
 				.setId(id)
 				.setUserId(user.getId())
 				.setBirthTimestamp(CommonUtil.toLocalDateTimeOrNull(birthTimestamp))
@@ -199,7 +199,13 @@ public class UserProfile {
 				.setSubcaste(subcaste)
 				.setCreatedOn(CommonUtil.toLocalDateTimeOrNull(createdOn))
 				.setUpdatedOn(CommonUtil.toLocalDateTimeOrNull(updatedOn));
-				
+		
+		userProfileBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userProfileBean;
 	}
 
 	@Override

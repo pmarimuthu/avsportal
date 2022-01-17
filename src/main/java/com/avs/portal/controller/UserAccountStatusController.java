@@ -1,12 +1,10 @@
 package com.avs.portal.controller;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,24 +32,24 @@ public class UserAccountStatusController {
 		return userAccountStatusService.getAllUsersAccountStatus();
 	}
 	
-	@PostMapping("/get/{userId}")
-	public UserAccountStatusBean getUserAccountStatus(@PathVariable(name = "userId") String userId) {
-		return userAccountStatusService.getUserAccountStatus(new UserBean().setId(UUID.fromString(userId)));
+	@PostMapping("/get")
+	public UserAccountStatusBean getUserAccountStatus(@RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.getUserAccountStatus(userAccountStatusBean);
 	}
 
-	@PostMapping("/create/{userId}")
-	public UserBean createAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
-		return userAccountStatusService.createAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
+	@PostMapping("/create")
+	public UserBean createAccountStatus(@RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.createAccountStatus(userAccountStatusBean);
 	}
 
-	@PutMapping("/edit/{userId}")
-	public UserAccountStatusBean updateAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
-		return userAccountStatusService.updateAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
+	@PutMapping("/edit")
+	public UserAccountStatusBean updateAccountStatus(@RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.updateAccountStatus(userAccountStatusBean);
 	}
 
-	@DeleteMapping("/delete/{userId}")
-	public UserBean deleteAccountStatus(@PathVariable(name = "userId") String userId, @RequestBody UserAccountStatusBean userAccountStatusBean) {
-		return userAccountStatusService.deleteAccountStatus(new UserBean().setId(UUID.fromString(userId)), userAccountStatusBean);
+	@DeleteMapping("/delete")
+	public UserBean deleteAccountStatus(@RequestBody UserAccountStatusBean userAccountStatusBean) {
+		return userAccountStatusService.deleteAccountStatus(userAccountStatusBean);
 	}
 
 }

@@ -41,8 +41,8 @@ public class UserInformationController {
 		return userInformationService.createUserInformation(userInformationBean);
 	}
 
-	@PostMapping("/edit")
-	public UserInformationBean updateUserInformation(@RequestBody UserInformationBean userInformationBean) {
+	@PostMapping("/update")
+	public UserBean updateUserInformation(@RequestBody UserInformationBean userInformationBean) {
 		return userInformationService.updateUserInformation(userInformationBean);
 	}
 	

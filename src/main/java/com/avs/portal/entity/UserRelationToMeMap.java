@@ -19,7 +19,7 @@ import com.avs.portal.enums.VerificationStatusEnum;
 
 @Entity
 @Table(schema = "public", name = "user_relation_to_me_map_14")
-public class UserRelationToMeMap {
+public class UserRelationToMeMap extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -122,7 +122,7 @@ public class UserRelationToMeMap {
 	}
 	
 	public UserRelationToMeMapBean toBean() {
-		return new UserRelationToMeMapBean()
+		UserRelationToMeMapBean userRelationToMeMapBean = new UserRelationToMeMapBean()
 				.setId(id)
 				.setUserId(user.getId())
 				.setRelativeUserId(relativeUserId)
@@ -130,7 +130,14 @@ public class UserRelationToMeMap {
 				.setVerificaionStatus(verificaionStatus)
 				.setVerifiedBy(verifiedBy)
 				.setCreatedOn(createdOn.toLocalDateTime())
-				.setUpdatedOn(updatedOn.toLocalDateTime());			
+				.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		userRelationToMeMapBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userRelationToMeMapBean;
 	}
 
 	@Override

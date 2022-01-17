@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.avs.portal.enums.UserReferralStatusEnum;
 
-public class UserReferralBean implements Serializable {
+public class UserReferralBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 6673179011148590119L;
 	

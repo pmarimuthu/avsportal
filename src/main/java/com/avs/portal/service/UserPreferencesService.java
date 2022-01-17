@@ -49,7 +49,6 @@ public class UserPreferencesService {
 		
 		UserPreferences userPreferences = user.getUserPreferences();
 		if(userPreferences != null) {
-			System.err.println("UserPreferences already exists !! for the User: " + user.getId());
 			return null;
 		}
 		
@@ -69,7 +68,7 @@ public class UserPreferencesService {
 		return userPreferences.toBean();
 	}
 
-	public UserPreferencesBean updateUserPreferences(UserPreferencesBean userPreferencesBean) {
+	public UserBean updateUserPreferences(UserPreferencesBean userPreferencesBean) {
 		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null)
 		return null;
 		
@@ -79,11 +78,9 @@ public class UserPreferencesService {
 		
 		UserPreferences userPreferences = user.getUserPreferences();
 		if(userPreferences == null) {
-			System.err.println("UserPreferences doesn't exists !! for the User: " + user.getId());
 			return null;
 		}
 		
-		userPreferences = new UserPreferences();
 		userPreferences.setAdvertisement(userPreferencesBean.getAdvertisementOpt());
 		userPreferences.setLanguage(userPreferencesBean.getLanguage());
 		userPreferences.setVisibility(userPreferencesBean.getVisibilityLevel());
@@ -96,7 +93,7 @@ public class UserPreferencesService {
 		
 		userPreferences = userPreferencesRepository.save(userPreferences);
 		
-		return userPreferences.toBean();
+		return user.toBean();
 	}
 
 	public UserBean deleteUserPreferences(UserBean userBean) {

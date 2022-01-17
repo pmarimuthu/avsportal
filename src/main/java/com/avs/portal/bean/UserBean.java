@@ -2,11 +2,13 @@ package com.avs.portal.bean;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import com.avs.portal.entity.UserInformation;
 import com.avs.portal.util.CommonUtil;
 
 public class UserBean extends BaseBean implements Serializable {
@@ -44,6 +46,10 @@ public class UserBean extends BaseBean implements Serializable {
 	private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
 
 	private Collection<UserAddressBean> userAddresses = Collections.emptyList();
+
+	public List<UserInformationBean> distinctParentFamilyHeads = new ArrayList<>();
+
+	public List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
 
 	private Collection<NotificationBean> notifications = Collections.emptyList();
 
@@ -188,6 +194,24 @@ public class UserBean extends BaseBean implements Serializable {
 		return this;
 	}
 
+	public List<UserInformationBean> getDistinctParentFamilyHeads() {
+		return distinctParentFamilyHeads;
+	}
+
+	public UserBean setDistinctParentFamilyHeads(List<UserInformationBean> distinctParentFamilyHeads) {
+		this.distinctParentFamilyHeads = distinctParentFamilyHeads;
+		return this;
+	}
+
+	public List<UserInformationBean> getDistinctFamilyHeads() {
+		return distinctFamilyHeads;
+	}
+
+	public UserBean setDistinctFamilyHeads(List<UserInformationBean> distinctFamilyHeads) {
+		this.distinctFamilyHeads = distinctFamilyHeads;
+		return this;
+	}
+
 	public Collection<UserRelationToMeMapBean> getUserRelationToMeMap() {
 		return userRelationToMeMap;
 	}
@@ -285,6 +309,8 @@ public class UserBean extends BaseBean implements Serializable {
 				", User Verification(s): " + userVerifications + 
 				", Login History(s): " + loginHistories + 
 				", Notification(s): " + notifications + 
+				", Distinct Family-Head-IDs: " + distinctFamilyHeads +
+				", Distinct Parent-FamilyHead-IDs: " + distinctParentFamilyHeads +
 				"]";
 
 	}

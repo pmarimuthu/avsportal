@@ -17,7 +17,7 @@ import com.avs.portal.enums.VisibilityEnum;
 
 @Entity
 @Table(schema = "public", name = "user_preferences_05")
-public class UserPreferences {
+public class UserPreferences extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -107,7 +107,7 @@ public class UserPreferences {
 	}
 
 	public UserPreferencesBean toBean() {
-		return new UserPreferencesBean()
+		UserPreferencesBean userPreferencesBean = new UserPreferencesBean()
 				.setId(id)
 				.setUserId(user.getId())
 				.setVisibilityLevel(this.visibility)
@@ -115,7 +115,13 @@ public class UserPreferences {
 				.setAdvertisementOpt(this.advertisement)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
-				
+		
+		userPreferencesBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userPreferencesBean;				
 	}
 
 	@Override

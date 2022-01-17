@@ -43,7 +43,7 @@ public class UserPreferencesController {
 	}
 
 	@PutMapping("/update")
-	public UserPreferencesBean updateUserPreferences(@RequestBody UserPreferencesBean userPreferencesBean) {
+	public UserBean updateUserPreferences(@RequestBody UserPreferencesBean userPreferencesBean) {
 		return userPreferencesService.updateUserPreferences(userPreferencesBean);
 	}
 	

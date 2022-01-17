@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.avs.portal.enums.RelationToMeEnum;
 import com.avs.portal.enums.VerificationStatusEnum;
 
-public class UserRelationToMeMapBean implements Serializable {
+public class UserRelationToMeMapBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 1264185153560165325L;
 

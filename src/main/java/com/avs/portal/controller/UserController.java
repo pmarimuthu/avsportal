@@ -22,6 +22,7 @@ import com.avs.portal.bean.UserVerificationBean;
 import com.avs.portal.enums.VerificationModeEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.mail.EmailService;
+import com.avs.portal.service.UserFamilyMapService;
 import com.avs.portal.service.UserService;
 import com.avs.portal.service.UserVerificationService;
 
@@ -45,16 +46,6 @@ public class UserController {
 		return userService.getUsers();
 	}
 
-	@PostMapping("/list/{userId}")
-	public List<UserBean> listUsers(@PathVariable(name = "userId") String userId) {
-		UserBean userBean = this.getUser(userId);
-		if(userBean != null && !userBean.getHasError()) {
-			return userService.getUsers();
-		}
-		
-		throw new ResponseStatusException(HttpStatus.OK, "Unable to find User: " + userId);
-	}
-
 	@PostMapping("/get/{userId}")
 	public UserBean getUser(@PathVariable(name = "userId") String userId) {
 		try {
@@ -66,32 +57,33 @@ public class UserController {
 
 	@PostMapping("/find")
 	public UserBean findUser(@RequestBody UserBean userBean) {
-		UserBean foundUser = new UserBean();
+		UserBean foundUserBean = new UserBean();
 		
 		try {
 			List<UserBean> users = userService.getUsersByIdOrEmailAndPhone(userBean);
 			
 			if(users.size() > 1) {
-				System.err.println("Duplicate Users Found. " + users.toString());
 				throw new ResponseStatusException(HttpStatus.OK, "Duplicate Users Found. " + users.size());
 			}
 			
 			if(!users.isEmpty()) {
 				String otpString = EmailService.sendOTP(users.get(0));
-				users.get(0).setExtraInfo(otpString);
-				return users.get(0);
+				System.err.println("TODO ## Generated OTP: " + otpString);
+				foundUserBean = users.get(0);
+				
+				return foundUserBean;
 			}
 			
-			foundUser.setHasError(true);
-			foundUser.getCustomErrorMessages().add("User Not Found");
+			foundUserBean.setHasError(true);
+			foundUserBean.getCustomErrorMessages().add("User Not Found");
 			
 		} catch (Exception e) {
-			foundUser.setHasError(true);
-			foundUser.getCustomErrorMessages().add("User not found.");
-			foundUser.setThrowable(e);
+			foundUserBean.setHasError(true);
+			foundUserBean.getCustomErrorMessages().add("User not found.");
+			foundUserBean.setThrowable(e);
 		}
 		
-		return foundUser;
+		return foundUserBean;
 	}
 
 	@PostMapping("/create")
@@ -125,18 +117,17 @@ public class UserController {
 		try {
 			EmailService.sendConfirmEmailAddress(user);
 		} catch (Exception e) {
-			System.err.println("Unable to send email: " + e.getMessage());
 		}
 	}
 
-	@PutMapping("/edit")
-	public UserBean editUser(@RequestBody UserBean user) {
-		return userService.editUser(user);
+	@PutMapping("/update")
+	public UserBean updateUser(@RequestBody UserBean user) {
+		return userService.updateUser(user);
 	}
 
-	@DeleteMapping("/delete/{userId}")
-	public UserBean deleteUser(@PathVariable(name = "userId") String userId) {
-		return userService.deleteUser(new UserBean().setId(UUID.fromString(userId)));
+	@DeleteMapping("/delete")
+	public UserBean deleteUser(@RequestBody UserBean userBean) {
+		return userService.deleteUser(userBean);
 	}
 	
 	@GetMapping(path = "/verify/email/{userId}")
@@ -153,6 +144,7 @@ public class UserController {
 			verificationBean.setVerifiedBy(UUID.fromString("5e114a10-6275-47f5-bf3b-a9c0e8233f62")); // ADMIN
 			
 			Set<UserVerificationBean> userVerifications = userVerificationService.createOrEditUserVerification(userBean, verificationBean);
+			System.out.println("UserVerifications: " + userVerifications.toString());
 			
 			return userBean;
 			
@@ -160,6 +152,5 @@ public class UserController {
 			throw new ResponseStatusException(200, "Unable to find User: " + userId, e);
 		}
 	}
-
 	
 }

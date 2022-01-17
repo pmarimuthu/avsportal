@@ -17,7 +17,7 @@ import com.avs.portal.enums.GenderEnum;
 
 @Entity
 @Table(schema = "public", name = "user_information_06")
-public class UserInformation {
+public class UserInformation extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -53,87 +53,102 @@ public class UserInformation {
 		return id;
 	}
 
-	public void setId(UUID userId) {
+	public UserInformation setId(UUID userId) {
 		this.id = userId;
+		return this;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public UserInformation setUser(User user) {
 		this.user = user;
+		return this;
 	}
 
 	public String getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstname(String firstname) {
+	public UserInformation setFirstname(String firstname) {
 		this.firstname = firstname;
+		return this;
 	}
 
 	public String getLastname() {
 		return lastname;
 	}
 
-	public void setLastname(String lastname) {
+	public UserInformation setLastname(String lastname) {
 		this.lastname = lastname;
+		return this;
 	}
 
 	public GenderEnum getGender() {
 		return gender;
 	}
 
-	public void setGender(GenderEnum gender) {
+	public UserInformation setGender(GenderEnum gender) {
 		this.gender = gender;
+		return this;
 	}
 
 	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public UserInformation setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+		return this;
 	}
 
 	public String getProfession() {
 		return profession;
 	}
 
-	public void setProfession(String profession) {
+	public UserInformation setProfession(String profession) {
 		this.profession = profession;
+		return this;
 	}
 
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public UserInformation setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+		return this;
 	}
 
 	public Timestamp getUpdatedOn() {
 		return updatedOn;
 	}
 
-	public void setUpdatedOn(Timestamp updatedOn) {
+	public UserInformation setUpdatedOn(Timestamp updatedOn) {
 		this.updatedOn = updatedOn;
+		return this;
 	}
 	
 	public UserInformationBean toBean() {
-		UserInformationBean bean = new UserInformationBean();
-		bean.setId(id);
-		bean.setUserId(user.getId());
-		bean.setFirstname(firstname);
-		bean.setLastname(lastname);
-		bean.setGender(gender);
-		bean.setDateOfBirth(dateOfBirth);
-		bean.setProfession(profession);
-		bean.setCreatedOn(createdOn.toLocalDateTime());
-		bean.setUpdatedOn(updatedOn.toLocalDateTime());
+		UserInformationBean userInformationBean = 
+				new UserInformationBean()
+					.setId(id)
+					.setUserId(user.getId())
+					.setFirstname(firstname)
+					.setLastname(lastname)
+					.setGender(gender)
+					.setDateOfBirth(dateOfBirth)
+					.setProfession(profession)
+					.setCreatedOn(createdOn.toLocalDateTime())
+					.setUpdatedOn(updatedOn.toLocalDateTime());
 		
-		return bean;
+		userInformationBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userInformationBean;
 	}
 
 	@Override

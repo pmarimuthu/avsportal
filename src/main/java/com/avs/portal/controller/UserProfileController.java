@@ -65,9 +65,9 @@ public class UserProfileController {
 		return userProfileService.createUserProfile(new UserBean().setId(UUID.fromString(userId)), userProfileBean);
 	}
 	
-	@PutMapping("/edit/{userId}")
-	public UserProfileBean editUserProfile(@PathVariable(name = "userId") String userId, @RequestBody UserProfileBean userProfileBean) {
-		return userProfileService.updateUserProfile(new UserBean().setId(UUID.fromString(userId)), userProfileBean);
+	@PutMapping("/update")
+	public UserBean editUserProfile(@RequestBody UserProfileBean userProfileBean) {
+		return userProfileService.updateUserProfile(userProfileBean);
 	}	
 
 	@DeleteMapping("/delete/{userId}")

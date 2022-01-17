@@ -9,7 +9,7 @@ public class EmailService {
 
 	public static String API_BASE_URL = "http://localhost:8080";
 	
-	public static String DEFAULT_CALLBACK_URL = "http://localhost:4000";
+	public static String DEFAULT_CALLBACK_URL = "http://localhost:3000";
 		
 	/***
 	 * Normally, To change any sensitive data, user needs OTP to authenticate.

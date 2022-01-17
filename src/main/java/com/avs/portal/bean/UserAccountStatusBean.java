@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UserAccountStatusBean implements Serializable {
+public class UserAccountStatusBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 2920506511467215606L;
 	

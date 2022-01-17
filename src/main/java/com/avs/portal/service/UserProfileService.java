@@ -3,6 +3,7 @@ package com.avs.portal.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,6 @@ public class UserProfileService {
 		
 		UserProfile userProfile = user.getUserProfile();
 		if(userProfile != null) {
-			System.err.println("UserProfile exists !! for the User: " + userProfile.getUser().getId());
 			return null;
 		}
 		
@@ -80,29 +80,28 @@ public class UserProfileService {
 	}
 
 	// UPDATE
-	public UserProfileBean updateUserProfile(UserBean userBean, UserProfileBean userProfileBean) {
-		if(userBean == null || userBean.getId() == null || userProfileBean == null)
+	public UserBean updateUserProfile(UserProfileBean userProfileBean) {
+		if(userProfileBean == null || userProfileBean.getUserId() == null)
 			return null;
 
-		User user = userRepository.findById(userBean.getId()).orElse(null);
+		User user = userRepository.findById(userProfileBean.getUserId()).orElse(null);
 		if(user == null)
 			return null;
 		
 		UserProfile userProfile = user.getUserProfile();
 		if(userProfile == null) {
-			System.err.println("UserProfile doesn't exists !! for the User: " + userProfileBean.getUserId());
 			return null;
 		}
 		
-		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
-		userProfile.setCaste(userProfileBean.getCaste());
-		userProfile.setKoththiram(userProfileBean.getKoththiram());
 		userProfile.setMaritalStatus(userProfileBean.getMaritalStatus());
-		userProfile.setNatchaththiram(userProfileBean.getNatchaththiram());
-		userProfile.setPlaceOfBirth(userProfileBean.getPlaceOfBirth());
-		userProfile.setRaasi(userProfileBean.getRaasi());
 		userProfile.setReligion(userProfileBean.getReligion());
+		userProfile.setCaste(userProfileBean.getCaste());
 		userProfile.setSubcaste(userProfileBean.getSubcaste());
+		userProfile.setKoththiram(userProfileBean.getKoththiram());
+		userProfile.setPlaceOfBirth(userProfileBean.getPlaceOfBirth());
+		userProfile.setBirthTimestamp(userProfileBean.getBirthTimestamp() == null ? null : Timestamp.valueOf(userProfileBean.getBirthTimestamp()));
+		userProfile.setRaasi(userProfileBean.getRaasi());
+		userProfile.setNatchaththiram(userProfileBean.getNatchaththiram());
 			
 		userProfile.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
@@ -112,7 +111,7 @@ public class UserProfileService {
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 		
-		return user.getUserProfile().toBean();
+		return user.toBean();
 	}
 
 	// DELETE

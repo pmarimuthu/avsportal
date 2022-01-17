@@ -12,7 +12,7 @@ import com.avs.portal.enums.RaasiEnum;
 import com.avs.portal.enums.ReligionEnum;
 import com.avs.portal.enums.SubcasteEnum;
 
-public class UserProfileBean implements Serializable {
+public class UserProfileBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 8389845465812273014L;
 

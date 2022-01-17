@@ -17,7 +17,7 @@ import com.avs.portal.enums.UserReferralStatusEnum;
 
 @Entity
 @Table(schema = "public", name = "user_referral_11")
-public class UserReferral {
+public class UserReferral extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -108,7 +108,7 @@ public class UserReferral {
 	}
 
 	public UserReferralBean toBean() {
-		return new UserReferralBean()
+		UserReferralBean userReferralBean = new UserReferralBean()
 				.setId(id)
 				.setReferralCode(referralCode)
 				.setReferrer(referrer)
@@ -116,7 +116,13 @@ public class UserReferral {
 				.setStatus(status)
 				.setCreatedOn(createdOn)
 				.setUpdatedOn(updatedOn);
-
+		
+		userReferralBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userReferralBean;
 	}
 	
 }

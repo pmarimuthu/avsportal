@@ -65,7 +65,6 @@ public class UserAddressService {
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 0) {
-			System.err.println("UserAddress already exists for the same AddressType.");
 			return null;
 		}
 		
@@ -104,7 +103,6 @@ public class UserAddressService {
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 0) {
-			System.err.println("User alrady attached with UserAddress of same AddressType.");
 			return null;
 		}
 		
@@ -131,7 +129,6 @@ public class UserAddressService {
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 1) {
-			System.err.println("User not attached with UserAddress of same AddressType.");
 			return null;
 		}
 		
@@ -164,7 +161,6 @@ public class UserAddressService {
 						&& userAddress.getAddressType().equals(userAddressBean.getAddressType()))
 						)
 				.count() != 1) {
-			System.err.println("No UserAddress found for the User of same AddressType & ID.");
 			return null;
 		}
 

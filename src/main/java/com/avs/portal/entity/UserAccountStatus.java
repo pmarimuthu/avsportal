@@ -15,7 +15,7 @@ import com.avs.portal.bean.UserAccountStatusBean;
 
 @Entity
 @Table(schema = "public", name = "user_account_status_03")
-public class UserAccountStatus {
+public class UserAccountStatus extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -129,7 +129,7 @@ public class UserAccountStatus {
 	}
 
 	public UserAccountStatusBean toBean() {
-		UserAccountStatusBean bean = new UserAccountStatusBean()
+		UserAccountStatusBean userAccountStatusBean = new UserAccountStatusBean()
 				.setId(id)
 				.setUserId(user.getId())
 				.setIsActive(isActive)
@@ -140,7 +140,12 @@ public class UserAccountStatus {
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
 		
-		return bean;
+		userAccountStatusBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userAccountStatusBean;
 	}
 
 	@Override

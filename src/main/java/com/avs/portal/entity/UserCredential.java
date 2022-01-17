@@ -15,7 +15,7 @@ import com.avs.portal.bean.UserCredentialBean;
 
 @Entity
 @Table(schema = "public", name = "user_credential_02")
-public class UserCredential {
+public class UserCredential extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -81,12 +81,19 @@ public class UserCredential {
 	}
 	
 	public UserCredentialBean toBean() {
-		return new UserCredentialBean()
+		UserCredentialBean userCredentialBean = new UserCredentialBean()
 		.setId(id)
 		.setUserId(user.getId())
 		.setPassword(password)
 		.setCreatedOn(createdOn.toLocalDateTime())
 		.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		userCredentialBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userCredentialBean;
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import com.avs.portal.entity.key.UserUserAddressKey;
 
 @Entity
 @Table(schema = "public", name = "user_useraddress_join")
-public class UserUserAddress {
+public class UserUserAddress extends BaseEntity {
 
 	@EmbeddedId
 	private UserUserAddressKey id;

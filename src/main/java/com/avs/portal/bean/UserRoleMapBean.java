@@ -6,11 +6,13 @@ import java.util.UUID;
 
 import com.avs.portal.enums.RoleEnum;
 
-public class UserRoleMapBean implements Serializable {
+public class UserRoleMapBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 7032801748899001443L;
 
 	private UUID id;
+	
+	private UUID userId;
 	
 	private RoleEnum role;
 	
@@ -24,6 +26,15 @@ public class UserRoleMapBean implements Serializable {
 
 	public UserRoleMapBean setId(UUID id) {
 		this.id = id;
+		return this;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public UserRoleMapBean setUserId(UUID userId) {
+		this.userId = userId;
 		return this;
 	}
 
@@ -56,7 +67,7 @@ public class UserRoleMapBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "\nUserRoleMapBean [ Id: " + id + ", Role: " + role + ", Created On: " + createdOn
+		return "\nUserRoleMapBean [ Id: " + id + ", UserId: " + userId + ", Role: " + role + ", Created On: " + createdOn
 				+ ", Updated On: " + updatedOn + " ]";
 	}
 	

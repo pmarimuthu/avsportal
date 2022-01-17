@@ -74,7 +74,6 @@ public class UserReferralService {
 
 		UserReferral userReferral = userReferralRepository.findById(userReferralBean.getId()).orElse(null);
 		if(userReferral == null) {
-			System.err.println("UserReferral doesn't exists to Edit.");
 			return null;
 		}
 

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.avs.portal.enums.NotificationTypeEnum;
 
-public class NotificationBean implements Serializable {
+public class NotificationBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 3302057294948427326L;
 

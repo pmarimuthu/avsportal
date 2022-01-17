@@ -2,7 +2,6 @@ package com.avs.portal.entity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ import com.avs.portal.bean.UserBean;
 
 @Entity
 @Table(schema = "public", name = "user_01")
-public class User {
+public class User extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -101,13 +100,10 @@ public class User {
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
 
 	@Transient
-	private boolean hasError = false;
-	
+	public List<UserInformation> distinctParentFamilyHeads = new ArrayList<>();
+
 	@Transient
-	private List<String> customErrorMessages = new ArrayList<>();
-	
-	@Transient
-	private Throwable throwable;
+	public List<UserInformation> distinctFamilyHeads = new ArrayList<>();
 	
 	List<UserAddress> internalAddUserAddress(UserAddress userAddress) {
 		this.userAddresses.add(userAddress);
@@ -336,28 +332,22 @@ public class User {
 		return this;
 	}
 
-	public boolean isHasError() {
-		return hasError;
+	public List<UserInformation> getDistinctParentFamilyHeads() {
+		return distinctParentFamilyHeads;
 	}
 
-	public void setHasError(boolean hasError) {
-		this.hasError = hasError;
+	public User setDistinctParentFamilyHeads(List<UserInformation> distinctParentFamilyHeads) {
+		this.distinctParentFamilyHeads = distinctParentFamilyHeads;
+		return this;
 	}
 
-	public List<String> getCustomErrorMessages() {
-		return customErrorMessages;
+	public List<UserInformation> getDistinctFamilyHeads() {
+		return distinctFamilyHeads;
 	}
 
-	public void setCustomErrorMessages(List<String> customErrorMessages) {
-		this.customErrorMessages = customErrorMessages;
-	}
-
-	public Throwable getThrowable() {
-		return throwable;
-	}
-
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
+	public User setDistinctFamilyHeads(List<UserInformation> distinctFamilyHeads) {
+		this.distinctFamilyHeads = distinctFamilyHeads;
+		return this;
 	}
 
 	public UserBean toBean() {
@@ -379,19 +369,21 @@ public class User {
 				
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
 				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
-				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()))
-				
-				.setLoginHistories(loginHistories.stream()
+				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()));
+		
+		/*
+		userBean.setLoginHistories(loginHistories.stream()
 						.sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
 						.map(LoginHistory :: toBean)
 						.limit(10).
-						collect(Collectors.toList()))
-				
-				.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
+						collect(Collectors.toList()));
+		*/
 		
-		userBean.setHasError(hasError);
-		userBean.setCustomErrorMessages(customErrorMessages);
-		userBean.setThrowable(throwable);
+		// userBean.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
+		
+		userBean.setHasError(isHasError());
+		userBean.setCustomErrorMessages(getCustomErrorMessages());
+		userBean.setThrowable(getThrowable());
 		
 		return userBean;		
 	}

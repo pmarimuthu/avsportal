@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import com.avs.portal.enums.AddressTypeEnum;
 
-public class UserAddressBean implements Serializable {
+public class UserAddressBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = -3018205575515028379L;
 	

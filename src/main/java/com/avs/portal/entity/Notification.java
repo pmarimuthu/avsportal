@@ -14,7 +14,7 @@ import com.avs.portal.enums.NotificationTypeEnum;
 
 @Entity
 @Table(schema = "public", name = "notification_12")
-public class Notification {
+public class Notification extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -102,7 +102,7 @@ public class Notification {
 	}
 
 	public NotificationBean toBean() {
-		return new NotificationBean()
+		NotificationBean notificationBean = new NotificationBean()
 				.setId(id)
 				.setUserId(user == null ? null : user.getId())
 				.setNotificationType(notificationType)
@@ -110,6 +110,13 @@ public class Notification {
 				.setIsRead(isRead)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
+		
+		notificationBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return notificationBean;
 	}
 
 	@Override

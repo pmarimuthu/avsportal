@@ -22,7 +22,7 @@ import com.avs.portal.enums.AddressTypeEnum;
 
 @Entity
 @Table(schema = "public", name = "user_address_07")
-public class UserAddress {
+public class UserAddress extends BaseEntity {
 
 	@Id
     @GeneratedValue(generator = "UUID")
@@ -196,7 +196,7 @@ public class UserAddress {
 	}
 
 	public UserAddressBean toBean() {
-		return new UserAddressBean()
+		UserAddressBean userAddressBean = new UserAddressBean()
 				.setId(id)
 				.setUsersIds(users.stream().map(User :: getId).collect(Collectors.toList()))
 				.setAddressLine1(addressLine1)
@@ -211,6 +211,13 @@ public class UserAddress {
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime())
 				.setIsDeleted(isDeleted);
+		
+		userAddressBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userAddressBean;
 	}
 	
 }

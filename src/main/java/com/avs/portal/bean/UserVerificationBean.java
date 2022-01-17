@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.avs.portal.enums.VerificationModeEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 
-public class UserVerificationBean implements Serializable {
+public class UserVerificationBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 8971866578188742401L;
 

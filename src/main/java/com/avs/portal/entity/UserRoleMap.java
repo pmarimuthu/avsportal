@@ -17,7 +17,7 @@ import com.avs.portal.util.CommonUtil;
 
 @Entity
 @Table(schema = "public", name = "user_role_map_09")
-public class UserRoleMap {
+public class UserRoleMap extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
@@ -83,11 +83,19 @@ public class UserRoleMap {
 	}
 	
 	public UserRoleMapBean toBean() {
-		return new UserRoleMapBean()
+		UserRoleMapBean userRoleMapBean = new UserRoleMapBean()
 				.setId(id)
+				.setUserId(id)
 				.setRole(role)
 				.setCreatedOn(CommonUtil.toLocalDateTimeOrNull(createdOn))
 				.setUpdatedOn(CommonUtil.toLocalDateTimeOrNull(updatedOn));
+		
+		userRoleMapBean				
+				.setHasError(isHasError())
+				.setCustomErrorMessages(getCustomErrorMessages())
+				.setThrowable(getThrowable());
+		
+		return userRoleMapBean;
 	}
 
 	@Override

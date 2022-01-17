@@ -8,7 +8,7 @@ import com.avs.portal.enums.DeviceTypeEnum;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.util.CommonUtil;
 
-public class LoginHistoryBean implements Serializable {
+public class LoginHistoryBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = -3160929326776115755L;
 

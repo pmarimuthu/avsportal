@@ -58,12 +58,10 @@ public class UserCredentialService {
 
 		UserCredential userCredential = user.getUserCredential();
 		if(userCredential != null) {
-			System.err.println("User Credential exists !! for the User: " + userCredential.getUser().getId());
 			return null;
 		}
 
 		if(CommonUtil.getValidatedPassword(userCredentialBean.getPassword()) == null) {
-			System.err.println("Password pattern invalid: " + CommonUtil.PASSWORD_REGEX);
 			return null;
 		}
 
@@ -85,7 +83,7 @@ public class UserCredentialService {
 	}
 
 	// UPDATE
-	public UserCredentialBean updateUserCredential(UserCredentialBean userCredentialBean) {
+	public UserBean updateUserCredential(UserCredentialBean userCredentialBean) {
 		if(userCredentialBean == null || userCredentialBean.getUserId() == null)
 			return null;
 
@@ -95,12 +93,10 @@ public class UserCredentialService {
 
 		UserCredential userCredential = user.getUserCredential();
 		if(userCredential == null) {
-			System.err.println("User Credential does not exists !! for the User: " + user.getId());
 			return null;
 		}
 
 		if(CommonUtil.getValidatedPassword(userCredentialBean.getPassword()) == null) {
-			System.err.println("Password pattern invalid: " + CommonUtil.PASSWORD_REGEX);
 			return null;
 		}
 
@@ -115,7 +111,7 @@ public class UserCredentialService {
 
 		userCredential = userCredentialRepository.save(userCredential);
 
-		return userCredential.toBean();
+		return user.toBean();
 	}
 
 	// DELETE
@@ -129,7 +125,6 @@ public class UserCredentialService {
 
 		UserCredential userCredential = user.getUserCredential();
 		if(userCredential == null) {
-			System.err.println("User Credential does not exists !! for the User: " + user.getId());
 			return null;
 		}
 

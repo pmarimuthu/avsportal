@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.VisibilityEnum;
 
-public class UserPreferencesBean implements Serializable {
+public class UserPreferencesBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 7773159516719852765L;
 	

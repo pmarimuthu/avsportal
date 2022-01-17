@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -18,13 +19,16 @@ import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserAccountStatus;
 import com.avs.portal.entity.UserAddress;
 import com.avs.portal.entity.UserCredential;
+import com.avs.portal.entity.UserFamilyMap;
 import com.avs.portal.entity.UserInformation;
 import com.avs.portal.entity.UserPreferences;
 import com.avs.portal.entity.UserProfile;
+import com.avs.portal.entity.UserReferral;
 import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
+import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
 
@@ -35,6 +39,12 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private UserFamilyMapRepository userFamilyMapRepository;
+
+	@Autowired
+	private UserFamilyMapService userFamilyMapService;
+
+	@Autowired
 	private UserAddressService userAddressService;
 
 	// FIND (Id or Email & Phone)
@@ -42,15 +52,32 @@ public class UserService {
 		if(userBean == null || (userBean.getId() == null && userBean.getEmail() == null) || (userBean.getPhone() == null))
 			return null;
 
-		return userRepository.findByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone())
-				.stream()
-				.map(User :: toBean)
-				.collect(Collectors.toList());
+		List<User> users = userRepository.findByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone());
+		
+		List<UserBean> userBeans = new ArrayList<>();
+		for (User user : users) {
+			userBeans.add(user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
+				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads())
+			);			
+		}
+		
+		return userBeans;
 	}
 
 	// READ {ALL}
 	public List<UserBean> getUsers() {
-		return userRepository.findAll().stream().map(User :: toBean).collect(Collectors.toList());
+		List<User> users = userRepository.findAll();
+		
+		List<UserBean> userBeans = new ArrayList<>();
+		for (User user : users) {
+			userBeans.add(user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
+				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads())
+			);			
+		}
+		
+		return userBeans;
 	}
 
 	// READ {ONE}
@@ -96,9 +123,10 @@ public class UserService {
 		defaultUserPreferences(user);
 		defaultUserInformation(user);
 		defaultUserProfile(user);
-		// userFamilyMap, userReferrer
-
+		defaultUserFamilyMap(user);
 		defaultUserRoleMap(user);
+		defaultUserReferrer(user);
+
 		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
 		user = userRepository.save(user);
@@ -107,7 +135,7 @@ public class UserService {
 	}
 
 	// UPDATE
-	public UserBean editUser(UserBean bean) {
+	public UserBean updateUser(UserBean bean) {
 		if(bean == null || bean.getId() == null)
 			return null;
 
@@ -125,11 +153,11 @@ public class UserService {
 	}
 
 	// DELETE
-	public UserBean deleteUser(UserBean bean) {
-		if(bean == null || bean.getId() == null)
-			return bean;
+	public UserBean deleteUser(UserBean userBean) {
+		if(userBean == null || userBean.getId() == null)
+			return userBean;
 
-		User entity = userRepository.findById(bean.getId()).orElse(null);
+		User entity = userRepository.findById(userBean.getId()).orElse(null);
 		if(entity == null)
 			return null;
 
@@ -139,30 +167,34 @@ public class UserService {
 	}
 
 	private UserBean getUserById(UUID id) {
-		User entity = userRepository.findById(id).orElse(null);
-		return entity != null ? entity.toBean() : null;
+		User user = userRepository.findById(id).orElse(null);
+		if(user == null)
+			return null;
+
+		return user.toBean();
 	}
 
 	private UserBean getUserByEmail(String email) {
 		List<User> entities = userRepository.findByEmail(email);
-		if(entities.size() == 1)
-			return entities.get(0).toBean();
+		if(entities.size() != 1)
+			return null;
 
-		if(entities.size() > 1)
-			System.err.println("[ERR] more than one user with same Email.");
-
-		return null;
+		User user = entities.get(0);
+		
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
+				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads());
 	}
 
 	private UserBean getUserByPhone(Long phone) {
 		List<User> entities = userRepository.findByPhone(phone);
-		if(entities.size() == 1)
-			return entities.get(0).toBean();
+		if(entities.size() != 1)
+			return null;
 
-		if(entities.size() > 1)
-			System.err.println("[ERR] more than one user with same Phone.");
-
-		return null;
+		User user = entities.get(0);
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
+				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads());
 	}
 
 	// UserCredential :: user_credential_02
@@ -256,6 +288,27 @@ public class UserService {
 		return userProfile;
 	}
 
+	private UserFamilyMap defaultUserFamilyMap(User user) {
+		UserFamilyMap userFamilyMap = new UserFamilyMap();
+
+		userFamilyMap.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userFamilyMap.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+		userFamilyMap.setUser(user);
+		user.setUserFamilyMap(userFamilyMap);
+
+		return userFamilyMap;
+	}
+
+	private UserReferral defaultUserReferrer(User user) {
+		UserReferral userReferral = new UserReferral();
+
+		userReferral.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+		return userReferral;		
+	}
+
 	public List<UserBean> getUsersByAddress(UserAddressBean userAddressBean) {
 		UserAddress userAddress = userAddressService.getUserAddress(userAddressBean);
 		if(userAddress == null)
@@ -271,7 +324,6 @@ public class UserService {
 
 		UserAddress userAddress = userAddressService.getUserAddress(userAddressBean);
 		if(userAddress == null) {
-			System.err.println("No Address Found.");
 			return null;
 		}
 		else {

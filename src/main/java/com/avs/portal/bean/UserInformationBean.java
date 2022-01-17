@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import com.avs.portal.enums.GenderEnum;
 
-public class UserInformationBean implements Serializable {
+public class UserInformationBean extends BaseBean implements Serializable {
 
 	private static final long serialVersionUID = -3509526445058485342L;
 	
