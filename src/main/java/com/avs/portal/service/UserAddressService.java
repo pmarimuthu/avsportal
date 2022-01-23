@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,7 +146,7 @@ public class UserAddressService {
 		
 	}
 
-	public List<UserAddressBean> editUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
+	public List<UserAddressBean> updateUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
 			return null;
 
@@ -212,6 +213,31 @@ public class UserAddressService {
 		user = userRepository.save(user);
 		
 		return user.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public UserBean createOrUpdateUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
+		if(userBean == null || userBean.getId() == null || userAddressBean == null || userAddressBean.getAddressType() == null)
+			return null;
+		
+		User user = userRepository.findById(userBean.getId()).orElse(null);
+		if(user == null)
+			return null;
+		
+		List<UserAddressBean> addresses = new ArrayList<>();
+		
+		if(userAddressBean.getId() == null)
+			addresses = createUserAddress(userBean, userAddressBean);
+		else
+			addresses = updateUserAddress(userBean, userAddressBean);
+		
+		System.out.println(addresses.stream().map(UserAddressBean :: getAddressType).collect(Collectors.toList()));
+		
+		user = userRepository.findById(userBean.getId()).orElse(null);
+		if(user == null)
+			return null;
+		
+		return user.toBean();
 	}
 	
 

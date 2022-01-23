@@ -25,10 +25,10 @@ import com.avs.portal.entity.UserPreferences;
 import com.avs.portal.entity.UserProfile;
 import com.avs.portal.entity.UserReferral;
 import com.avs.portal.entity.UserRoleMap;
+import com.avs.portal.enums.AddressTypeEnum;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VisibilityEnum;
-import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
 
@@ -37,9 +37,6 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private UserFamilyMapRepository userFamilyMapRepository;
 
 	@Autowired
 	private UserFamilyMapService userFamilyMapService;
@@ -58,7 +55,6 @@ public class UserService {
 		for (User user : users) {
 			userBeans.add(user.toBean()
 				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads())
 			);			
 		}
 		
@@ -73,7 +69,6 @@ public class UserService {
 		for (User user : users) {
 			userBeans.add(user.toBean()
 				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads())
 			);			
 		}
 		
@@ -123,6 +118,7 @@ public class UserService {
 		defaultUserPreferences(user);
 		defaultUserInformation(user);
 		defaultUserProfile(user);
+		defaultUserAddresses(user);
 		defaultUserFamilyMap(user);
 		defaultUserRoleMap(user);
 		defaultUserReferrer(user);
@@ -131,7 +127,8 @@ public class UserService {
 
 		user = userRepository.save(user);
 
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	// UPDATE
@@ -171,7 +168,8 @@ public class UserService {
 		if(user == null)
 			return null;
 
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	private UserBean getUserByEmail(String email) {
@@ -182,8 +180,7 @@ public class UserService {
 		User user = entities.get(0);
 		
 		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads());
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	private UserBean getUserByPhone(Long phone) {
@@ -193,15 +190,14 @@ public class UserService {
 
 		User user = entities.get(0);
 		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-				.setDistinctParentFamilyHeads(userFamilyMapService.listDistinctParentFamilyHeads());
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	// UserCredential :: user_credential_02
 	// -------------------------------------------
 	private UserCredential defaultUserCredential(User user) {
 		UserCredential userCredential = new UserCredential()
-				.setPassword(CommonUtil.generateDefaultPassword())
+				.setPassword("password") // CommonUtil.generateDefaultPassword())
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUser(user);
@@ -288,6 +284,32 @@ public class UserService {
 		return userProfile;
 	}
 
+	private void defaultUserAddresses(User user) {
+		UserAddress nativeAddress = new UserAddress()
+				.setAddressType(AddressTypeEnum.NATIVE)
+				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
+				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		user.getUserAddresses().add(nativeAddress);
+		nativeAddress.getUsers().add(user);
+		
+		UserAddress livingAddress = new UserAddress()
+				.setAddressType(AddressTypeEnum.LIVING)
+				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
+				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		user.getUserAddresses().add(livingAddress);
+		livingAddress.getUsers().add(user);
+		
+		UserAddress officeAddress = new UserAddress()
+				.setAddressType(AddressTypeEnum.OFFICE)
+				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
+				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		user.getUserAddresses().add(officeAddress);
+		officeAddress.getUsers().add(user);
+	}
+
 	private UserFamilyMap defaultUserFamilyMap(User user) {
 		UserFamilyMap userFamilyMap = new UserFamilyMap();
 
@@ -333,7 +355,8 @@ public class UserService {
 			user = userRepository.save(user);
 		}
 
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 }

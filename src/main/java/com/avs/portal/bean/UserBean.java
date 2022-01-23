@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import com.avs.portal.entity.UserInformation;
 import com.avs.portal.util.CommonUtil;
 
 public class UserBean extends BaseBean implements Serializable {
@@ -42,12 +41,12 @@ public class UserBean extends BaseBean implements Serializable {
 	private UserReferralBean userReferrer;
 
 	private UserRoleMapBean userRoleMap;
+	
+	private UserReferralMapBean userReferralMap;
 
 	private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
 
 	private Collection<UserAddressBean> userAddresses = Collections.emptyList();
-
-	public List<UserInformationBean> distinctParentFamilyHeads = new ArrayList<>();
 
 	public List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
 
@@ -194,12 +193,12 @@ public class UserBean extends BaseBean implements Serializable {
 		return this;
 	}
 
-	public List<UserInformationBean> getDistinctParentFamilyHeads() {
-		return distinctParentFamilyHeads;
+	public UserReferralMapBean getUserReferralMap() {
+		return userReferralMap;
 	}
 
-	public UserBean setDistinctParentFamilyHeads(List<UserInformationBean> distinctParentFamilyHeads) {
-		this.distinctParentFamilyHeads = distinctParentFamilyHeads;
+	public UserBean setUserReferralMap(UserReferralMapBean userReferralMap) {
+		this.userReferralMap = userReferralMap;
 		return this;
 	}
 
@@ -310,7 +309,6 @@ public class UserBean extends BaseBean implements Serializable {
 				", Login History(s): " + loginHistories + 
 				", Notification(s): " + notifications + 
 				", Distinct Family-Head-IDs: " + distinctFamilyHeads +
-				", Distinct Parent-FamilyHead-IDs: " + distinctParentFamilyHeads +
 				"]";
 
 	}

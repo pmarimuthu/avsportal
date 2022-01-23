@@ -28,9 +28,6 @@ public class UserFamilyMapService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	private UserFamilyMapRepository userFamilyMapRepository;
 
 	public List<UserFamilyMapBean> listUserFamilyMaps() {
@@ -134,9 +131,8 @@ public class UserFamilyMapService {
 			return null;
 		}
 
-		System.out.println("## Before Validation: Family-Head-Id: " + userFamilyMapBean.getFamilyHeadId());
-		validateUserFamilyMap(userFamilyMap, userFamilyMapBean);
-		System.out.println("## After Validation: Family-Head-Id: " + userFamilyMapBean.getFamilyHeadId());
+		// Validate HeadID, ParentHeadID
+		userFamilyMapBean = validateUserFamilyMapBean(userFamilyMap, userFamilyMapBean);
 		
 		userFamilyMap
 		.setLiveStatus(userFamilyMapBean.getLiveStatus())
@@ -153,7 +149,8 @@ public class UserFamilyMapService {
 
 		user = userRepository.save(user);
 
-		return user.toBean();		
+		return user.toBean()
+				.setDistinctFamilyHeads(listDistinctFamilyHeads());
 
 	}
 
@@ -167,7 +164,8 @@ public class UserFamilyMapService {
 
 		UserFamilyMap userFamilyMap = user.getUserFamilyMap();
 		if(userFamilyMap == null) {
-			return user.toBean();
+			return user.toBean()
+					.setDistinctFamilyHeads(listDistinctFamilyHeads());
 		}
 
 		user.setUserFamilyMap(null);
@@ -176,89 +174,62 @@ public class UserFamilyMapService {
 
 		user = userRepository.save(user);
 
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(listDistinctFamilyHeads());
 
 	}
 
 	// VALIDATIONS
-	private void validateUserFamilyMap(UserFamilyMap entity, UserFamilyMapBean bean) {
-		if(bean == null || bean.getTitle() == null)
-			return;
+	private UserFamilyMapBean validateUserFamilyMapBean(UserFamilyMap userFamilyEntity, UserFamilyMapBean userFamilyBean) {
+		if(userFamilyBean == null || userFamilyBean.getTitle() == null)
+			return userFamilyBean;
 
-		switch (bean.getTitle().getText()) {
-		case "HEAD":
-			bean.setFamilyHeadId(entity.getUser().getId());				
-			break;
+		if(userFamilyBean.getFamilyHeadId() != null) {
+			switch (userFamilyBean.getTitle().getText()) {
+			case "HEAD":
+				userFamilyBean.setFamilyHeadId(userFamilyEntity.getUser().getId());
+				break;
 
-		case "SPOUSE":
-		case "SON":		
-		case "DAUGHTER":
-			if(entity.getUser().getId().equals(bean.getFamilyHeadId()))
-				bean.setFamilyHeadId(null);
-			break;
+			case "SPOUSE":
+			case "SON":		
+			case "DAUGHTER":
+				if(userFamilyEntity.getUser().getId().equals(userFamilyBean.getFamilyHeadId()))
+					userFamilyBean.setFamilyHeadId(null);
+				break;
 
-		default:
-			break;
-		}
-	}
-
-	public List<UserInformationBean> listDistinctParentFamilyHeads() {
-		List<UserInformationBean> parentFamilyHeadUserInformationBeans = new ArrayList<>();
-		
-		List<UUID> parentFamilyHeadUUIDs = userFamilyMapRepository.findDistinctByParentFamilyHeadIdNotNull().stream().map(UserFamilyMap :: getParentFamilyHeadId).collect(Collectors.toList());
-		System.out.println("Before Filter: " + parentFamilyHeadUUIDs);
-		
-		Set<UUID> uuids = new HashSet<>();
-		List<UUID> distinctParentFamilyHeadUUIDs = parentFamilyHeadUUIDs.stream().filter(id -> uuids.add(id)).collect(Collectors.toList());
-		System.out.println("Aftere Filter: " + distinctParentFamilyHeadUUIDs);
-		
-		System.out.println("#### distinctParentFamilyHeads :::");
-		for (UUID parentFamilyHeadId : distinctParentFamilyHeadUUIDs) {
-			User parentFamilyHead = userRepository.findById(parentFamilyHeadId).orElse(null);
-			parentFamilyHeadUserInformationBeans.add(parentFamilyHead.getUserInformation().toBean());
+			default:
+				break;
+			}
 		}
 		
-		System.out.println("By for-each ... " + parentFamilyHeadUserInformationBeans.toString());
+		if(userFamilyBean.getParentFamilyHeadId() != null) {
+			// User can't be ParentHead
+			if(userFamilyEntity.getUser().getId().equals(userFamilyBean.getParentFamilyHeadId())) {
+				userFamilyBean.setParentFamilyHeadId(null);
+			}
+			// User's Head can't be ParentHead
+			if(userFamilyEntity.getFamilyHeadId() != null && userFamilyEntity.getFamilyHeadId().equals(userFamilyBean.getParentFamilyHeadId())) {
+				userFamilyBean.setParentFamilyHeadId(null);
+			}			
+		}
 		
-		//////
-		List<UserInformationBean> theUserInformationBeans = userFamilyMapRepository.findDistinctByParentFamilyHeadIdNotNull().stream()
-			.map(UserFamilyMap :: getParentFamilyHeadId)
-			.map(id -> userRepository.findById(id).orElse(null))
-			.map(user -> user.getUserInformation().toBean())
-			.collect(Collectors.toList());
-		
-		System.out.println("By Stream ... " + theUserInformationBeans.toString());
-
-		return parentFamilyHeadUserInformationBeans;
+		return userFamilyBean;
 	}
 
 	public List<UserInformationBean> listDistinctFamilyHeads() {
+		
 		List<UserInformationBean> familyHeadUserInformationBeans = new ArrayList<>();
 		
 		List<UUID> familyHeadUUIDs = userFamilyMapRepository.findDistinctByFamilyHeadIdNotNull().stream().map(UserFamilyMap :: getFamilyHeadId).collect(Collectors.toList());
-		System.out.println("Before Filter: " + familyHeadUUIDs);
 		
 		Set<UUID> uuids = new HashSet<>();
 		List<UUID> distinctFamilyHeadUUIDs = familyHeadUUIDs.stream().filter(id -> uuids.add(id)).collect(Collectors.toList());
-		System.out.println("Aftere Filter: " + distinctFamilyHeadUUIDs);
 		
-		System.out.println("#### distinctFamilyHeads :::");
 		for (UUID familyHeadId : distinctFamilyHeadUUIDs) {
 			User familyHead = userRepository.findById(familyHeadId).orElse(null);
 			familyHeadUserInformationBeans.add(familyHead.getUserInformation().toBean());
 		}
 		
-		System.out.println("By for-each ... " + familyHeadUserInformationBeans.toString());
-		
-		//////
-		List<UserInformationBean> theUserInformationBeans = userFamilyMapRepository.findDistinctByFamilyHeadIdNotNull().stream()
-			.map(UserFamilyMap :: getFamilyHeadId)
-			.map(id -> userRepository.findById(id).orElse(null))
-			.map(user -> user.getUserInformation().toBean())
-			.collect(Collectors.toList());
-		
-		System.out.println("By Stream ... " + theUserInformationBeans.toString());
-
 		return familyHeadUserInformationBeans;
 	}
 

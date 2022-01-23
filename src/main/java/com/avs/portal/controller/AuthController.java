@@ -30,7 +30,9 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public UserBean attemptLogin(@RequestBody LoginBean loginBean) {
-		return authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
+		UserBean authenticatedUserBean = authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
+		
+		return authenticatedUserBean;
 	}
 
 	private String getIPAddress() {

@@ -22,7 +22,6 @@ import com.avs.portal.bean.UserVerificationBean;
 import com.avs.portal.enums.VerificationModeEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.mail.EmailService;
-import com.avs.portal.service.UserFamilyMapService;
 import com.avs.portal.service.UserService;
 import com.avs.portal.service.UserVerificationService;
 
@@ -46,13 +45,9 @@ public class UserController {
 		return userService.getUsers();
 	}
 
-	@PostMapping("/get/{userId}")
-	public UserBean getUser(@PathVariable(name = "userId") String userId) {
-		try {
-			return userService.getUser(new UserBean().setId(UUID.fromString(userId)));
-		} catch (Exception e) {
-			throw new ResponseStatusException(200, "Unable to find User: " + userId, e);
-		}
+	@PostMapping("/get")
+	public UserBean getUser(@RequestBody UserBean userBean) {
+		return userService.getUser(userBean);
 	}
 
 	@PostMapping("/find")
@@ -104,9 +99,11 @@ public class UserController {
 				return createdUserBean2;
 			}
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			
 			createdUserBean.setHasError(true);
 			createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
-			System.out.println(e.getMessage());
 			return createdUserBean;
 		}
 		

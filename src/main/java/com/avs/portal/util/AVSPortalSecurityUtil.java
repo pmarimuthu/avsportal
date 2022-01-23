@@ -1,17 +1,6 @@
 package com.avs.portal.util;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.authority.AuthorityUtils;
-
 import com.avs.portal.bean.UserBean;
-import com.avs.portal.enums.RoleEnum;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 public final class AVSPortalSecurityUtil {
 

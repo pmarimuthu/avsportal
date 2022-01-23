@@ -44,6 +44,11 @@ public class UserAddressController {
 	public List<UserAddressBean> createUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
 		return userAddressService.createUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
+	
+	@PostMapping("/createOrUpdate/{userId}")
+	public UserBean createOrUpdateUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
+		return userAddressService.createOrUpdateUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
+	}
 
 	@PutMapping("/attach/{userId}")
 	public List<UserAddressBean> attachUserWithUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
@@ -55,9 +60,9 @@ public class UserAddressController {
 		return userAddressService.detachUserFromUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 	
-	@PutMapping("/edit/{userId}")
-	public List<UserAddressBean> editUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
-		return userAddressService.editUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
+	@PutMapping("/update/{userId}")
+	public List<UserAddressBean> updateUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
+		return userAddressService.updateUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 	
 	@DeleteMapping("/remove/{userId}")

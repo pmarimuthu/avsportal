@@ -3,7 +3,6 @@ package com.avs.portal.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,9 @@ public class UserProfileService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private UserFamilyMapService userFamilyMapService;
 	
 	@Autowired
 	private UserProfileRepository userProfileRepository;
@@ -111,7 +113,8 @@ public class UserProfileService {
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 		
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	// DELETE
@@ -131,7 +134,8 @@ public class UserProfileService {
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 }

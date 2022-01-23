@@ -25,7 +25,7 @@ public class AVSPortalApplication {
             public void addCorsMappings(CorsRegistry registry) {
             	System.out.println("CORS :: Registered mapping /** ");
                 registry.addMapping("/**")
-                	.allowedOrigins("http://localhost:4000")
+                	.allowedOrigins("http://localhost:3000", "http://localhost:4000")
                 	.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name(), HttpMethod.HEAD.name())
                 	.maxAge(100000);
             }

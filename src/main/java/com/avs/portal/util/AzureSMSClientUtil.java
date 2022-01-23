@@ -22,7 +22,7 @@ public class AzureSMSClientUtil {
 
 	}
 
-	private static SmsClient getSmsClient(String connectionString) {
+	public static SmsClient getSmsClient(String connectionString) {
 
 		return new SmsClientBuilder()
 				.connectionString(connectionString)

@@ -60,9 +60,6 @@ public class SendEmailSSL {
 
 	public static void sendGmailSSL(Properties props) throws Exception {
 		
-		File file = new File(".");
-		System.out.println(file.getAbsolutePath() + "\n" + file.getCanonicalPath());
-		
 		Authenticator authenticator = new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(props.getProperty("mail.smtp.username"), props.getProperty("mail.smtp.appPassword"));

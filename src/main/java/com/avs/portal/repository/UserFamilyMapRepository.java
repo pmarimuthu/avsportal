@@ -11,7 +11,5 @@ public interface UserFamilyMapRepository extends CrudRepository<UserFamilyMap, U
 
 	Collection<UserFamilyMap> findAll();
 
-	Collection<UserFamilyMap> findDistinctByParentFamilyHeadIdNotNull();
-
 	Collection<UserFamilyMap> findDistinctByFamilyHeadIdNotNull();
 }

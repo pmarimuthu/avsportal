@@ -1,7 +1,7 @@
 package com.avs.portal.entity;
 
 import java.sql.Timestamp;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +31,7 @@ public class UserAddress extends BaseEntity {
 	private UUID id;
 	
 	@ManyToMany(mappedBy = "userAddresses", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<User> users = Collections.emptyList(); // ref
+    private List<User> users = new ArrayList<>(); // ref
 
 	@Column(name = "address_type", nullable = false)
 	private AddressTypeEnum addressType;

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -46,61 +47,63 @@ public class User extends BaseEntity {
 	@Column(name = "updated_on")
 	private Timestamp updatedOn;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserCredential userCredential;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserAccountStatus userAccountStatus;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserPreferences userPreferences;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserInformation userInformation;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserProfile userProfile;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
 	private UserFamilyMap userFamilyMap; // ref
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "user")
     private UserRoleMap userRoleMap;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "user")
+    private UserReferralMap userReferralMap;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<UserRelationToMeMap>();
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_useraddress_join", 
         joinColumns = { @JoinColumn(name = "USER_ID") }, 
         inverseJoinColumns = { @JoinColumn(name = "USERADDRESS_ID") })
 	private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Notification> notifications = new ArrayList<Notification>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
-
-	@Transient
-	public List<UserInformation> distinctParentFamilyHeads = new ArrayList<>();
 
 	@Transient
 	public List<UserInformation> distinctFamilyHeads = new ArrayList<>();
@@ -287,6 +290,15 @@ public class User extends BaseEntity {
 		return this;
 	}
 
+	public UserReferralMap getUserReferralMap() {
+		return userReferralMap;
+	}
+
+	public User setUserReferralMap(UserReferralMap userReferralMap) {
+		this.userReferralMap = userReferralMap;
+		return this;
+	}
+
 	public List<UserRelationToMeMap> getUserRelationToMeMap() {
 		return userRelationToMeMap;
 	}
@@ -332,15 +344,6 @@ public class User extends BaseEntity {
 		return this;
 	}
 
-	public List<UserInformation> getDistinctParentFamilyHeads() {
-		return distinctParentFamilyHeads;
-	}
-
-	public User setDistinctParentFamilyHeads(List<UserInformation> distinctParentFamilyHeads) {
-		this.distinctParentFamilyHeads = distinctParentFamilyHeads;
-		return this;
-	}
-
 	public List<UserInformation> getDistinctFamilyHeads() {
 		return distinctFamilyHeads;
 	}
@@ -366,7 +369,7 @@ public class User extends BaseEntity {
 				.setUserFamilyMap(userFamilyMap == null ? null : userFamilyMap.toBean())
 				
 				.setUserRoleMap(userRoleMap == null ? null : userRoleMap.toBean())
-				
+				.setUserReferralMap(userReferralMap == null ? null : userReferralMap.toBean())				
 				.setUserAddresses(userAddresses.stream().map(UserAddress :: toBean).collect(Collectors.toList()))
 				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
 				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()));

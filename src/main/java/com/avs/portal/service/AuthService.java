@@ -28,6 +28,9 @@ public class AuthService {
 	private UserRepository userRepository;
 	
 	@Autowired
+	private UserFamilyMapService userFamilyMapService;
+	
+	@Autowired
 	private LoginHistoryRepository loginHistoryRepository;
 	
 	public UserBean attemptLogin(LoginBean loginBean, String ipAddress, UserAgentEnum userAgentEnum) {
@@ -119,7 +122,8 @@ public class AuthService {
 	}
 
 	private UserBean doPostLoginAttempt(User user, String ipAddress, UserAgentEnum userAgentEnum, Boolean flag) {
-		UserBean userBean = user.toBean();
+		if(user == null)
+			return null;
 		
 		List<LoginHistory> loginHistories = user.getLoginHistories()
 				.stream().sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
@@ -159,7 +163,8 @@ public class AuthService {
 		loginHistory = loginHistoryRepository.save(loginHistory);
 		user = userRepository.save(user);
 		
-		return user.toBean();
+		return user.toBean()
+				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 }
