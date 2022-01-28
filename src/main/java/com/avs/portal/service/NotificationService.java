@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +33,11 @@ public class NotificationService {
 	// READ (USER's)
 	public List<NotificationBean> getNotifications(UserBean bean) {
 		if(bean == null || bean.getId() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(bean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		return user.getNotifications().stream().map(Notification :: toBean).collect(Collectors.toList());
 	}
@@ -44,11 +45,11 @@ public class NotificationService {
 	// CREATE / UPDATE one Notification
 	public List<NotificationBean> addOrEditNotification(UserBean userBean, NotificationBean notificationBean) {
 		if(userBean == null || userBean.getId() == null || notificationBean.getNotificationType() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		Notification userNotification = user.getNotifications().stream().filter(entity -> (entity.getNotificationType() != null && entity.getNotificationType().equals(notificationBean.getNotificationType()) )).findFirst().orElse(null);
 		if(userNotification == null) {
@@ -71,15 +72,15 @@ public class NotificationService {
 
 	public List<NotificationBean> deleteNotification(UserBean userBean, NotificationBean notificationBean) {
 		if(userBean == null || userBean.getId() == null || notificationBean == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		Notification userNotification = user.getNotifications().stream().filter(notification -> notification.getId().equals(notificationBean.getId())).findFirst().orElse(null);
 		if(userNotification == null)
-			return null;
+			return Collections.emptyList();
 		
 		user.getNotifications().remove(userNotification);
 		userNotification.setUser(null);

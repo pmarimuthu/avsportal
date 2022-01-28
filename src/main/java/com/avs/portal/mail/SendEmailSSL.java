@@ -45,15 +45,16 @@ public class SendEmailSSL {
 		props.put("kanaksan.mail.content", getEmailContentTemplate());
 
 		props.put("<content-id>", "<logocid>");
-		props.put("kanaksan.mail.attach.file", "D:\\Tutorials\\avsportal\\src\\main\\resources\\static\\assets\\logo.PNG");
+		props.put("kanaksan.mail.attach.file", "C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\logo.png");
+		
 
 		
 		return props;
 	}
 
 	public static String getEmailContentTemplate() throws Exception {
-		File file = new File("D:\\Tutorials\\avsportal\\src\\main\\resources\\static\\assets\\mail.html");
-		//new File(new SendEmailSSL().getClass().getResource("assets/mail.html").getFile());
+		//File file = new File(new ClassPathResource("/static/assets/mail.html").getPath());
+		File file = new File("C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\mail.html");
 		InputStream inputStream = new FileInputStream(file);
 		return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 	}
@@ -88,7 +89,7 @@ public class SendEmailSSL {
 		MimeBodyPart imagePart = new MimeBodyPart();
 		imagePart.setHeader("Content-ID", props.getProperty("<content-id>"));
 		imagePart.setDisposition(MimeBodyPart.INLINE);
-		imagePart.attachFile(props.getProperty("kanaksan.mail.attach.file"));
+		imagePart.attachFile(new File(props.getProperty("kanaksan.mail.attach.file")));
 
 		// Prepare & Send
 		multipart.addBodyPart(bodyPart);

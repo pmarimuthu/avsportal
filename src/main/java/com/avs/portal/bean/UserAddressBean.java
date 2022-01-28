@@ -2,7 +2,7 @@ package com.avs.portal.bean;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ public class UserAddressBean extends BaseBean implements Serializable {
 	
 	private UUID id;
 	
-	private List<UUID> usersIds = Collections.emptyList();
+	private List<UUID> usersIds = new ArrayList<>();
 	
 	private AddressTypeEnum addressType;
 	

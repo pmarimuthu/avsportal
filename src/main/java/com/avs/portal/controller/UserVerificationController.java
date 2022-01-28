@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,9 +40,9 @@ public class UserVerificationController {
 		return userVerificationService.getUserVerifications(new UserBean().setId(UUID.fromString(userId)));
 	}
 
-	@PostMapping("/update/{userId}")
-	public Set<UserVerificationBean> createOrEditUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
-		return userVerificationService.createOrEditUserVerification(new UserBean().setId(UUID.fromString(userId)), userVerificationBean);
+	@PatchMapping("/update/{userId}")
+	public UserBean updateUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
+		return userVerificationService.updateUserVerification(new UserBean().setId(UUID.fromString(userId)), userVerificationBean);
 	}
 
 	@DeleteMapping("/delete/{userId}")

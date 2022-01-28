@@ -2,7 +2,6 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,11 +36,11 @@ public class UserAddressService {
 	// READ (USER's)
 	public List<UserAddressBean> getUserAddresses(UserBean user) {
 		if(user == null || user.getId() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User userEntity = userRepository.findById(user.getId()).orElse(null);
 		if(userEntity == null)
-			return null;
+			return Collections.emptyList();
 		
 		return userEntity.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());
 	}
@@ -58,15 +57,15 @@ public class UserAddressService {
 	@Transactional
 	public List<UserAddressBean> createUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		if(userBean == null || userAddressBean == null || userAddressBean.getAddressType() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 0) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		UserAddress userAddress = new UserAddress()
@@ -96,20 +95,20 @@ public class UserAddressService {
 	public List<UserAddressBean> attachUserWithUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 0) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		UserAddress userAddress = userAddressRepository.findById(userAddressBean.getId()).orElse(null);
 		if(userAddress == null)
-			return null;
+			return Collections.emptyList();
 		
 		userAddress.getUsers().add(user);
 		user.getUserAddresses().add(userAddress);
@@ -122,20 +121,20 @@ public class UserAddressService {
 
 	public List<UserAddressBean> detachUserFromUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
-			return null;
+			return Collections.emptyList();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptyList();
 		
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses.stream().filter(userAddress -> userAddress.getAddressType().equals(userAddressBean.getAddressType())).count() != 1) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		UserAddress userAddress = userAddressRepository.findById(userAddressBean.getId()).orElse(null);
 		if(userAddress == null)
-			return null;
+			return Collections.emptyList();
 		
 		userAddress.getUsers().remove(user);
 		user.getUserAddresses().remove(userAddress);
@@ -146,7 +145,7 @@ public class UserAddressService {
 		
 	}
 
-	public List<UserAddressBean> updateUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
+	public UserBean updateUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
 			return null;
 
@@ -161,7 +160,7 @@ public class UserAddressService {
 						userAddress.getId().equals(userAddressBean.getId()) 
 						&& userAddress.getAddressType().equals(userAddressBean.getAddressType()))
 						)
-				.count() != 1) {
+				.count() != 1) {			
 			return null;
 		}
 
@@ -190,11 +189,11 @@ public class UserAddressService {
 
 		user = userRepository.save(user); // TODO verify results.
 
-		return user.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());		
+		return user.toBean();	
 
 	}
 
-	public List<UserAddressBean> removeUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
+	public UserBean removeUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
 		if(userBean == null || userBean.getId() == null || userAddressBean == null || userAddressBean.getAddressType() == null)
 			return null;
 		
@@ -211,31 +210,6 @@ public class UserAddressService {
 		userAddress.getUsers().remove(user);
 		
 		user = userRepository.save(user);
-		
-		return user.getUserAddresses().stream().map(UserAddress :: toBean).collect(Collectors.toList());
-	}
-
-	@Transactional
-	public UserBean createOrUpdateUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
-		if(userBean == null || userBean.getId() == null || userAddressBean == null || userAddressBean.getAddressType() == null)
-			return null;
-		
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
-			return null;
-		
-		List<UserAddressBean> addresses = new ArrayList<>();
-		
-		if(userAddressBean.getId() == null)
-			addresses = createUserAddress(userBean, userAddressBean);
-		else
-			addresses = updateUserAddress(userBean, userAddressBean);
-		
-		System.out.println(addresses.stream().map(UserAddressBean :: getAddressType).collect(Collectors.toList()));
-		
-		user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
-			return null;
 		
 		return user.toBean();
 	}

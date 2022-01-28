@@ -93,18 +93,19 @@ public class EmailService {
 			content = 
 					content
 						.replace("kanaksan.email.message.banner.title", "Confirm Email Address")
-						.replace("kanaksan.user.information.firstname", "Firstname")
+						.replace("kanaksan.user.information.firstname", user.getEmail())
 						.replace("kanaksan.email.message.body.lineone", 
 								"Please confirm your email address for your <span style=\"color: rgb(255, 105, 0); font-weight: bold;\">Kanaksan</span> account.")
 						.replace("kanaksan.email.message.body.linetwo", "")
 						.replaceAll("kanaksan.email.callback.url", callbackURL)
-						.replace("kanaksan.email.callback.message", "Confirm Email Address")
+						.replace("kanaksan.email.callback.message", "Your Login Credential: " + user.getUserCredential().getPassword())
 						.replace("kanaksan.user.uuid", user.getId().toString())
 						.replace("kanaksan.email.callback.blockORnone", "block")
 						.replace("kanaksan.email.otp.blockOrNone", "none");
 
 			props.put("kanaksan.mail.subject", "TestMail | Confirm Email Address");
 			props.put("kanaksan.mail.content", content);
+			System.out.println("About to send email");
 			SendEmailSSL.sendGmailSSL(props);
 			
 		} catch (Exception e) {

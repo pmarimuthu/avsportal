@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,28 +46,28 @@ public class UserAddressController {
 		return userAddressService.createUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 	
-	@PostMapping("/createOrUpdate/{userId}")
-	public UserBean createOrUpdateUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
-		return userAddressService.createOrUpdateUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
+	@PatchMapping("/patch/{userId}")
+	public UserBean patchUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
+		return userAddressService.updateUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 
-	@PutMapping("/attach/{userId}")
+	@PatchMapping("/attach/{userId}")
 	public List<UserAddressBean> attachUserWithUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
 		return userAddressService.attachUserWithUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}	
 
-	@PutMapping("/detach/{userId}")
+	@PatchMapping("/detach/{userId}")
 	public List<UserAddressBean> detachUserFromUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
 		return userAddressService.detachUserFromUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 	
-	@PutMapping("/update/{userId}")
-	public List<UserAddressBean> updateUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
+	@PatchMapping("/update/{userId}")
+	public UserBean updateUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
 		return userAddressService.updateUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 	
 	@DeleteMapping("/remove/{userId}")
-	public List<UserAddressBean> removeUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
+	public UserBean removeUserAddress(@PathVariable(name = "userId") String userId, @RequestBody UserAddressBean userAddressBean) {
 		return userAddressService.removeUserAddress(new UserBean().setId(UUID.fromString(userId)), userAddressBean);
 	}
 

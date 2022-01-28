@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,17 +43,17 @@ public class UserBean extends BaseBean implements Serializable {
 	
 	private UserReferralMapBean userReferralMap;
 
-	private Collection<UserRelationToMeMapBean> userRelationToMeMap = Collections.emptyList();
+	private Collection<UserRelationToMeMapBean> userRelationToMeMap = new ArrayList<>();
 
-	private Collection<UserAddressBean> userAddresses = Collections.emptyList();
+	private Collection<UserAddressBean> userAddresses = new ArrayList<>();
 
 	public List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
 
-	private Collection<NotificationBean> notifications = Collections.emptyList();
+	private Collection<NotificationBean> notifications = new ArrayList<>();
 
-	private Collection<UserVerificationBean> userVerifications = Collections.emptyList();
+	private Collection<UserVerificationBean> userVerifications = new ArrayList<>();
 
-	private Collection<LoginHistoryBean> loginHistories = Collections.emptyList();
+	private Collection<LoginHistoryBean> loginHistories = new ArrayList<>();
 	
 	private String imageSrc = "https://source.unsplash.com/random/128x128";
 

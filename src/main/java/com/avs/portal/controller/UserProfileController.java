@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -65,8 +66,8 @@ public class UserProfileController {
 		return userProfileService.createUserProfile(new UserBean().setId(UUID.fromString(userId)), userProfileBean);
 	}
 	
-	@PutMapping("/update")
-	public UserBean editUserProfile(@RequestBody UserProfileBean userProfileBean) {
+	@PatchMapping("/update")
+	public UserBean updateUserProfile(@RequestBody UserProfileBean userProfileBean) {
 		return userProfileService.updateUserProfile(userProfileBean);
 	}	
 

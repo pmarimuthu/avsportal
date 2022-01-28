@@ -145,6 +145,7 @@ public class UserReferralService {
 			userBean.setHasError(true);
 			userBean.getCustomErrorMessages().add("Email/Phone already exists.");
 		}
+		
 		return userBean;
 	}
 

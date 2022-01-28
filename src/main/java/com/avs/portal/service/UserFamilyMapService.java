@@ -60,7 +60,7 @@ public class UserFamilyMapService {
 					}
 				}
 
-				System.out.println(String.format("%s/%s/%s", parentFamilyHeadName, familyHeadName, userName));
+				System.out.println(String.format("%s /%s /%s", parentFamilyHeadName, familyHeadName, userName));
 				userFamilyMaps.add(userFamilyMapBean);
 			}
 		}

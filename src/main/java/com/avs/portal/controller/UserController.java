@@ -1,16 +1,15 @@
 package com.avs.portal.controller;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -114,10 +113,11 @@ public class UserController {
 		try {
 			EmailService.sendConfirmEmailAddress(user);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
-	@PutMapping("/update")
+	@PatchMapping("/update")
 	public UserBean updateUser(@RequestBody UserBean user) {
 		return userService.updateUser(user);
 	}
@@ -138,10 +138,9 @@ public class UserController {
 			verificationBean.setVerificationMode(VerificationModeEnum.EMAIL);
 			verificationBean.setVerificationSubject(VerificationSubjectEnum.USER);
 			verificationBean.setVerifiedBy(null);
-			verificationBean.setVerifiedBy(UUID.fromString("5e114a10-6275-47f5-bf3b-a9c0e8233f62")); // ADMIN
+			verificationBean.setVerifiedBy(UUID.fromString(userId)); // ADMIN
 			
-			Set<UserVerificationBean> userVerifications = userVerificationService.createOrEditUserVerification(userBean, verificationBean);
-			System.out.println("UserVerifications: " + userVerifications.toString());
+			userBean = userVerificationService.updateUserVerification(userBean, verificationBean);
 			
 			return userBean;
 			

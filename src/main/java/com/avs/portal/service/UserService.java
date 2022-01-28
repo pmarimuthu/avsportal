@@ -25,12 +25,13 @@ import com.avs.portal.entity.UserPreferences;
 import com.avs.portal.entity.UserProfile;
 import com.avs.portal.entity.UserReferral;
 import com.avs.portal.entity.UserRoleMap;
+import com.avs.portal.entity.UserVerification;
 import com.avs.portal.enums.AddressTypeEnum;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
+import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.CommonUtil;
 
 @Service
 public class UserService {
@@ -47,7 +48,7 @@ public class UserService {
 	// FIND (Id or Email & Phone)
 	public List<UserBean> getUsersByIdOrEmailAndPhone(UserBean userBean) {
 		if(userBean == null || (userBean.getId() == null && userBean.getEmail() == null) || (userBean.getPhone() == null))
-			return null;
+			return Collections.emptyList();
 
 		List<User> users = userRepository.findByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone());
 		
@@ -122,6 +123,7 @@ public class UserService {
 		defaultUserFamilyMap(user);
 		defaultUserRoleMap(user);
 		defaultUserReferrer(user);
+		defaultUserVerifications(user);
 
 		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
@@ -329,6 +331,24 @@ public class UserService {
 		userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
 		return userReferral;		
+	}
+
+	private List<UserVerification> defaultUserVerifications(User user) {
+		UserVerification userSubjectVerification = new UserVerification();
+		userSubjectVerification.setUser(user);
+		userSubjectVerification.setVerificationSubject(VerificationSubjectEnum.USER);
+		userSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		user.getUserVerifications().add(userSubjectVerification);
+		
+		UserVerification profileSubjectVerification = new UserVerification();
+		profileSubjectVerification.setUser(user);
+		profileSubjectVerification.setVerificationSubject(VerificationSubjectEnum.PROFILE);
+		profileSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		
+		user.getUserVerifications().add(profileSubjectVerification);
+		
+		return user.getUserVerifications();
 	}
 
 	public List<UserBean> getUsersByAddress(UserAddressBean userAddressBean) {
