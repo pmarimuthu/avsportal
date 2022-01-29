@@ -3,8 +3,12 @@ package com.avs.portal.util;
 import com.avs.portal.bean.UserBean;
 
 public final class AVSPortalSecurityUtil {
+	
+	private AVSPortalSecurityUtil() {
+	}
 
 	public static String getJWTToken(UserBean userBean) {
+		Logger.info(userBean.toString());
 		return "To return JWT Token - Please uncomment the below logic";
 		
 		/* 

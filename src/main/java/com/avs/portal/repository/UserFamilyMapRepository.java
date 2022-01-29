@@ -9,6 +9,7 @@ import com.avs.portal.entity.UserFamilyMap;
 
 public interface UserFamilyMapRepository extends CrudRepository<UserFamilyMap, UUID> {
 
+	@Override
 	Collection<UserFamilyMap> findAll();
 
 	Collection<UserFamilyMap> findDistinctByFamilyHeadIdNotNull();

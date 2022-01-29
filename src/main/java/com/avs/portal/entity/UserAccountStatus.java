@@ -128,6 +128,7 @@ public class UserAccountStatus extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserAccountStatusBean toBean() {
 		UserAccountStatusBean userAccountStatusBean = new UserAccountStatusBean()
 				.setId(id)

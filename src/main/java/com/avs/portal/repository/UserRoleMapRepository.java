@@ -11,6 +11,7 @@ import com.avs.portal.enums.RoleEnum;
 
 public interface UserRoleMapRepository extends CrudRepository<UserRoleMap, UUID> {
 
+	@Override
 	List<UserRoleMap> findAll();
 	
 	UserRoleMap findByUser(User user);

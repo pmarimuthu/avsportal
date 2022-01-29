@@ -121,6 +121,7 @@ public class UserRelationToMeMap extends BaseEntity {
 		return this;
 	}
 	
+	@Override
 	public UserRelationToMeMapBean toBean() {
 		UserRelationToMeMapBean userRelationToMeMapBean = new UserRelationToMeMapBean()
 				.setId(id)

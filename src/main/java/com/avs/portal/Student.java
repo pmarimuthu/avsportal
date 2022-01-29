@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.avs.portal.util.Logger;
+
 public class Student {
 	private Integer rollNumber;
 	private String name;
@@ -31,7 +33,7 @@ public class Student {
 		List<Student> students = Arrays.asList(anil, ravi, raju);
 		
 		List<Integer> rollNumbers = students.stream().map(Student :: getRollNumber).collect(Collectors.toList());
-		System.out.println(rollNumbers);
+		Logger.log(rollNumbers.toString());
 		
 	}
 }

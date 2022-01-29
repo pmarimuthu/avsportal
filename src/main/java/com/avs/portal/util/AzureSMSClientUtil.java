@@ -15,6 +15,9 @@ public class AzureSMSClientUtil {
 
 	private static final String ACCESS_KEY_CREDENTIAL = "<access-key-credential>";
 
+	private AzureSMSClientUtil() {
+	}
+	
 	public static void main(String[] args) {
 
 		SmsClient smsClient = AzureSMSClientUtil.getSmsClient(END_POINT, ACCESS_KEY_CREDENTIAL);
@@ -41,9 +44,9 @@ public class AzureSMSClientUtil {
 
 		SmsSendResult sendResult = smsClient.send(fromPhoneNumber, toPhoneNumber, message);
 
-		System.out.println("Message Id: " + sendResult.getMessageId());
-		System.out.println("Recipient Number: " + sendResult.getTo());
-		System.out.println("Send Result Successful:" + sendResult.isSuccessful());
+		Logger.info("Message Id: " + sendResult.getMessageId());
+		Logger.info("Recipient Number: " + sendResult.getTo());
+		Logger.info("Send Result Successful:" + sendResult.isSuccessful());
 	}
 
 	public static void send1ToNSms(SmsClient smsClient, String fromPhoneNumber, List<String> toPhoneNumbers, String message, String optionalTag) {
@@ -63,9 +66,9 @@ public class AzureSMSClientUtil {
 				Context.NONE).getValue();
 
 		for (SmsSendResult result : sendResults) {
-			System.out.println("Message Id: " + result.getMessageId());
-			System.out.println("Recipient Number: " + result.getTo());
-			System.out.println("Send Result Successful:" + result.isSuccessful());
+			Logger.info("Message Id: " + result.getMessageId());
+			Logger.info("Recipient Number: " + result.getTo());
+			Logger.info("Send Result Successful:" + result.isSuccessful());
 		}
 	}
 

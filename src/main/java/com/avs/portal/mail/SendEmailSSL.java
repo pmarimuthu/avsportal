@@ -2,6 +2,7 @@ package com.avs.portal.mail;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -21,12 +23,14 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.io.IOUtils;
 
-public class SendEmailSSL {
+import com.avs.portal.exception.AVSApplicationException;
 
-	public static void main(String[] args) throws Exception {
+public class SendEmailSSL {
+	
+	private SendEmailSSL() {
 	}
 	
-	public static Properties getProperties() throws Exception {
+	public static Properties getProperties() throws AVSApplicationException {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "465");
@@ -47,21 +51,22 @@ public class SendEmailSSL {
 		props.put("<content-id>", "<logocid>");
 		props.put("kanaksan.mail.attach.file", "C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\logo.png");
 		
-
-		
 		return props;
 	}
 
-	public static String getEmailContentTemplate() throws Exception {
-		//File file = new File(new ClassPathResource("/static/assets/mail.html").getPath());
+	public static String getEmailContentTemplate() throws AVSApplicationException {
 		File file = new File("C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\mail.html");
-		InputStream inputStream = new FileInputStream(file);
-		return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+		try {
+			InputStream inputStream = new FileInputStream(file);
+			return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new AVSApplicationException(e.getMessage(), e);
+		}
 	}
 
-	public static void sendGmailSSL(Properties props) throws Exception {
-		
+	public static void sendGmailSSL(Properties props) throws AVSApplicationException {		
 		Authenticator authenticator = new javax.mail.Authenticator() {
+			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(props.getProperty("mail.smtp.username"), props.getProperty("mail.smtp.appPassword"));
 			}
@@ -73,29 +78,45 @@ public class SendEmailSSL {
 		Message message = new MimeMessage(session);
 
 		// Properties
-		message.setFrom(new InternetAddress(props.getProperty("kanaksan.mail.from")));
-		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(props.getProperty("kanaksan.mail.csvRecipients")));
-		message.setSubject(props.getProperty("kanaksan.mail.subject"));
-		message.setSentDate(new Date());
+		try {
+			message.setFrom(new InternetAddress(props.getProperty("kanaksan.mail.from")));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(props.getProperty("kanaksan.mail.csvRecipients")));
+			message.setSubject(props.getProperty("kanaksan.mail.subject"));
+			message.setSentDate(new Date());
+		} catch (MessagingException e) {
+			throw new AVSApplicationException(e.getMessage(), e);
+		}
 
 		// MessageBody
 		BodyPart bodyPart = new MimeBodyPart();
-		bodyPart.setContent(props.getProperty("kanaksan.mail.content"), props.get("kanaksan.mail.content.mimeType").toString());
+		try {
+			bodyPart.setContent(props.getProperty("kanaksan.mail.content"), props.get("kanaksan.mail.content.mimeType").toString());
+		} catch (MessagingException e) {
+			throw new AVSApplicationException(e.getMessage(), e);
+			}
 
 		// Message Multipart
 		Multipart multipart = new MimeMultipart();
 
 		// Image Part
 		MimeBodyPart imagePart = new MimeBodyPart();
-		imagePart.setHeader("Content-ID", props.getProperty("<content-id>"));
-		imagePart.setDisposition(MimeBodyPart.INLINE);
-		imagePart.attachFile(new File(props.getProperty("kanaksan.mail.attach.file")));
+		try {
+			imagePart.setHeader("Content-ID", props.getProperty("<content-id>"));
+			imagePart.setDisposition(MimeBodyPart.INLINE);
+			imagePart.attachFile(new File(props.getProperty("kanaksan.mail.attach.file")));
+		} catch (MessagingException | IOException e) {
+			throw new AVSApplicationException(e.getMessage(), e);
+		}
 
 		// Prepare & Send
-		multipart.addBodyPart(bodyPart);
-		multipart.addBodyPart(imagePart);
-		message.setContent(multipart);
-		Transport.send(message);
+		try {
+			multipart.addBodyPart(bodyPart);
+			multipart.addBodyPart(imagePart);
+			message.setContent(multipart);
+			Transport.send(message);
+		} catch (MessagingException e) {
+			throw new AVSApplicationException(e.getMessage(), e);
+		}
 	}
 }
 

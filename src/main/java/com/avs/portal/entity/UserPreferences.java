@@ -106,6 +106,7 @@ public class UserPreferences extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserPreferencesBean toBean() {
 		UserPreferencesBean userPreferencesBean = new UserPreferencesBean()
 				.setId(id)

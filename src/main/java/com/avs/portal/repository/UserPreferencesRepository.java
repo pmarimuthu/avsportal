@@ -11,6 +11,7 @@ import com.avs.portal.enums.VisibilityEnum;
 
 public interface UserPreferencesRepository extends CrudRepository<UserPreferences, UUID> {
 
+	@Override
 	List<UserPreferences> findAll();
 	
 	UserPreferences findByUser(User user);

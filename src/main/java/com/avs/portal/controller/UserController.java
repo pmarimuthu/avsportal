@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.bean.UserVerificationBean;
-import com.avs.portal.enums.VerificationModeEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
+import com.avs.portal.exception.AVSApplicationException;
 import com.avs.portal.mail.EmailService;
 import com.avs.portal.service.UserService;
 import com.avs.portal.service.UserVerificationService;
+import com.avs.portal.util.Logger;
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -62,7 +62,7 @@ public class UserController {
 			
 			if(!users.isEmpty()) {
 				String otpString = EmailService.sendOTP(users.get(0));
-				System.err.println("TODO ## Generated OTP: " + otpString);
+				Logger.log("TODO ## Generated OTP: " + otpString);
 				foundUserBean = users.get(0);
 				
 				return foundUserBean;
@@ -83,37 +83,32 @@ public class UserController {
 	@PostMapping("/create")
 	public UserBean createUser(@RequestBody UserBean userBean) {
 		UserBean createdUserBean = new UserBean();
-		try {
-			final UserBean createdUserBean2 = userService.createUser(userBean);
-			if(createdUserBean2.getHasError() == false) {
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						doPostCreate(createdUserBean2);
-						System.out.println("Post Create done.");
-					}
-				}).start();
-				System.out.println("Created! Post Create Triggered ...");
-				return createdUserBean2;
-			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			
-			createdUserBean.setHasError(true);
-			createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
-			return createdUserBean;
+
+		final UserBean createdUserBean2 = userService.createUser(userBean);
+		if(!createdUserBean2.getHasError()) {
+			new Thread( () -> {
+				try {
+					doPostCreate(createdUserBean2);
+					Logger.log("Post Create done.");
+				} catch (AVSApplicationException e) {
+					Logger.logError(e.getMessage());
+				}
+			}).start();
+			Logger.log("Created! Post Create Triggered ...");
+			return createdUserBean2;
 		}
-		
-		return null;
+
+		createdUserBean.setHasError(true);
+		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		return createdUserBean;
 	}
 
-	private void doPostCreate(UserBean user) {
+	private void doPostCreate(UserBean user) throws AVSApplicationException {
 		try {
 			EmailService.sendConfirmEmailAddress(user);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			Logger.logError(e.getMessage());
+			throw new AVSApplicationException(e.getMessage(), e);
 		}
 	}
 
@@ -128,17 +123,17 @@ public class UserController {
 	}
 	
 	@GetMapping(path = "/verify/email/{userId}")
-	public @ResponseBody UserBean verifyUserEmail(@PathVariable(name = "userId") String userId) {
+	public UserBean verifyUserEmail(@PathVariable(name = "userId") String userId) {
 		try {
 			UserBean userBean = userService.getUser(new UserBean().setId(UUID.fromString(userId)));
 			if(userBean == null || userBean.getId() == null)
 				throw new ResponseStatusException(200, "Unable to find User: " + userId, null);
 			
 			UserVerificationBean verificationBean = new UserVerificationBean();
-			verificationBean.setVerificationMode(VerificationModeEnum.EMAIL);
+			verificationBean.setComment(null);
 			verificationBean.setVerificationSubject(VerificationSubjectEnum.USER);
 			verificationBean.setVerifiedBy(null);
-			verificationBean.setVerifiedBy(UUID.fromString(userId)); // ADMIN
+			verificationBean.setVerifiedBy(UUID.fromString(userId));
 			
 			userBean = userVerificationService.updateUserVerification(userBean, verificationBean);
 			

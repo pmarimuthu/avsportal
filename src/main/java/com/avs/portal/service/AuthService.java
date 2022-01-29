@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import com.avs.portal.repository.LoginHistoryRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.CommonUtil;
 import com.avs.portal.util.Constants;
+import com.avs.portal.util.Logger;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class AuthService {
@@ -53,17 +57,18 @@ public class AuthService {
 		try {
 			userUUID = UUID.fromString(loginId);
 			keyType = LoginKeyEnum.UUID;
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
+			Logger.logError(e.getMessage());
 		}
 		
 		Long phone = null;
 		try {
 			if(CommonUtil.isValidPhone(Long.parseLong(loginId))) {
 				phone = Long.parseLong(loginId);
-				keyType = LoginKeyEnum.PHONE;
-				
+				keyType = LoginKeyEnum.PHONE;				
 			}
 		} catch (NumberFormatException e) {
+			Logger.logError(e.getMessage());
 		}
 		
 		String email = null;
@@ -72,7 +77,8 @@ public class AuthService {
 				email = loginId;
 				keyType = LoginKeyEnum.EMAIL;
 			}			
-		} catch (NumberFormatException e) {
+		} catch (PatternSyntaxException e) {
+			Logger.logError(e.getMessage());
 		}
 		
 		if(keyType == null) {
@@ -139,7 +145,7 @@ public class AuthService {
 			loginHistory.setConsecutiveFailedLoginCount(0);
 		}
 		else if(flag == Constants.LOGIN_FAILED) {
-			if(loginHistories != null && loginHistories.size() > 0) {
+			if(!Collections.isEmpty(loginHistories)) {
 				LoginHistory recentHistory = loginHistories.get(0);				
 				loginHistory.setConsecutiveFailedLoginCount(recentHistory.getConsecutiveFailedLoginCount() + 1);
 				user.setHasError(true);
@@ -160,10 +166,10 @@ public class AuthService {
 		loginHistory.setUser(user);
 		user.getLoginHistories().add(loginHistory);
 		
-		loginHistory = loginHistoryRepository.save(loginHistory);
-		user = userRepository.save(user);
+		loginHistoryRepository.save(loginHistory);
+		User theUser = userRepository.save(user);
 		
-		return user.toBean()
+		return theUser.toBean()
 				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 

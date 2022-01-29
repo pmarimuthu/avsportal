@@ -130,6 +130,7 @@ public class UserInformation extends BaseEntity {
 		return this;
 	}
 	
+	@Override
 	public UserInformationBean toBean() {
 		UserInformationBean userInformationBean = 
 				new UserInformationBean()

@@ -11,7 +11,7 @@ import com.avs.portal.util.CommonUtil;
 
 public class UserBean extends BaseBean implements Serializable {
 
-	private static final long serialVersionUID = -5996259344239551268L;
+	private static final long serialVersionUID = -5765867101012077470L;
 
 	private UUID id;
 
@@ -47,7 +47,7 @@ public class UserBean extends BaseBean implements Serializable {
 
 	private Collection<UserAddressBean> userAddresses = new ArrayList<>();
 
-	public List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
+	private List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
 
 	private Collection<NotificationBean> notifications = new ArrayList<>();
 

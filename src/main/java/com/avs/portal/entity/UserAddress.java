@@ -195,6 +195,7 @@ public class UserAddress extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserAddressBean toBean() {
 		UserAddressBean userAddressBean = new UserAddressBean()
 				.setId(id)

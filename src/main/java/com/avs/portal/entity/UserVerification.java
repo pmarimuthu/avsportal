@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.avs.portal.bean.UserVerificationBean;
-import com.avs.portal.enums.VerificationModeEnum;
+import com.avs.portal.enums.VerificationStatusEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 
 @Entity
@@ -32,11 +32,14 @@ public class UserVerification extends BaseEntity {
 	@Column(name = "verification_subject", nullable = false)
 	private VerificationSubjectEnum verificationSubject;
 	
-	@Column(name = "verification_mode", nullable = false)
-	private VerificationModeEnum verificationMode;
+	@Column(name = "verification_status", nullable = false)
+	private VerificationStatusEnum verificationStatus;
 	
-	@Column(name = "verified_by", nullable = false)
+	@Column(name = "verified_by")
 	private UUID verifiedBy;
+	
+	@Column(name = "comment")
+	private String comment;
 	
 	@Column(name = "created_on")
 	private Timestamp createdOn;
@@ -70,13 +73,12 @@ public class UserVerification extends BaseEntity {
 		return this;
 	}
 
-	public VerificationModeEnum getVerificationMode() {
-		return verificationMode;
+	public VerificationStatusEnum getVerificationStatus() {
+		return verificationStatus;
 	}
 
-	public UserVerification setVerificationMode(VerificationModeEnum verificationMode) {
-		this.verificationMode = verificationMode;
-		return this;
+	public void setVerificationStatus(VerificationStatusEnum verificationStatus) {
+		this.verificationStatus = verificationStatus;
 	}
 
 	public UUID getVerifiedBy() {
@@ -85,6 +87,15 @@ public class UserVerification extends BaseEntity {
 
 	public UserVerification setVerifiedBy(UUID verifiedBy) {
 		this.verifiedBy = verifiedBy;
+		return this;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public UserVerification setComment(String comment) {
+		this.comment = comment;
 		return this;
 	}
 
@@ -106,13 +117,15 @@ public class UserVerification extends BaseEntity {
 		return this;
 	}
 	
+	@Override
 	public UserVerificationBean toBean() {
 		UserVerificationBean userVerificationBean = new UserVerificationBean()
 				.setId(id)
 				.setUserId(id)
 				.setVerificationSubject(verificationSubject)
-				.setVerificationMode(verificationMode)
+				.setVerificationStatus(verificationStatus)
 				.setVerifiedBy(verifiedBy)
+				.setComment(comment)
 				.setCreatedOn(createdOn.toLocalDateTime())
 				.setUpdatedOn(updatedOn.toLocalDateTime());
 		
@@ -130,8 +143,9 @@ public class UserVerification extends BaseEntity {
 				" Id: " + id + 
 				", User Id: " + (user == null ? "NULL" : user.getId()) + 
 				", Verification Subject: " + verificationSubject + 
-				", Verification Mode: " + verificationMode + 
+				", Verification Status: " + verificationStatus +
 				", Verified By: " + verifiedBy + 
+				", Comment: " + comment + 
 				", Created On: " + createdOn + 
 				", Updated On: " + updatedOn + 
 				"]";

@@ -125,6 +125,7 @@ public class LoginHistory extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public LoginHistoryBean toBean() {
 		LoginHistoryBean loginHistoryBean = new LoginHistoryBean()
 				.setId(id)

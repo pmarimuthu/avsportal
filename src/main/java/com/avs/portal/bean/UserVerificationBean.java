@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.avs.portal.enums.VerificationModeEnum;
+import com.avs.portal.enums.VerificationStatusEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 
 public class UserVerificationBean extends BaseBean implements Serializable {
@@ -17,7 +17,9 @@ public class UserVerificationBean extends BaseBean implements Serializable {
 	
 	private VerificationSubjectEnum verificationSubject;
 	
-	private VerificationModeEnum verificationMode;
+	private VerificationStatusEnum verificationStatus;
+	
+	private String comment;
 	
 	private UUID verifiedBy;
 	
@@ -52,12 +54,21 @@ public class UserVerificationBean extends BaseBean implements Serializable {
 		return this;
 	}
 
-	public VerificationModeEnum getVerificationMode() {
-		return verificationMode;
+	public VerificationStatusEnum getVerificationStatus() {
+		return verificationStatus;
 	}
 
-	public UserVerificationBean setVerificationMode(VerificationModeEnum verificationMode) {
-		this.verificationMode = verificationMode;
+	public UserVerificationBean setVerificationStatus(VerificationStatusEnum verificationStatus) {
+		this.verificationStatus = verificationStatus;
+		return this;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public UserVerificationBean setComment(String comment) {
+		this.comment = comment;
 		return this;
 	}
 
@@ -94,7 +105,8 @@ public class UserVerificationBean extends BaseBean implements Serializable {
 				+ "Id: " + id +
 				", UserId: " + userId + 
 				", Verification Subject: " + verificationSubject + 
-				", Verification Mode: " + verificationMode + 
+				", Verification Status: " + verificationStatus +
+				", Comment: " + comment + 
 				", Verified By: " + verifiedBy + 
 				", Created On: " + createdOn + 
 				", Updated On: " + updatedOn + 

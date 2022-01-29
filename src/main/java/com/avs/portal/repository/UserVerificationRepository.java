@@ -9,5 +9,6 @@ import com.avs.portal.entity.UserVerification;
 
 public interface UserVerificationRepository extends CrudRepository<UserVerification, UUID> {
 
+	@Override
 	Set<UserVerification> findAll();
 }

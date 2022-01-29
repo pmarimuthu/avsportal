@@ -51,7 +51,7 @@ public class NotificationService {
 		if(user == null)
 			return Collections.emptyList();
 		
-		Notification userNotification = user.getNotifications().stream().filter(entity -> (entity.getNotificationType() != null && entity.getNotificationType().equals(notificationBean.getNotificationType()) )).findFirst().orElse(null);
+		Notification userNotification = user.getNotifications().stream().filter(entity -> entity.getNotificationType() != null && entity.getNotificationType().equals(notificationBean.getNotificationType())).findFirst().orElse(null);
 		if(userNotification == null) {
 			userNotification = new Notification();
 			userNotification.setNotificationType(userNotification.getNotificationType());

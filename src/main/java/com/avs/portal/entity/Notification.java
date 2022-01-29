@@ -101,6 +101,7 @@ public class Notification extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public NotificationBean toBean() {
 		NotificationBean notificationBean = new NotificationBean()
 				.setId(id)

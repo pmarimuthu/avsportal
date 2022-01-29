@@ -26,6 +26,11 @@ public class CommonUtil {
 			"(?=\\S+$).{8,20}$";
 	
 	
+
+	
+	private CommonUtil() {
+	}
+	
 	public static boolean isValidPhone(Long phone) {
         if(phone != null 
         		&& String.valueOf(phone).length() == 10)
@@ -76,21 +81,21 @@ public class CommonUtil {
 		String number = RandomStringUtils.randomNumeric(1);
 				
 		return String.format("%8s", 
-				(lowerChar + lowerChar
-				+ upperChar + upperChar
-				+ specialChar + specialChar
-				+ number + number)
+					lowerChar + lowerChar
+					+ upperChar + upperChar
+					+ specialChar + specialChar
+					+ number + number
 				);
 	}
 
 	private static String generateSpecialChar() {
-		final String alphabet = "!@#$%^&*";
-		final int N = alphabet.length();
+		final String allowedSpecialChars = "!@#$%^&*";
+		final int N = allowedSpecialChars.length();
 		Random rd = new Random();
 		int iLength = 1;
 		StringBuilder specialChar = new StringBuilder(iLength);
 		for (int i = 0; i < iLength; i++) {
-			specialChar.append(alphabet.charAt(rd.nextInt(N)));
+			specialChar.append(allowedSpecialChars.charAt(rd.nextInt(N)));
 		}
 		
 		
@@ -112,15 +117,15 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String getValidatedPassword(String password) {
-		password = StringUtils.trimWhitespace(password);
+		String thePassword = StringUtils.trimWhitespace(password);
 		
-		if(password.isEmpty()) 
+		if(thePassword.isEmpty()) 
 			return null;
 		
 		Pattern p = Pattern.compile(PASSWORD_REGEX);
-		Matcher m = p.matcher(password);
+		Matcher m = p.matcher(thePassword);
 		if(m.matches())
-			return password;
+			return thePassword;
 		
 		return null;
 	}

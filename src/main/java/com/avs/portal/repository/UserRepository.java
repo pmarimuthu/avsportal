@@ -9,6 +9,7 @@ import com.avs.portal.entity.User;
 
 public interface UserRepository extends CrudRepository<User, UUID> {
 
+	@Override
 	List<User> findAll();
 		
 	List<User> findByPhone(Long phone);

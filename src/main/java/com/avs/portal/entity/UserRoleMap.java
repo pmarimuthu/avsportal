@@ -82,6 +82,7 @@ public class UserRoleMap extends BaseEntity {
 		return this;
 	}
 	
+	@Override
 	public UserRoleMapBean toBean() {
 		UserRoleMapBean userRoleMapBean = new UserRoleMapBean()
 				.setId(id)

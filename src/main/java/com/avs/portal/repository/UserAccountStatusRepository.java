@@ -10,6 +10,7 @@ import com.avs.portal.entity.UserAccountStatus;
 
 public interface UserAccountStatusRepository extends CrudRepository<UserAccountStatus, UUID> {
 
+	@Override
 	List<UserAccountStatus> findAll();
 	
 	UserAccountStatus findByUser(User user);

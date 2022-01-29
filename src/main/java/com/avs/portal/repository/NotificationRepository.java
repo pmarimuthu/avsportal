@@ -11,6 +11,7 @@ import com.avs.portal.enums.NotificationTypeEnum;
 
 public interface NotificationRepository extends CrudRepository<Notification, UUID> {
 
+	@Override
 	List<Notification> findAll();
 	
 	List<Notification> findByUser(User user);

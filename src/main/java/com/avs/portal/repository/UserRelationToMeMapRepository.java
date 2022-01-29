@@ -11,6 +11,7 @@ import com.avs.portal.enums.RelationToMeEnum;
 
 public interface UserRelationToMeMapRepository extends CrudRepository<UserRelationToMeMap, UUID> {
 
+	@Override
 	List<UserRelationToMeMap> findAll();
 	
 	UserRelationToMeMap findByUser(User user);

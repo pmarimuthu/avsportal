@@ -10,6 +10,7 @@ import com.avs.portal.entity.User;
 
 public interface LoginHistoryRepository extends CrudRepository<LoginHistory, UUID> {
 
+	@Override
 	List<LoginHistory> findAll();
 	
 	List<LoginHistory> findByUser(User user);

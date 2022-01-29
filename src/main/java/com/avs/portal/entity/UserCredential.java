@@ -80,6 +80,7 @@ public class UserCredential extends BaseEntity {
 		return this;
 	}
 	
+	@Override
 	public UserCredentialBean toBean() {
 		UserCredentialBean userCredentialBean = new UserCredentialBean()
 		.setId(id)

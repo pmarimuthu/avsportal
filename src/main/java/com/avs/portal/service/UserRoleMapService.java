@@ -49,12 +49,14 @@ public class UserRoleMapService {
 			return null;
 
 		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
+		if(user == null) {
 			return null;
+		}
 		
 		 UserRoleMap userRoleMap = user.getUserRoleMap();
-		 if(userRoleMap == null)
+		 if(userRoleMap == null) {
 			 return null;
+		 }
 
 		return userRoleMap.toBean();
 	}

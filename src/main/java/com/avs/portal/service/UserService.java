@@ -3,6 +3,7 @@ package com.avs.portal.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import com.avs.portal.entity.UserVerification;
 import com.avs.portal.enums.AddressTypeEnum;
 import com.avs.portal.enums.LanguageEnum;
 import com.avs.portal.enums.RoleEnum;
+import com.avs.portal.enums.VerificationStatusEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
@@ -102,15 +104,15 @@ public class UserService {
 		if(userBean == null)
 			return userBean;
 
-		userBean = userBean.getValidatedUserBean(userBean);
-		if(userBean.getHasError())
-			return userBean;
+		UserBean theUserBean = userBean.getValidatedUserBean(userBean);
+		if(theUserBean.getHasError())
+			return theUserBean;
 
 		// User :: user_01
 		// ---------------
 		User user = new User();
-		user.setPhone(userBean.getPhone());
-		user.setEmail(userBean.getEmail());
+		user.setPhone(theUserBean.getPhone());
+		user.setEmail(theUserBean.getEmail());
 		user.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
@@ -127,7 +129,15 @@ public class UserService {
 
 		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
 
-		user = userRepository.save(user);
+		try {
+			user = userRepository.save(user);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return user.toBean()
+					.setHasError(true)
+					.setCustomErrorMessages(Arrays.asList(e.getMessage()));
+			
+		}
 
 		return user.toBean()
 				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
@@ -337,14 +347,18 @@ public class UserService {
 		UserVerification userSubjectVerification = new UserVerification();
 		userSubjectVerification.setUser(user);
 		userSubjectVerification.setVerificationSubject(VerificationSubjectEnum.USER);
+		userSubjectVerification.setVerificationStatus(VerificationStatusEnum.NOT_VERIFIED);
 		userSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		userSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		user.getUserVerifications().add(userSubjectVerification);
 		
 		UserVerification profileSubjectVerification = new UserVerification();
 		profileSubjectVerification.setUser(user);
 		profileSubjectVerification.setVerificationSubject(VerificationSubjectEnum.PROFILE);
+		profileSubjectVerification.setVerificationStatus(VerificationStatusEnum.NOT_VERIFIED);
 		profileSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+		profileSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
 		user.getUserVerifications().add(profileSubjectVerification);
 		

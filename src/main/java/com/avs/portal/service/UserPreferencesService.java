@@ -44,11 +44,12 @@ public class UserPreferencesService {
 
 	public UserPreferencesBean createUserPreferences(UserPreferencesBean userPreferencesBean) {
 		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null)
-		return null;
+			return null;
 		
 		User user = userRepository.findById(userPreferencesBean.getUserId()).orElse(null);
-		if(user == null)
+		if(user == null) {
 			return null;
+		}
 		
 		UserPreferences userPreferences = user.getUserPreferences();
 		if(userPreferences != null) {
@@ -72,12 +73,14 @@ public class UserPreferencesService {
 	}
 
 	public UserBean updateUserPreferences(UserPreferencesBean userPreferencesBean) {
-		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null)
-		return null;
+		if(userPreferencesBean == null || userPreferencesBean.getUserId() == null) {
+			return null;
+		}
 		
 		User user = userRepository.findById(userPreferencesBean.getUserId()).orElse(null);
-		if(user == null)
+		if(user == null) {
 			return null;
+		}
 		
 		UserPreferences userPreferences = user.getUserPreferences();
 		if(userPreferences == null) {

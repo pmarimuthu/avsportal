@@ -24,6 +24,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.avs.portal.bean.UserBean;
+import com.avs.portal.util.Constants;
 
 @Entity
 @Table(schema = "public", name = "user_01")
@@ -88,22 +89,22 @@ public class User extends BaseEntity {
     private UserReferralMap userReferralMap;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<UserRelationToMeMap>();
+    private List<UserRelationToMeMap> userRelationToMeMap = new ArrayList<>();
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_useraddress_join", 
         joinColumns = { @JoinColumn(name = "USER_ID") }, 
         inverseJoinColumns = { @JoinColumn(name = "USERADDRESS_ID") })
-	private List<UserAddress> userAddresses = new ArrayList<UserAddress>();
+	private List<UserAddress> userAddresses = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Notification> notifications = new ArrayList<Notification>();
+    private List<Notification> notifications = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<UserVerification> userVerifications = new ArrayList<UserVerification>();
+    private List<UserVerification> userVerifications = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<LoginHistory> loginHistories = new ArrayList<LoginHistory>();
+	private List<LoginHistory> loginHistories = new ArrayList<>();
 
 	@Transient
 	public List<UserInformation> distinctFamilyHeads = new ArrayList<>();
@@ -353,6 +354,7 @@ public class User extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserBean toBean() {
 		UserBean userBean = new UserBean()
 				.setId(id)
@@ -374,23 +376,13 @@ public class User extends BaseEntity {
 				.setUserVerifications(userVerifications.stream().map(UserVerification :: toBean).collect(Collectors.toList()))
 				.setUserRelationToMeMap(userRelationToMeMap.stream().map(UserRelationToMeMap :: toBean).collect(Collectors.toList()));
 		
-		/*
-		userBean.setLoginHistories(loginHistories.stream()
-						.sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
-						.map(LoginHistory :: toBean)
-						.limit(10).
-						collect(Collectors.toList()));
-		*/
-		
-		// userBean.setNotifications(notifications.stream().map(Notification :: toBean).collect(Collectors.toList()));
-		
 		userBean.setHasError(isHasError());
 		userBean.setCustomErrorMessages(getCustomErrorMessages());
 		userBean.setThrowable(getThrowable());
 		
 		return userBean;		
 	}
-
+	
 	@Override
 	public String toString() {
 		return "\nUser [ " + 
@@ -400,18 +392,18 @@ public class User extends BaseEntity {
 				", CreatedOn: " + createdOn + 
 				", UpdatedOn: " + updatedOn + 
 				
-				", User Credential: " + (userCredential != null ? userCredential.toString() : "NULL") + 
-				", User Account Status: " + (userAccountStatus != null ? userAccountStatus.toString() : "NULL") + 
-				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : "NULL") + 
-				", User Information: " + (userInformation != null ? userInformation.toString() : "NULL") + 
-				", User Profile: " + (userProfile != null ? userProfile.toString() : "NULL") + 
-				", User Family Map: " + (userFamilyMap != null ? userFamilyMap.toString() : "NULL") + 
-				", User Role Map: " + (userRoleMap != null ? userRoleMap.toString() : "NULL") + 
-				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : "EMPTY") + 
-				", User Address(s): " + (userAddresses != null ? userAddresses.toString() : "EMPTY") + 
-				", Notification(s): " + (notifications != null ? notifications.toString() : "NULL") +
-				", User Verification(s): " + (userVerifications != null ? userVerifications.toString() : "EMPTY") + 
-				", Login History(s): " + (loginHistories != null ? loginHistories.toString() : "NULL") +
+				", User Credential: " + (userCredential != null ? userCredential.toString() : Constants.NULL_CONTENT) + 
+				", User Account Status: " + (userAccountStatus != null ? userAccountStatus.toString() : Constants.NULL_CONTENT) + 
+				", User Preferences: " + (userPreferences != null ? userPreferences.toString() : Constants.NULL_CONTENT) + 
+				", User Information: " + (userInformation != null ? userInformation.toString() : Constants.NULL_CONTENT) + 
+				", User Profile: " + (userProfile != null ? userProfile.toString() : Constants.NULL_CONTENT) + 
+				", User Family Map: " + (userFamilyMap != null ? userFamilyMap.toString() : Constants.NULL_CONTENT) + 
+				", User Role Map: " + (userRoleMap != null ? userRoleMap.toString() : Constants.NULL_CONTENT) + 
+				", User RelationToMe Map(s): " + (userRelationToMeMap != null ? userRelationToMeMap.toString() : Constants.EMPTY_CONTENT) + 
+				", User Address(s): " + (userAddresses != null ? userAddresses.toString() : Constants.EMPTY_CONTENT) + 
+				", Notification(s): " + (notifications != null ? notifications.toString() : Constants.NULL_CONTENT) +
+				", User Verification(s): " + (userVerifications != null ? userVerifications.toString() : Constants.EMPTY_CONTENT) + 
+				", Login History(s): " + (loginHistories != null ? loginHistories.toString() : Constants.NULL_CONTENT) +
 				" ]";
 	}
 	

@@ -107,6 +107,7 @@ public class UserReferral extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserReferralBean toBean() {
 		UserReferralBean userReferralBean = new UserReferralBean()
 				.setId(id)

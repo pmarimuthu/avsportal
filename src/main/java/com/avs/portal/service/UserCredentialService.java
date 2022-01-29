@@ -28,7 +28,6 @@ public class UserCredentialService {
 	@Autowired
 	private UserCredentialRepository userCredentialRepository;
 
-	// READ {ALL}
 	public List<UserCredentialBean> getAllUsersCredentials() {
 		return userRepository.findAll().stream().map(
 				user -> {
@@ -38,7 +37,6 @@ public class UserCredentialService {
 				}).collect(Collectors.toList());
 	}
 
-	// READ {ONE}
 	public UserCredentialBean getUserCredential(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
@@ -50,7 +48,6 @@ public class UserCredentialService {
 		return user.getUserCredential().toBean();
 	}
 
-	// CREATE
 	public UserCredentialBean createUserCredential(UserBean userBean, UserCredentialBean userCredentialBean) {
 		if(userBean == null || userBean.getId() == null || userCredentialBean == null || !userCredentialBean.getUserId().equals(userBean.getId()))
 			return null;
@@ -85,7 +82,6 @@ public class UserCredentialService {
 		return userCredential.toBean();
 	}
 
-	// UPDATE
 	public UserBean updateUserCredential(UserCredentialBean userCredentialBean) {
 		if(userCredentialBean == null || userCredentialBean.getUserId() == null)
 			return null;
@@ -112,13 +108,12 @@ public class UserCredentialService {
 		userCredential.setUser(user);
 		user.setUserCredential(userCredential);
 
-		userCredential = userCredentialRepository.save(userCredential);
+		userCredentialRepository.save(userCredential);
 
 		return user.toBean()
 				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
-	// DELETE
 	public UserBean deleteUserCredential(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;

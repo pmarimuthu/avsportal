@@ -10,6 +10,7 @@ import com.avs.portal.enums.AddressTypeEnum;
 
 public interface UserAddressRepository extends CrudRepository<UserAddress, UUID> {
 
+	@Override
 	List<UserAddress> findAll();
 	
 	List<UserAddress> findByAddressType(AddressTypeEnum addressType);

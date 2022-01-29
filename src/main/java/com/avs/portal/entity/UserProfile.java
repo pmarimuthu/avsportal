@@ -184,6 +184,7 @@ public class UserProfile extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserProfileBean toBean() {
 		UserProfileBean userProfileBean = new UserProfileBean()
 				.setId(id)

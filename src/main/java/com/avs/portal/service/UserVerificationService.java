@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +33,11 @@ public class UserVerificationService {
 	// READ (USER's)
 	public Set<UserVerificationBean> getUserVerifications(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
-			return null;
+			return Collections.emptySet();
 		
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
-			return null;
+			return Collections.emptySet();
 		
 		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
 	}
@@ -59,7 +60,7 @@ public class UserVerificationService {
 		if(userSubjectVerification == null)
 			return null;
 		
-		userSubjectVerification.setVerificationMode(userVerificationBean.getVerificationMode());
+		userSubjectVerification.setComment(userVerificationBean.getComment());
 		userSubjectVerification.setVerifiedBy(userVerificationBean.getVerifiedBy());
 		userSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
@@ -68,7 +69,7 @@ public class UserVerificationService {
 		return user.toBean();
 	}
 
-	public Set<UserVerificationBean> deleteUserVerification(UserBean userBean, UserVerificationBean userVerificationBean) {
+	public UserBean deleteUserVerification(UserBean userBean, UserVerificationBean userVerificationBean) {
 		if(userBean == null || userBean.getId() == null || userVerificationBean == null || userVerificationBean.getVerificationSubject() == null)
 			return null;
 		
@@ -89,7 +90,7 @@ public class UserVerificationService {
 		
 		user = userRepository.save(user);
 		
-		return user.getUserVerifications().stream().map(UserVerification :: toBean).collect(Collectors.toSet());
+		return user.toBean();
 	}
 
 }

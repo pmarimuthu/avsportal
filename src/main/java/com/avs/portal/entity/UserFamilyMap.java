@@ -118,6 +118,7 @@ public class UserFamilyMap extends BaseEntity {
 		return this;
 	}
 
+	@Override
 	public UserFamilyMapBean toBean() {
 		UserFamilyMapBean userFamilyMapBean = new UserFamilyMapBean()
 				.setId(id)

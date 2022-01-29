@@ -84,7 +84,6 @@ public class UserAddressService {
 				.setUsers(Collections.emptyList());
 		
 		user.getUserAddresses().add(userAddress);
-		//userAddress.getUsers().add(user);
 		
 		user = userRepository.save(user);
 		
@@ -156,20 +155,20 @@ public class UserAddressService {
 		List<UserAddress> userAddresses = user.getUserAddresses();
 		if(userAddresses
 				.stream()
-				.filter(userAddress -> (
+				.filter(userAddress ->
 						userAddress.getId().equals(userAddressBean.getId()) 
-						&& userAddress.getAddressType().equals(userAddressBean.getAddressType()))
-						)
+						&& userAddress.getAddressType().equals(userAddressBean.getAddressType())
+				)
 				.count() != 1) {			
 			return null;
 		}
 
 		UserAddress userAddress = userAddresses
 				.stream()
-				.filter(address -> (
+				.filter(address ->
 						address.getId().equals(userAddressBean.getId()) 
-						&& address.getAddressType().equals(userAddressBean.getAddressType()))
-						)
+						&& address.getAddressType().equals(userAddressBean.getAddressType())
+				)
 				.findFirst().orElse(null);
 		if(userAddress == null)
 			return null;
@@ -187,7 +186,7 @@ public class UserAddressService {
 		userAddress.setState(userAddressBean.getState());
 		userAddress.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-		user = userRepository.save(user); // TODO verify results.
+		user = userRepository.save(user);
 
 		return user.toBean();	
 

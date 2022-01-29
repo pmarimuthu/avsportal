@@ -15,6 +15,7 @@ import com.avs.portal.bean.LoginBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.service.AuthService;
+import com.avs.portal.util.Logger;
 
 @RestController
 @RequestMapping(path = "/api/auth")
@@ -30,9 +31,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public UserBean attemptLogin(@RequestBody LoginBean loginBean) {
-		UserBean authenticatedUserBean = authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
-		
-		return authenticatedUserBean;
+		return authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
 	}
 
 	private String getIPAddress() {
@@ -55,12 +54,11 @@ public class AuthController {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
 				.getRequest();
 
-		String userAgent = "Unknown!!";
-
 		if (request != null) {
-			userAgent = request.getHeader("User-Agent");
+			String userAgent = request.getHeader("User-Agent");
 			if (userAgent == null || "".equals(userAgent)) {
 				userAgent = request.getRemoteAddr();
+				Logger.info("User-Agent: " + userAgent);
 			}
 		}
 

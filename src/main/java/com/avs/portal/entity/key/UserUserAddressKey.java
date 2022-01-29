@@ -19,7 +19,7 @@ public class UserUserAddressKey implements Serializable {
 	private UUID userAddressId;
 	
 	public UserUserAddressKey() {
-		// TODO Auto-generated constructor stub
+		throw new UnsupportedOperationException();
 	}
 	
 	public UserUserAddressKey(UUID userId, UUID userAddressId) {

@@ -31,8 +31,7 @@ public class UserVerificationController {
 
 	@PostMapping("/list")
 	public Set<UserVerificationBean> listAllUserVerifications() {
-		Set<UserVerificationBean> list = userVerificationService.getAllUsersVerifications();
-		return list;
+		return userVerificationService.getAllUsersVerifications();
 	}
 
 	@PostMapping("/get/{userId}")
@@ -46,7 +45,7 @@ public class UserVerificationController {
 	}
 
 	@DeleteMapping("/delete/{userId}")
-	public Set<UserVerificationBean> deleteUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
+	public UserBean deleteUserVerification(@PathVariable(name = "userId") String userId, @RequestBody UserVerificationBean userVerificationBean) {
 		return userVerificationService.deleteUserVerification(new UserBean().setId(UUID.fromString(userId)), userVerificationBean);
 	}
 

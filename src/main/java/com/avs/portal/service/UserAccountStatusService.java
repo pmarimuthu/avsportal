@@ -75,11 +75,12 @@ public class UserAccountStatusService {
 
 	public UserBean createAccountStatus(UserAccountStatusBean userAccountStatusBean) {
 		if(userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
-		return null;
+			return null;
 		
 		User user = userRepository.findById(userAccountStatusBean.getUserId()).orElse(null);
-		if(user == null)
+		if(user == null) {
 			return null;
+		}
 		
 		UserAccountStatus userAccountStatus = user.getUserAccountStatus();
 		if(userAccountStatus == null) {

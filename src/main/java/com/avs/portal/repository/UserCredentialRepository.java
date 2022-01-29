@@ -10,6 +10,7 @@ import com.avs.portal.entity.UserCredential;
 
 public interface UserCredentialRepository extends CrudRepository<UserCredential, UUID> {
 	
+	@Override
 	List<UserCredential> findAll();
 	
 	UserCredential findByuser(User user);

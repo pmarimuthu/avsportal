@@ -10,6 +10,7 @@ import com.avs.portal.entity.UserReferral;
 
 public interface UserReferralRepository extends CrudRepository<UserReferral, UUID> {
 
+	@Override
 	List<UserReferral> findAll();
 	
 	List<UserReferral> findByReferrer(UUID referrer);

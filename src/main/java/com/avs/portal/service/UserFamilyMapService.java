@@ -20,6 +20,7 @@ import com.avs.portal.entity.UserFamilyMap;
 import com.avs.portal.enums.FamilyMemberTitleEnum;
 import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.util.Logger;
 
 @Service
 public class UserFamilyMapService {
@@ -31,12 +32,13 @@ public class UserFamilyMapService {
 	private UserFamilyMapRepository userFamilyMapRepository;
 
 	public List<UserFamilyMapBean> listUserFamilyMaps() {
+		String userName = null, familyHeadName = null, parentFamilyHeadName = null;
+
 		List<UserFamilyMapBean> userFamilyMaps = new ArrayList<>();
 
 		List<User> users = userRepository.findAll().stream().collect(Collectors.toList());
 		for (User user : users) {
-			UserFamilyMapBean userFamilyMapBean = null;
-			String userName = "", familyHeadName = "", parentFamilyHeadName = "";
+			UserFamilyMapBean userFamilyMapBean;
 
 			if(user.getUserFamilyMap() != null) {
 				userFamilyMapBean = user.getUserFamilyMap().toBean();
@@ -60,10 +62,10 @@ public class UserFamilyMapService {
 					}
 				}
 
-				System.out.println(String.format("%s /%s /%s", parentFamilyHeadName, familyHeadName, userName));
 				userFamilyMaps.add(userFamilyMapBean);
 			}
 		}
+		Logger.info(userName + familyHeadName + parentFamilyHeadName);
 
 		return userFamilyMaps;
 	}
@@ -132,7 +134,7 @@ public class UserFamilyMapService {
 		}
 
 		// Validate HeadID, ParentHeadID
-		userFamilyMapBean = validateUserFamilyMapBean(userFamilyMap, userFamilyMapBean);
+		validateUserFamilyMapBean(userFamilyMap, userFamilyMapBean);
 		
 		userFamilyMap
 		.setLiveStatus(userFamilyMapBean.getLiveStatus())
@@ -147,9 +149,9 @@ public class UserFamilyMapService {
 		user.setUserFamilyMap(userFamilyMap);
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-		user = userRepository.save(user);
+		User theUser = userRepository.save(user);
 
-		return user.toBean()
+		return theUser.toBean()
 				.setDistinctFamilyHeads(listDistinctFamilyHeads());
 
 	}
@@ -172,14 +174,13 @@ public class UserFamilyMapService {
 		userFamilyMap.setUser(null);
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-		user = userRepository.save(user);
+		User theUser = userRepository.save(user);
 
-		return user.toBean()
+		return theUser.toBean()
 				.setDistinctFamilyHeads(listDistinctFamilyHeads());
 
 	}
 
-	// VALIDATIONS
 	private UserFamilyMapBean validateUserFamilyMapBean(UserFamilyMap userFamilyEntity, UserFamilyMapBean userFamilyBean) {
 		if(userFamilyBean == null || userFamilyBean.getTitle() == null)
 			return userFamilyBean;
@@ -207,6 +208,7 @@ public class UserFamilyMapService {
 			if(userFamilyEntity.getUser().getId().equals(userFamilyBean.getParentFamilyHeadId())) {
 				userFamilyBean.setParentFamilyHeadId(null);
 			}
+
 			// User's Head can't be ParentHead
 			if(userFamilyEntity.getFamilyHeadId() != null && userFamilyEntity.getFamilyHeadId().equals(userFamilyBean.getParentFamilyHeadId())) {
 				userFamilyBean.setParentFamilyHeadId(null);

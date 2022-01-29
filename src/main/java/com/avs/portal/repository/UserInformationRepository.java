@@ -11,6 +11,7 @@ import com.avs.portal.entity.UserInformation;
 
 public interface UserInformationRepository extends CrudRepository<UserInformation, UUID> {
 
+	@Override
 	List<UserInformation> findAll();
 	
 	UserInformation findByUser(User user);

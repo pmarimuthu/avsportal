@@ -18,6 +18,7 @@ import com.avs.portal.enums.SubcasteEnum;
 
 public interface UserProfileRepository extends CrudRepository<UserProfile, UUID> {
 
+	@Override
 	List<UserProfile> findAll();
 	
 	UserProfile findByUser(User user);
