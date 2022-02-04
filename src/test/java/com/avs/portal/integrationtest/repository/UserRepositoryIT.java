@@ -40,6 +40,9 @@ public class UserRepositoryIT {
 
 		System.err.println("## Retrived: " + anilEntity.getId());
 		
+		System.in.read();
+		
 		assertTrue(anilEntity.getId().equals(anil.getId()));
 	}
+	
 }
