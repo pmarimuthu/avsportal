@@ -3,24 +3,21 @@ package com.avs.portal.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.bean.UserFamilyMapBean;
-import com.avs.portal.bean.UserInformationBean;
 import com.avs.portal.entity.User;
 import com.avs.portal.entity.UserFamilyMap;
 import com.avs.portal.enums.FamilyMemberTitleEnum;
+import com.avs.portal.enums.MaritalStatusEnum;
 import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.Logger;
 
 @Service
 public class UserFamilyMapService {
@@ -32,8 +29,6 @@ public class UserFamilyMapService {
 	private UserFamilyMapRepository userFamilyMapRepository;
 
 	public List<UserFamilyMapBean> listUserFamilyMaps() {
-		String userName = null, familyHeadName = null, parentFamilyHeadName = null;
-
 		List<UserFamilyMapBean> userFamilyMaps = new ArrayList<>();
 
 		List<User> users = userRepository.findAll().stream().collect(Collectors.toList());
@@ -44,13 +39,10 @@ public class UserFamilyMapService {
 				userFamilyMapBean = user.getUserFamilyMap().toBean();
 
 				userFamilyMapBean.setId(user.getId());
-				userName = user.getEmail();
-
 				if(user.getUserFamilyMap().getFamilyHeadId() != null) {
 					User familyHead = userRepository.findById(user.getUserFamilyMap().getFamilyHeadId()).orElse(null);
 					if(familyHead != null) {
 						userFamilyMapBean.setFamilyHeadId(familyHead.getId());
-						familyHeadName = familyHead.getEmail();
 					}
 				}
 
@@ -58,14 +50,12 @@ public class UserFamilyMapService {
 					User parentFamilyHead = userRepository.findById(user.getUserFamilyMap().getParentFamilyHeadId()).orElse(null);
 					if(parentFamilyHead != null) {
 						userFamilyMapBean.setParentFamilyHeadId(parentFamilyHead.getId());
-						parentFamilyHeadName = parentFamilyHead.getEmail();
 					}
 				}
 
 				userFamilyMaps.add(userFamilyMapBean);
 			}
 		}
-		Logger.info(userName + familyHeadName + parentFamilyHeadName);
 
 		return userFamilyMaps;
 	}
@@ -106,7 +96,7 @@ public class UserFamilyMapService {
 				.setLiveStatus(userFamilyMapBean.getLiveStatus())
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
+		
 		if(userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.HEAD))
 			userFamilyMap.setFamilyHeadId(user.getId());
 
@@ -143,6 +133,11 @@ public class UserFamilyMapService {
 		.setParentFamilyHeadId(userFamilyMapBean.getParentFamilyHeadId())
 		.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
+		if(userFamilyMapBean.getTitle() != null) {
+			if(userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.SON) || userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.DAUGHTER))
+				user.getUserProfile().setMaritalStatus(MaritalStatusEnum.SINGLE);
+		}
+
 		if(FamilyMemberTitleEnum.HEAD.equals(userFamilyMapBean.getTitle()))
 			userFamilyMap.setFamilyHeadId(user.getId());
 
@@ -151,8 +146,7 @@ public class UserFamilyMapService {
 
 		User theUser = userRepository.save(user);
 
-		return theUser.toBean()
-				.setDistinctFamilyHeads(listDistinctFamilyHeads());
+		return theUser.toBean();
 
 	}
 
@@ -166,8 +160,7 @@ public class UserFamilyMapService {
 
 		UserFamilyMap userFamilyMap = user.getUserFamilyMap();
 		if(userFamilyMap == null) {
-			return user.toBean()
-					.setDistinctFamilyHeads(listDistinctFamilyHeads());
+			return user.toBean();
 		}
 
 		user.setUserFamilyMap(null);
@@ -176,8 +169,7 @@ public class UserFamilyMapService {
 
 		User theUser = userRepository.save(user);
 
-		return theUser.toBean()
-				.setDistinctFamilyHeads(listDistinctFamilyHeads());
+		return theUser.toBean();
 
 	}
 
@@ -218,21 +210,12 @@ public class UserFamilyMapService {
 		return userFamilyBean;
 	}
 
-	public List<UserInformationBean> listDistinctFamilyHeads() {
-		
-		List<UserInformationBean> familyHeadUserInformationBeans = new ArrayList<>();
-		
-		List<UUID> familyHeadUUIDs = userFamilyMapRepository.findDistinctByFamilyHeadIdNotNull().stream().map(UserFamilyMap :: getFamilyHeadId).collect(Collectors.toList());
-		
-		Set<UUID> uuids = new HashSet<>();
-		List<UUID> distinctFamilyHeadUUIDs = familyHeadUUIDs.stream().filter(id -> uuids.add(id)).collect(Collectors.toList());
-		
-		for (UUID familyHeadId : distinctFamilyHeadUUIDs) {
-			User familyHead = userRepository.findById(familyHeadId).orElse(null);
-			familyHeadUserInformationBeans.add(familyHead.getUserInformation().toBean());
-		}
-		
-		return familyHeadUserInformationBeans;
+	public List<String[]> listDistinctFamilyHeadsInfo(UserBean userBean) {		
+		return userFamilyMapRepository.nativeQueryDistinctFamilyHeads();
+	}
+
+	public List<String[]> listDistinctParentFamilyHeadsInfo(@RequestBody UserBean userBean) {		
+		return userFamilyMapRepository.nativeQueryDistinctParentFamilyHeads();
 	}
 
 }

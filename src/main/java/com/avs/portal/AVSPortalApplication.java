@@ -10,16 +10,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.util.Logger;
 
 @SpringBootApplication
 public class AVSPortalApplication {
 
 	public static void main(String... args) {
-		Logger.info(ZoneId.systemDefault() + "\n" +	new Timestamp(System.currentTimeMillis()));
+		Logger.log(LogStatusEnum.INFO, "main >", ZoneId.systemDefault() + "\n" +	new Timestamp(System.currentTimeMillis()));
 		
 		SpringApplication.run(AVSPortalApplication.class, args);
-		Logger.log("AVA Portal Application Started ...");
+		Logger.log(LogStatusEnum.INFO, "main >", "AVA Portal Application Started ...");
 	}
 	
 	@Bean
@@ -27,7 +28,7 @@ public class AVSPortalApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-            	Logger.info("CORS :: Registered mapping /** ");
+            	Logger.log(LogStatusEnum.INFO, "corsConfigurer", "CORS :: Registered mapping /** ");
                 registry.addMapping("/**")
                 	.allowedOrigins("http://localhost:3000", "http://localhost:4000")
                 	.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(), HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.HEAD.name())

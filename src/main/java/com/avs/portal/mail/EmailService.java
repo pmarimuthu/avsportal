@@ -4,6 +4,7 @@ import java.util.Properties;
 import java.util.Random;
 
 import com.avs.portal.bean.UserBean;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.exception.AVSApplicationException;
 import com.avs.portal.util.Constants;
 import com.avs.portal.util.Logger;
@@ -65,7 +66,7 @@ public class EmailService {
 		props.put("kanaksan.mail.subject", "TestMail | OTP to Reset Kanaksan password");
 		props.put("kanaksan.mail.content", content);
 		props.put("kanaksan.mail.OTP", otpString);
-		Logger.log("OTP: " + otpString);
+		Logger.log(LogStatusEnum.SUCCESS, "sendOTP", "OTP: " + otpString);
 
 		SendEmailSSL.sendGmailSSL(props);
 
@@ -87,7 +88,7 @@ public class EmailService {
 		try {
 			props = SendEmailSSL.getProperties();
 		} catch (AVSApplicationException e) {
-			Logger.logError(e.getMessage());
+			Logger.log(LogStatusEnum.ERROR, "sendConfirmEmailAddress >", e.getMessage());
 			throw e;
 		}
 
@@ -100,7 +101,7 @@ public class EmailService {
 		try {
 			content = SendEmailSSL.getEmailContentTemplate();
 		} catch (AVSApplicationException e) {
-			Logger.logError(e.getMessage());
+			Logger.log(LogStatusEnum.ERROR, "sendConfirmEmailAddress > SendEmailSSL.getEmailContentTemplate", e.getMessage());
 			throw e;
 		}
 		String callbackURL = Constants.API_BASE_URL + "/api/user/verify/email/" + user.getId().toString();
@@ -120,12 +121,11 @@ public class EmailService {
 
 		props.put("kanaksan.mail.subject", "TestMail | Confirm Email Address");
 		props.put("kanaksan.mail.content", content);
-		Logger.info("About to send email");
 
 		try {
 			SendEmailSSL.sendGmailSSL(props);
 		} catch (AVSApplicationException e) {
-			Logger.logError(e.getMessage());
+			Logger.log(LogStatusEnum.ERROR, "sendConfirmEmailAddress > SendEmailSSL.sendGmailSSL", e.getMessage());
 			throw e;
 		}
 	}

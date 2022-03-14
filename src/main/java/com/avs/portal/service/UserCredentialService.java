@@ -23,9 +23,6 @@ public class UserCredentialService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
-	@Autowired
 	private UserCredentialRepository userCredentialRepository;
 
 	public List<UserCredentialBean> getAllUsersCredentials() {
@@ -110,8 +107,7 @@ public class UserCredentialService {
 
 		userCredentialRepository.save(userCredential);
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	public UserBean deleteUserCredential(UserBean userBean) {
@@ -136,8 +132,7 @@ public class UserCredentialService {
 		
 		userCredentialRepository.delete(userCredential);
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 }

@@ -13,8 +13,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.avs.portal.bean.LoginBean;
 import com.avs.portal.bean.UserBean;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.service.AuthService;
+import com.avs.portal.util.Constants;
 import com.avs.portal.util.Logger;
 
 @RestController
@@ -31,7 +33,12 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public UserBean attemptLogin(@RequestBody LoginBean loginBean) {
-		return authService.attemptLogin(loginBean, getIPAddress(), getUserAgent());
+		return authService.attemptLogin(loginBean);
+	}
+	
+	@PostMapping("/post-login")
+	public UserBean doPostLogin(@RequestBody UserBean userBean) {
+		return null;
 	}
 
 	private String getIPAddress() {
@@ -58,7 +65,7 @@ public class AuthController {
 			String userAgent = request.getHeader("User-Agent");
 			if (userAgent == null || "".equals(userAgent)) {
 				userAgent = request.getRemoteAddr();
-				Logger.info("User-Agent: " + userAgent);
+				Logger.log(LogStatusEnum.INFO, "AuthController > getUserAgent >", "User-Agent: " + userAgent);
 			}
 		}
 

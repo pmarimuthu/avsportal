@@ -37,33 +37,34 @@ public class UserLevelController {
 		if(userBean ==  null || userBean.getId() == null)
 			return null;
 
-		List<UserBean> users = new ArrayList<>();
-
+		List<UserBean> usersAtTheLevel = new ArrayList<>();
+		
 		switch (level) {
-		case LEVEL_ZERO:
-			users = userLevelService.getLevelZeroUsers(userBean);
+
+		case LEVEL_MINUSTWO: // Grandparents
+			usersAtTheLevel = userLevelService.getGrandparentsBeans(userBean); // getLevelMinusTwoUsers
 			break;
 
-		case LEVEL_ONE:
-			users = userLevelService.getLevelOneUsers(userBean);
+		case LEVEL_MINUSONE: // Parents
+			usersAtTheLevel = userLevelService.getParentsBeans(userBean); // getLevelMinusOneUsers(userBean);
+			break;
+			
+		case LEVEL_ZERO: // Self
+			usersAtTheLevel = userLevelService.getUserFamilyBeans(userBean); // getLevelZeroUsers
 			break;
 
-		case LEVEL_TWO:
-			users = userLevelService.getLevelTwoUsers(userBean);
+		case LEVEL_ONE: // Children
+			usersAtTheLevel = userLevelService.getChildrenBeans(userBean); // getLevelOneUsers;
 			break;
 
-		case LEVEL_MINUSONE:
-			users = userLevelService.getLevelMinusOneUsers(userBean);
-			break;
-
-		case LEVEL_MINUSTWO:
-			users = userLevelService.getLevelMinusTwoUsers(userBean);
+		case LEVEL_TWO: // Grandchildren
+			usersAtTheLevel = userLevelService.getGrandchildrenBeans(userBean); // getLevelTwoUsers
 			break;
 
 		default:
 			break;
 		}
 		
-		return users;
+		return usersAtTheLevel;
 	}
 }

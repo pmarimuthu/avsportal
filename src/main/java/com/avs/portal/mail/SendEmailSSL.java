@@ -49,13 +49,13 @@ public class SendEmailSSL {
 		props.put("kanaksan.mail.content", getEmailContentTemplate());
 
 		props.put("<content-id>", "<logocid>");
-		props.put("kanaksan.mail.attach.file", "C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\logo.png");
+		props.put("kanaksan.mail.attach.file", "D:\\Tutorials\\avsportal-develop\\src\\main\\resources\\static\\assets\\logo.PNG");
 		
 		return props;
 	}
 
 	public static String getEmailContentTemplate() throws AVSApplicationException {
-		File file = new File("C:\\zdrive\\git\\avsportal\\src\\main\\resources\\static\\assets\\mail.html");
+		File file = new File("D:\\Tutorials\\avsportal-develop\\src\\main\\resources\\static\\assets\\mail.html");
 		try {
 			InputStream inputStream = new FileInputStream(file);
 			return IOUtils.toString(inputStream, StandardCharsets.UTF_8);

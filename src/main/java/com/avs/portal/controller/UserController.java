@@ -17,11 +17,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.bean.UserVerificationBean;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.exception.AVSApplicationException;
 import com.avs.portal.mail.EmailService;
 import com.avs.portal.service.UserService;
 import com.avs.portal.service.UserVerificationService;
+import com.avs.portal.util.CommonUtil;
 import com.avs.portal.util.Logger;
 
 @RestController
@@ -49,6 +51,27 @@ public class UserController {
 		return userService.getUser(userBean);
 	}
 
+	@PostMapping("/fetch-id")
+	public UserBean fetchUser(@RequestBody UserBean userBean) {
+		if(userBean == null || userBean.getId() == null)
+			return null;
+		
+		return userService.getUser(new UserBean().setId(userBean.getId()));
+	}
+	
+	@PostMapping("/list-user-ids")
+	public List<UUID> listUserIds() {		
+		return userService.getAllUserId();
+	}
+	
+	@PostMapping("/fetch-ids")
+	public List<UUID> fetchUserIds(@RequestBody UserBean userBean) {
+		if(userBean == null || userBean.getId() == null)
+			return null;
+		
+		return userService.getAllUserId();
+	}
+
 	@PostMapping("/find")
 	public UserBean findUser(@RequestBody UserBean userBean) {
 		UserBean foundUserBean = new UserBean();
@@ -62,7 +85,7 @@ public class UserController {
 			
 			if(!users.isEmpty()) {
 				String otpString = EmailService.sendOTP(users.get(0));
-				Logger.log("TODO ## Generated OTP: " + otpString);
+				Logger.log(LogStatusEnum.INFO, "UserController > findUser >", "TODO ## Generated OTP: " + otpString);
 				foundUserBean = users.get(0);
 				
 				return foundUserBean;
@@ -89,12 +112,39 @@ public class UserController {
 			new Thread( () -> {
 				try {
 					doPostCreate(createdUserBean2);
-					Logger.log("Post Create done.");
+					Logger.log(LogStatusEnum.INFO, "UserController > createUser > postCreate >", "done.");
 				} catch (AVSApplicationException e) {
-					Logger.logError(e.getMessage());
+					Logger.log(LogStatusEnum.ERROR, "UserController > createUser >", e.getMessage());
 				}
 			}).start();
-			Logger.log("Created! Post Create Triggered ...");
+			Logger.log(LogStatusEnum.SUCCESS, "UserController > createUser >",  "Created! Post Create Triggered ...");
+			return createdUserBean2;
+		}
+
+		createdUserBean.setHasError(true);
+		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		return createdUserBean;
+	}
+
+	@PostMapping("/create/proxy")
+	public UserBean createProxyUser(@RequestBody UserBean userBean) {
+		userBean.setProxy(true);
+		userBean.setPhone(CommonUtil.generateProxyPhone());
+		userBean.setEmail(CommonUtil.generateProxyEmail(userBean.getPhone()));
+		
+		UserBean createdUserBean = new UserBean();
+
+		final UserBean createdUserBean2 = userService.createUser(userBean);
+		if(!createdUserBean2.getHasError()) {
+			new Thread( () -> {
+				try {
+					doPostCreate(createdUserBean2);
+					Logger.log(LogStatusEnum.INFO, "UserController > createUser > postCreate >", "done.");
+				} catch (AVSApplicationException e) {
+					Logger.log(LogStatusEnum.ERROR, "UserController > createUser >", e.getMessage());
+				}
+			}).start();
+			Logger.log(LogStatusEnum.SUCCESS, "UserController > createUser >",  "Created! Post Create Triggered ...");
 			return createdUserBean2;
 		}
 
@@ -107,7 +157,7 @@ public class UserController {
 		try {
 			EmailService.sendConfirmEmailAddress(user);
 		} catch (Exception e) {
-			Logger.logError(e.getMessage());
+			Logger.log(LogStatusEnum.ERROR, "UserController > doPostCreate > sendConfirmEmailAddress", e.getMessage());
 			throw new AVSApplicationException(e.getMessage(), e);
 		}
 	}

@@ -51,5 +51,15 @@ public class UserFamilyMapController {
 	public UserBean deleteUserFamilyMap(@RequestBody UserBean userBean) {
 		return userFamilyMapService.deleteUserFamilyMap(userBean);
 	}
+	
+	@PostMapping("/distinct-family-heads-info")
+	public List<String[]> getDistinctFamilyHeadsInfo(@RequestBody UserBean userBean) {
+		return userFamilyMapService.listDistinctFamilyHeadsInfo(userBean);
+	}
+	
+	@PostMapping("/distinct-parent-family-heads-info")
+	public List<String[]> getDistinctParentFamilyHeadsInfo(@RequestBody UserBean userBean) {
+		return userFamilyMapService.listDistinctParentFamilyHeadsInfo(userBean);
+	}
 
 }

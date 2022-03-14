@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.util.Logger;
 
 @RestController
@@ -13,7 +14,7 @@ public class AppController {
 
 	@GetMapping(path = "/health")
 	public String checkHealth(@RequestHeader(value = "User-Agent") String userAgent) {
-		Logger.info("User Agent: " + userAgent);
+		Logger.log(LogStatusEnum.INFO, "AppController > checkHealth >", "User Agent: " + userAgent);
 		return "Healthy!! App Up & Running.";
 	}
 	

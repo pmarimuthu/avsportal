@@ -1,5 +1,11 @@
 package com.avs.portal.util;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -13,6 +19,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.util.StringUtils;
 
 public class CommonUtil {
+	
+	public static long timeTaken = 0;
 
 	public static final String DATE_TIME_PATTERN1 = "EEEE d, MMM yy HH:mm:ss";
 	
@@ -128,6 +136,44 @@ public class CommonUtil {
 			return thePassword;
 		
 		return null;
+	}
+	
+	public static void copyUsingChunks(String source, String target) throws IOException {
+		try (
+				InputStream inputStream = new FileInputStream(source);
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+
+				OutputStream outputStream = new FileOutputStream(target);
+			) {
+			
+			byte[] buffer = new byte[4 * 1024];
+			int read;
+			while ((read = bufferedInputStream.read(buffer, 0, buffer.length)) != -1) {
+				outputStream.write(buffer, 0, read);
+			}
+		}
+	}
+
+	public static Long generateProxyPhone() {
+		return Long.parseLong(String.format("%06d", new Random().nextInt(999999)));
+	}
+
+	public static String generateProxyEmail(Long phone) {
+		return phone + "@proxy.kanaksan.com";
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("availableProcessors: " + Runtime.getRuntime().availableProcessors());
+		/*
+		try {
+			System.out.println("Copy Large file: ~400 MB");
+			long start = System.currentTimeMillis();
+			CommonUtil.copyUsingChunks("D:\\Tutorials\\backup.7z", "D:\\Tutorials\\backup_copy.7z");
+			System.out.println((System.currentTimeMillis() - start));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		*/
 	}
 	
 }

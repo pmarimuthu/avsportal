@@ -24,9 +24,6 @@ public class UserRoleMapService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
-	@Autowired
 	private UserRoleMapRepository userRoleMapRepository;
 
 	public List<UserRoleMapBean> listUserRoleMaps() {
@@ -111,8 +108,7 @@ public class UserRoleMapService {
 		
 		user = userRepository.save(user);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());		
+		return user.toBean();		
 
 	}
 
@@ -126,8 +122,7 @@ public class UserRoleMapService {
 
 		UserRoleMap userRoleMap = user.getUserRoleMap();
 		if(userRoleMap == null) {
-			return user.toBean()
-					.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+			return user.toBean();
 		}
 		
 		user.setUserRoleMap(null);
@@ -136,8 +131,7 @@ public class UserRoleMapService {
 		
 		userRoleMapRepository.delete(userRoleMap);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());		
+		return user.toBean();		
 
 	}
 

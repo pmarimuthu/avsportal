@@ -22,9 +22,6 @@ public class UserPreferencesService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
-	@Autowired
 	private UserPreferencesRepository userPreferencesRepository;
 	
 	public List<UserPreferencesBean> getAllUsersPreferences() {
@@ -99,8 +96,7 @@ public class UserPreferencesService {
 		
 		userPreferences = userPreferencesRepository.save(userPreferences);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	public UserBean deleteUserPreferences(UserBean userBean) {
@@ -117,8 +113,7 @@ public class UserPreferencesService {
 		
 		user = userRepository.save(user);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());	
+		return user.toBean();	
 	}
 	
 }

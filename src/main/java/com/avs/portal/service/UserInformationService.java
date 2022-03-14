@@ -24,9 +24,6 @@ public class UserInformationService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
-	@Autowired
 	private UserInformationRepository userInformationRepository;
 	
 	// READ {ALL}
@@ -104,8 +101,7 @@ public class UserInformationService {
 		
 		userInformation = userInformationRepository.save(userInformation);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 	
 	// DELETE
@@ -122,8 +118,7 @@ public class UserInformationService {
 		
 		user = userRepository.save(user);
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 }

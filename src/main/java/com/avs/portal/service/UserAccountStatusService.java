@@ -20,9 +20,6 @@ public class UserAccountStatusService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
 	public UserAccountStatusBean getUserAccountStatus(UserAccountStatusBean userAccountStatusBean) {
 		if(userAccountStatusBean == null || userAccountStatusBean.getUserId() == null)
 			return null;
@@ -101,8 +98,7 @@ public class UserAccountStatusService {
 		
 		user = userRepository.save(user);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());		
+		return user.toBean();		
 		
 	}
 
@@ -125,8 +121,7 @@ public class UserAccountStatusService {
 		
 		userRepository.delete(user);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 				
 	}
 	

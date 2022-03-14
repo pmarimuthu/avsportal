@@ -42,40 +42,44 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-
-	@Autowired
 	private UserAddressService userAddressService;
 
+	public List<UUID> getAllUserId() {		
+		return userRepository.findNativeAllId().stream()
+				.map(uuid -> UUID.fromString(uuid)).collect(Collectors.toList());
+	}
+	
 	// FIND (Id or Email & Phone)
 	public List<UserBean> getUsersByIdOrEmailAndPhone(UserBean userBean) {
 		if(userBean == null || (userBean.getId() == null && userBean.getEmail() == null) || (userBean.getPhone() == null))
 			return Collections.emptyList();
 
-		List<User> users = userRepository.findByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone());
-		
+		UUID foundUUID = null;
+
+		long start = System.currentTimeMillis();
+		foundUUID = userRepository.findIdByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone()).stream().findFirst().orElse(null);
+		long end = System.currentTimeMillis();		
+		System.out.println(end - start);
+
+		start = System.currentTimeMillis();
+		foundUUID = userRepository.findByNativeTheUserByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone()).stream().findFirst().orElse(null);
+		end = System.currentTimeMillis();		
+		System.out.println(end - start);
+
 		List<UserBean> userBeans = new ArrayList<>();
-		for (User user : users) {
-			userBeans.add(user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-			);			
+		User user = userRepository.findById(foundUUID).orElse(null);
+		if(user != null) {
+			userBeans.add(user.toBean());			
 		}
-		
+
 		return userBeans;
 	}
 
 	// READ {ALL}
 	public List<UserBean> getUsers() {
-		List<User> users = userRepository.findAll();
-		
-		List<UserBean> userBeans = new ArrayList<>();
-		for (User user : users) {
-			userBeans.add(user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
-			);			
-		}
-		
-		return userBeans;
+		return userRepository.findAllByIdIn(userRepository.findNativeAllId().stream()
+				.map(uuid -> UUID.fromString(uuid)).collect(Collectors.toList())).stream()
+				.map(User::toBean).collect(Collectors.toList());
 	}
 
 	// READ {ONE}
@@ -132,15 +136,13 @@ public class UserService {
 		try {
 			user = userRepository.save(user);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
 			return user.toBean()
 					.setHasError(true)
 					.setCustomErrorMessages(Arrays.asList(e.getMessage()));
-			
+
 		}
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	// UPDATE
@@ -180,8 +182,7 @@ public class UserService {
 		if(user == null)
 			return null;
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	private UserBean getUserByEmail(String email) {
@@ -190,9 +191,9 @@ public class UserService {
 			return null;
 
 		User user = entities.get(0);
-		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+
+		return user.toBean();
+				//.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
 	}
 
 	private UserBean getUserByPhone(Long phone) {
@@ -201,8 +202,7 @@ public class UserService {
 			return null;
 
 		User user = entities.get(0);
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	// UserCredential :: user_credential_02
@@ -301,23 +301,23 @@ public class UserService {
 				.setAddressType(AddressTypeEnum.NATIVE)
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		user.getUserAddresses().add(nativeAddress);
 		nativeAddress.getUsers().add(user);
-		
+
 		UserAddress livingAddress = new UserAddress()
 				.setAddressType(AddressTypeEnum.LIVING)
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		user.getUserAddresses().add(livingAddress);
 		livingAddress.getUsers().add(user);
-		
+
 		UserAddress officeAddress = new UserAddress()
 				.setAddressType(AddressTypeEnum.OFFICE)
 				.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()))
 				.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		user.getUserAddresses().add(officeAddress);
 		officeAddress.getUsers().add(user);
 	}
@@ -350,18 +350,18 @@ public class UserService {
 		userSubjectVerification.setVerificationStatus(VerificationStatusEnum.NOT_VERIFIED);
 		userSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		user.getUserVerifications().add(userSubjectVerification);
-		
+
 		UserVerification profileSubjectVerification = new UserVerification();
 		profileSubjectVerification.setUser(user);
 		profileSubjectVerification.setVerificationSubject(VerificationSubjectEnum.PROFILE);
 		profileSubjectVerification.setVerificationStatus(VerificationStatusEnum.NOT_VERIFIED);
 		profileSubjectVerification.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		profileSubjectVerification.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		user.getUserVerifications().add(profileSubjectVerification);
-		
+
 		return user.getUserVerifications();
 	}
 
@@ -389,8 +389,7 @@ public class UserService {
 			user = userRepository.save(user);
 		}
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 }

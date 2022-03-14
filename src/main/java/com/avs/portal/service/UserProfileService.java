@@ -22,9 +22,6 @@ public class UserProfileService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
-	@Autowired
 	private UserProfileRepository userProfileRepository;
 	
 	// READ {ALL}
@@ -113,8 +110,7 @@ public class UserProfileService {
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 		
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 	// DELETE
@@ -134,8 +130,7 @@ public class UserProfileService {
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user = userRepository.save(user);
 
-		return user.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+		return user.toBean();
 	}
 
 }

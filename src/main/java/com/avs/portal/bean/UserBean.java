@@ -47,8 +47,6 @@ public class UserBean extends BaseBean implements Serializable {
 
 	private Collection<UserAddressBean> userAddresses = new ArrayList<>();
 
-	private List<UserInformationBean> distinctFamilyHeads = new ArrayList<>();
-
 	private Collection<NotificationBean> notifications = new ArrayList<>();
 
 	private Collection<UserVerificationBean> userVerifications = new ArrayList<>();
@@ -56,6 +54,8 @@ public class UserBean extends BaseBean implements Serializable {
 	private Collection<LoginHistoryBean> loginHistories = new ArrayList<>();
 	
 	private String imageSrc = "https://source.unsplash.com/random/128x128";
+	
+	private boolean isProxy = false;
 
 	public UUID getId() {
 		return id;
@@ -201,15 +201,6 @@ public class UserBean extends BaseBean implements Serializable {
 		return this;
 	}
 
-	public List<UserInformationBean> getDistinctFamilyHeads() {
-		return distinctFamilyHeads;
-	}
-
-	public UserBean setDistinctFamilyHeads(List<UserInformationBean> distinctFamilyHeads) {
-		this.distinctFamilyHeads = distinctFamilyHeads;
-		return this;
-	}
-
 	public Collection<UserRelationToMeMapBean> getUserRelationToMeMap() {
 		return userRelationToMeMap;
 	}
@@ -284,6 +275,14 @@ public class UserBean extends BaseBean implements Serializable {
 		return userBean;
 	}
 
+	public boolean isProxy() {
+		return isProxy;
+	}
+
+	public void setProxy(boolean isProxy) {
+		this.isProxy = isProxy;
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + 
@@ -307,7 +306,6 @@ public class UserBean extends BaseBean implements Serializable {
 				", User Verification(s): " + userVerifications + 
 				", Login History(s): " + loginHistories + 
 				", Notification(s): " + notifications + 
-				", Distinct Family-Head-IDs: " + distinctFamilyHeads +
 				"]";
 
 	}

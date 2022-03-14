@@ -2,9 +2,10 @@ package com.avs.portal.enums;
 
 public enum RoleEnum {
 	
-	ADMIN("ADMIN"), //
-	ANALYST("ANALYST"), //
-	USER("USER"); //
+	ADMIN("ADMIN"),
+	ANALYST("ANALYST"),
+	USER("USER"),
+	PROXY("PROXY");
 
 	private final String text;
 

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,12 @@ import com.avs.portal.bean.LoginBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.User;
-import com.avs.portal.enums.LoginKeyEnum;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.repository.LoginHistoryRepository;
+import com.avs.portal.repository.UserCredentialRepository;
+import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
-import com.avs.portal.util.CommonUtil;
 import com.avs.portal.util.Constants;
-import com.avs.portal.util.Logger;
 
 import io.jsonwebtoken.lang.Collections;
 
@@ -30,104 +28,50 @@ public class AuthService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private UserFamilyMapService userFamilyMapService;
-	
+
 	@Autowired
 	private LoginHistoryRepository loginHistoryRepository;
 	
-	public UserBean attemptLogin(LoginBean loginBean, String ipAddress, UserAgentEnum userAgentEnum) {
+	@Autowired
+	private UserCredentialRepository userCredentialRepository;
+	
+	@Autowired
+	private UserFamilyMapRepository userFamilyMapRepository;
 
-		if(loginBean == null || loginBean.getLoginId() == null || loginBean.getPassword() == null) {
-			UserBean userBean = new UserBean()
-					.setHasError(true);
-			
-			userBean.getCustomErrorMessages().add("Invalid Inputs");
-			
+	public UserBean attemptLogin(LoginBean loginBean) {
+		if(loginBean == null || loginBean.getLoginId() == null || loginBean.getPassword() == null)
+			return null;
+				
+		UUID authUserId = userCredentialRepository.fnAuthUser(loginBean.getLoginId(), loginBean.getPassword());
+		UserBean userBean = new UserBean();
+		if(authUserId == null) {
+			userBean = new UserBean().setHasError(true);
+			userBean.getCustomErrorMessages().add("Invalid Credentials");
 			return userBean;
 		}
 		
-		String loginId = loginBean.getLoginId();
-		String password = loginBean.getPassword();
+		List<String[]> distinctFamilyHeads = userFamilyMapRepository.nativeQueryDistinctFamilyHeads();
+		System.out.println("DISTINCT FAMILY HEADS: [" + distinctFamilyHeads.size() + "]");
 		
-		LoginKeyEnum keyType = null;
+		List<String[]> distinctParentFamilyHeads = userFamilyMapRepository.nativeQueryDistinctParentFamilyHeads();
+		System.out.println("DISTINCT PARENT FAMILY HEADS: [" + distinctParentFamilyHeads.size() + "]");
 		
-		UUID userUUID = null;
-		try {
-			userUUID = UUID.fromString(loginId);
-			keyType = LoginKeyEnum.UUID;
-		} catch (IllegalArgumentException e) {
-			Logger.logError(e.getMessage());
-		}
-		
-		Long phone = null;
-		try {
-			if(CommonUtil.isValidPhone(Long.parseLong(loginId))) {
-				phone = Long.parseLong(loginId);
-				keyType = LoginKeyEnum.PHONE;				
-			}
-		} catch (NumberFormatException e) {
-			Logger.logError(e.getMessage());
-		}
-		
-		String email = null;
-		try {
-			if(CommonUtil.isValidEmail(loginId)) {
-				email = loginId;
-				keyType = LoginKeyEnum.EMAIL;
-			}			
-		} catch (PatternSyntaxException e) {
-			Logger.logError(e.getMessage());
-		}
-		
-		if(keyType == null) {
-			UserBean userBean = new UserBean()
-					.setHasError(true);
-			userBean.getCustomErrorMessages().add("Invalid Inputs");
-			
-			return userBean;
-		}
-		
-		User user = null;
-		
-		switch (keyType.toString()) {
-		case "UUID":
-			user = userRepository.findById(userUUID).orElse(null);
-			break;
-			
-		case "PHONE":
-			List<User> usersByPhone = userRepository.findByPhone(phone);
-			if(usersByPhone.size() == 1)
-				user = usersByPhone.get(0);
-			break;
-			
-		case "EMAIL":
-			List<User> usersByEmail = userRepository.findByEmail(email);
-			if(usersByEmail.size() == 1)
-				user = usersByEmail.get(0);
-			break;
-
-		default:
-			break;
-		}
+		User user = userRepository.findById(authUserId).orElse(null);
 		
 		if(user == null) {
-			UserBean userBean = new UserBean().setHasError(true);
-			userBean.getCustomErrorMessages().add("Invalid Credential");
+			userBean = new UserBean().setHasError(true);
+			userBean.getCustomErrorMessages().add("User Not Found.");
 			return userBean;
 		}
-		
-		if(user.getUserCredential().getPassword().equals(password)) {
-			return doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_SUCCESS);
-		}
-		else {
-			return doPostLoginAttempt(user, ipAddress, userAgentEnum, Constants.LOGIN_FAILED);
-		}
-		
+
+		return user.toBean();
 	}
 
-	private UserBean doPostLoginAttempt(User user, String ipAddress, UserAgentEnum userAgentEnum, Boolean flag) {
+	public UserBean doPostLoginAttempt(UserBean userBean, String ipAddress, UserAgentEnum userAgentEnum, Boolean flag) {
+		if(userBean == null || userBean.getId() == null || flag == null)
+			return null;
+
+		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
 		
@@ -135,12 +79,12 @@ public class AuthService {
 				.stream().sorted(Comparator.comparing(LoginHistory :: getUpdatedOn).reversed())
 				.limit(10)
 				.collect(Collectors.toList());
-		
+
 		LoginHistory loginHistory = new LoginHistory();
 		loginHistory.setIpAddress(ipAddress);
 		loginHistory.setUserAgent(userAgentEnum);
 		loginHistory.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));		
-		
+
 		if(flag == Constants.LOGIN_SUCCESS) {
 			loginHistory.setConsecutiveFailedLoginCount(0);
 		}
@@ -159,18 +103,17 @@ public class AuthService {
 			user.getCustomErrorMessages().clear();
 			user.getCustomErrorMessages().add("[TODO] Unknown Login Attempt Status.");
 		}
-		
+
 		loginHistory.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-		
+
 		loginHistory.setUser(user);
 		user.getLoginHistories().add(loginHistory);
-		
+
 		loginHistoryRepository.save(loginHistory);
 		User theUser = userRepository.save(user);
-		
-		return theUser.toBean()
-				.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+
+		return theUser.toBean();
 	}
 
 }

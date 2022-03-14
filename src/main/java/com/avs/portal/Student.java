@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.util.Logger;
 
 public class Student {
@@ -33,7 +34,7 @@ public class Student {
 		List<Student> students = Arrays.asList(anil, ravi, raju);
 		
 		List<Integer> rollNumbers = students.stream().map(Student :: getRollNumber).collect(Collectors.toList());
-		Logger.log(rollNumbers.toString());
+		Logger.log(LogStatusEnum.INFO, "Sudent > main >", rollNumbers.toString());
 		
 	}
 }
