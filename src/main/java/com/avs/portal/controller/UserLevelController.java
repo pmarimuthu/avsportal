@@ -42,19 +42,19 @@ public class UserLevelController {
 		switch (level) {
 
 		case LEVEL_MINUSTWO: // Grandparents
-			usersAtTheLevel = userLevelService.getGrandparentsBeans(userBean); // getLevelMinusTwoUsers
+			usersAtTheLevel = userLevelService.getGrandparents(userBean); // getLevelMinusTwoUsers
 			break;
 
 		case LEVEL_MINUSONE: // Parents
-			usersAtTheLevel = userLevelService.getParentsBeans(userBean); // getLevelMinusOneUsers(userBean);
+			usersAtTheLevel = userLevelService.getParents(userBean); // getLevelMinusOneUsers(userBean);
 			break;
 			
 		case LEVEL_ZERO: // Self
-			usersAtTheLevel = userLevelService.getUserFamilyBeans(userBean); // getLevelZeroUsers
+			usersAtTheLevel = userLevelService.getUserFamilyMembers(userBean); // getLevelZeroUsers
 			break;
 
 		case LEVEL_ONE: // Children
-			usersAtTheLevel = userLevelService.getChildrenBeans(userBean); // getLevelOneUsers;
+			usersAtTheLevel = userLevelService.getChildren(userBean); // getLevelOneUsers;
 			break;
 
 		case LEVEL_TWO: // Grandchildren

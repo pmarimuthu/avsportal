@@ -1,11 +1,13 @@
 package com.avs.portal.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class UserLevelService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public List<UserBean> getGrandparentsBeans(UserBean userBean) {
+	public List<UserBean> getGrandparents(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return Collections.emptyList();
 
@@ -31,7 +33,7 @@ public class UserLevelService {
 		return getLevelMinusTwoUsers(user, null).stream().map(User::toBean).collect(Collectors.toList());
 	}
 
-	public List<UserBean> getParentsBeans(UserBean userBean) {
+	public List<UserBean> getParents(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return Collections.emptyList();
 
@@ -42,7 +44,7 @@ public class UserLevelService {
 		return getLevelMinusOneUsers(user).stream().map(User::toBean).collect(Collectors.toList());
 	}
 
-	public List<UserBean> getUserFamilyBeans(UserBean userBean) {
+	public List<UserBean> getUserFamilyMembers(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
 
@@ -54,31 +56,82 @@ public class UserLevelService {
 
 	}
 
-	public List<UserBean> getChildrenBeans(UserBean userBean) {
+	public List<UserBean> getChildren(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
-
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
-			return null;
-
-		//return getChildren(user, null).stream().map(User::toBean).collect(Collectors.toList());
-		return getLevelOneUsers(user).stream().map(User::toBean).collect(Collectors.toList());
+		
+		String csvChildrenId  = userRepository.fnGetChildren(userBean.getId());
+		if(csvChildrenId == null || csvChildrenId.trim().length() == 0)
+			return Collections.emptyList();
+		
+		List<UUID> childrenId = new ArrayList<>();
+		
+		for (String strId : Arrays.asList(csvChildrenId.split(", "))) {
+			try {
+				childrenId.add(UUID.fromString(strId.trim()));
+				
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}			
+		}
+		
+		if(childrenId.size() == 0)
+			return Collections.emptyList();
+		
+		
+		List<User> children = userRepository.findAllByIdIn(childrenId);
+		return children.stream().map(User::toBean).collect(Collectors.toList());
 	}
 
 	public List<UserBean> getGrandchildrenBeans(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
-
-		User user = userRepository.findById(userBean.getId()).orElse(null);
-		if(user == null)
-			return null;
-
-		return getLevelTwoUsers(user, null).stream().map(User::toBean).collect(Collectors.toList());
+		
+		String csvChildrenId  = userRepository.fnGetChildren(userBean.getId());
+		if(csvChildrenId == null || csvChildrenId.trim().length() == 0)
+			return Collections.emptyList();
+		
+		List<UUID> childrenId = new ArrayList<>();
+		
+		for (String strId : Arrays.asList(csvChildrenId.split(", "))) {
+			try {
+				childrenId.add(UUID.fromString(strId.trim()));				
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}			
+		}
+		
+		if(childrenId.size() == 0)
+			return Collections.emptyList();
+		
+		// ------------------------------------------------------------------------
+		
+		List<UUID> grandchildrenId = new ArrayList<>();
+		
+		for (UUID childId : childrenId) {
+			String csvGrandchildrenId = userRepository.fnGetChildren(childId);
+			if(csvGrandchildrenId != null && csvGrandchildrenId.trim().length() > 0) {
+				for (String strId : Arrays.asList(csvGrandchildrenId.split(", "))) {
+					try {
+						grandchildrenId.add(UUID.fromString(strId.trim()));
+					} catch (Exception e) {
+						System.err.println(e.getMessage());
+					}			
+				}
+			}
+				
+		}
+		
+		if(grandchildrenId.size() == 0)
+			return Collections.emptyList();
+		
+		List<User> grandchildren = userRepository.findAllByIdIn(grandchildrenId);
+		return grandchildren.stream().map(User::toBean).collect(Collectors.toList());
 	}
 	
+	// -------------------------------------------------------------------------------------------------------------------------------------------
 	// Grand parents
-	public List<User> getLevelMinusTwoUsers(User user, List<User> users) {
+	private List<User> getLevelMinusTwoUsers(User user, List<User> users) {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 
@@ -88,8 +141,8 @@ public class UserLevelService {
 		
 		for (User parent : parents) {
 			List<User> grandparents = getLevelMinusOneUsers(parent);
-			for (User gparent : grandparents) {
-				gparents.add(gparent);
+			for (User grandparent : grandparents) {
+				gparents.add(grandparent);
 			}
 		}
 
@@ -97,7 +150,7 @@ public class UserLevelService {
 	}
 
 	// Parents
-	public List<User> getLevelMinusOneUsers(User user) {
+	private List<User> getLevelMinusOneUsers(User user) {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 
@@ -108,48 +161,64 @@ public class UserLevelService {
 		UUID parentId = userRepository.fnGetParent(user.getId());
 		if(parentId == null)
 			return parents;
-
-
+		
 		User head = userRepository.findById(parentId).orElse(null);
 		if(head != null) {
 			parents.add(head);
-			User spouse = fnGetSpouse(head);
-			if(spouse != null)
-				parents.add(spouse);
+			UUID spouseId = userRepository.fnGetSpouse(parentId);
+			if(spouseId != null) {
+				User spouse = userRepository.findById(spouseId).orElse(null);
+				if(spouse != null)
+					parents.add(spouse);
+			}
 		}
 
 		return parents;
 	}
 
 	// Family
-	public List<User> getLevelZeroUsers(User user) {
+	private List<User> getLevelZeroUsers(User user) {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 
 		List<User> levelZeroUsers = new ArrayList<>();
 		levelZeroUsers.add(user);
 
-		User spouseUser = fnGetSpouse(user);
-		if(spouseUser != null)
-			levelZeroUsers.add(spouseUser);
+		UUID spouseId = userRepository.fnGetSpouse(user.getId());
+		if(spouseId != null) {
+			User spouse = userRepository.findById(spouseId).orElse(null);
+			if(spouse != null)
+				levelZeroUsers.add(spouse);
+		}
 
 		return levelZeroUsers;
 	}
 
 	// Children
-	public List<User> getLevelOneUsers(User user) {
-		if(user == null || user.getId() == null || !userRepository.existsById(user.getId()))
+	private List<User> getLevelOneUsers(User user) {		
+		if(user == null || user.getId() == null)
+			return Collections.emptyList();
+
+		if(user.getUserProfile() == null || user.getUserProfile().getMaritalStatus() == null)
 			return Collections.emptyList();
 
 		List<User> children = new ArrayList<>();
 
-		List<User> users = userRepository.findAll();
+		List<String> listUserId = userRepository.findNativeAllId();
+		listUserId.remove(user.getId().toString());
 
-		for (User member : users) {
-			List<User> parents = getLevelMinusOneUsers(member);
-			for (User parent : parents) {
-				if(parent.getId().equals(user.getId()))
-					children.add(member);
+		
+		for (String id : listUserId) {
+			UUID userId = UUID.fromString(id);
+			UUID headId = null, spouseId = null;
+			
+			headId = userRepository.fnGetParent(userId);
+			spouseId = userRepository.fnGetSpouse(headId);
+			
+			if(user.getId().equals(headId) || user.getId().equals(spouseId)) {
+				User child = userRepository.findById(userId).orElse(null);
+				if(child != null)
+					children.add(child);
 			}
 		}
 
@@ -157,61 +226,15 @@ public class UserLevelService {
 	}
 
 	// Grand Children
-	public List<User> getLevelTwoUsers(User user, List<User> users) {
-		if(user == null || user.getId() == null || !userRepository.existsById(user.getId()))
-			return Collections.emptyList();
-
+	private List<User> getLevelTwoUsers(User user) {
+		List<User> children = getLevelOneUsers(user);
+		
 		List<User> grandchildren = new ArrayList<>();
-
-		if(users == null)
-			users = userRepository.findAll();
-
-		for (User member : users) {
-			List<User> parents = getLevelMinusOneUsers(member);
-			for (User parent : parents) {
-				List<User> grandparents = getLevelMinusOneUsers(parent);
-				for (User grandparent : grandparents) {
-					if(grandparent.getId().equals(user.getId()))
-						grandchildren.add(member);
-				}
-			}
+		for (User child : children) {
+			grandchildren.addAll(getLevelOneUsers(child));
 		}
-
+		
 		return grandchildren;
-	}
-
-	public List<User> getChildren(User user, List<User> users) {
-		if(user == null || user.getId() == null || !userRepository.existsById(user.getId()))
-			return Collections.emptyList();
-
-		List<User> children = new ArrayList<>();
-
-
-		if(users == null)		
-			users = userRepository.findAll();
-
-		for (User member : users) {
-			List<User> parents = getLevelMinusOneUsers(member);
-			for (User parent : parents) {
-				if(parent.getId().equals(user.getId()))
-					children.add(member);
-			}
-		}
-
-		return children;
-	}
-	
-	private User fnGetSpouse(User user) {
-		/*
-		if(user == null || user.getId() == null)
-			return null;
-		*/
-		UUID spouseId = userRepository.fnGetSpouse(user.getId());
-		if(spouseId == null)
-			return null;
-		
-		return userRepository.findById(spouseId).orElse(null);
-		
 	}
 
 

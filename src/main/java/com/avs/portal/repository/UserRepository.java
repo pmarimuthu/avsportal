@@ -1,5 +1,6 @@
 package com.avs.portal.repository;
 
+import java.sql.Array;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,5 +41,21 @@ public interface UserRepository extends CrudRepository<User, UUID> {
 	
 	@Procedure(name = "FN_GET_SPOUSE", procedureName = "FN_GET_SPOUSE", value = "FN_GET_SPOUSE")
 	UUID fnGetSpouse(UUID givenUserId);
+	
+	@Procedure(name = "FN_GET_CHILD", procedureName = "FN_GET_CHILD", value = "FN_GET_CHILD")
+	UUID fnGetChild(UUID givenUserId);
+	
+	@Procedure(name = "FN_GET_CHILDREN", procedureName = "FN_GET_CHILDREN", value = "FN_GET_CHILDREN")
+	String fnGetChildren(UUID givenUserId);
+	
+	//@Query(nativeQuery = true, value = "select * from fn_get_children(?1)")
+	//List<?> fnGetChildren(UUID givenUserId);
+	
+	//@Procedure(name = "fn_get_children(:given_user_id)")
+	//List<UUID> fnGetChildren(@Param("givenUserId") UUID givenUserId);
+	
+	//@Procedure(procedureName = "fn_get_children")
+	//List<UUID> fnGetChildren(UUID givenUserId);
+	
 	
 }
