@@ -63,14 +63,6 @@ public class UserController {
 	public List<UUID> listUserIds() {		
 		return userService.getAllUserId();
 	}
-	
-	@PostMapping("/fetch-ids")
-	public List<UUID> fetchUserIds(@RequestBody UserBean userBean) {
-		if(userBean == null || userBean.getId() == null)
-			return null;
-		
-		return userService.getAllUserId();
-	}
 
 	@PostMapping("/find")
 	public UserBean findUser(@RequestBody UserBean userBean) {

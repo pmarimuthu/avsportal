@@ -53,13 +53,13 @@ public class UserFamilyMapController {
 	}
 	
 	@PostMapping("/distinct-family-heads-info")
-	public List<String[]> getDistinctFamilyHeadsInfo(@RequestBody UserBean userBean) {
-		return userFamilyMapService.listDistinctFamilyHeadsInfo(userBean);
+	public List<String[]> getDistinctFamilyHeadsInfo() {
+		return userFamilyMapService.listDistinctFamilyHeadsInfo();
 	}
 	
 	@PostMapping("/distinct-parent-family-heads-info")
-	public List<String[]> getDistinctParentFamilyHeadsInfo(@RequestBody UserBean userBean) {
-		return userFamilyMapService.listDistinctParentFamilyHeadsInfo(userBean);
+	public List<String[]> getDistinctParentFamilyHeadsInfo() {
+		return userFamilyMapService.listDistinctParentFamilyHeadsInfo();
 	}
 
 }

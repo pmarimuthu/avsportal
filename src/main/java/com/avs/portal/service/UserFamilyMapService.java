@@ -210,11 +210,11 @@ public class UserFamilyMapService {
 		return userFamilyBean;
 	}
 
-	public List<String[]> listDistinctFamilyHeadsInfo(UserBean userBean) {		
+	public List<String[]> listDistinctFamilyHeadsInfo() {		
 		return userFamilyMapRepository.nativeQueryDistinctFamilyHeads();
 	}
 
-	public List<String[]> listDistinctParentFamilyHeadsInfo(@RequestBody UserBean userBean) {		
+	public List<String[]> listDistinctParentFamilyHeadsInfo() {		
 		return userFamilyMapRepository.nativeQueryDistinctParentFamilyHeads();
 	}
 

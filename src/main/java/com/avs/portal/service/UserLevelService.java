@@ -135,18 +135,31 @@ public class UserLevelService {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 
-		List<User> gparents = new ArrayList<>();
-		
-		List<User> parents = getLevelMinusOneUsers(user);
-		
-		for (User parent : parents) {
-			List<User> grandparents = getLevelMinusOneUsers(parent);
-			for (User grandparent : grandparents) {
-				gparents.add(grandparent);
+		if(user.getUserProfile() == null || user.getUserProfile().getMaritalStatus() == null)
+			return Collections.emptyList();
+
+		List<UUID> listGrandparentId = new ArrayList<>();
+
+		String csvParentsId = userRepository.fnGetParents(user.getId());
+		if(csvParentsId.trim().length() > 0) {
+			List<UUID> parentsId = Arrays.asList(csvParentsId.split(",")).stream().map(parentId -> {
+				return UUID.fromString(parentId.trim());
+			}).collect(Collectors.toList());
+			
+			for (UUID parentId : parentsId) {
+				String csvGrandparentsId = userRepository.fnGetParents(parentId);
+				if(csvGrandparentsId.trim().length() > 0) {
+					System.err.println("[" + csvGrandparentsId + "]");
+					listGrandparentId.addAll(
+							Arrays.asList(csvGrandparentsId.split(",")).stream().map(grandparentId -> {
+								return UUID.fromString(grandparentId.trim());
+							})
+							.collect(Collectors.toList()));
+				}
 			}
 		}
 
-		return gparents;
+		return userRepository.findAllByIdIn(listGrandparentId);
 	}
 
 	// Parents
@@ -156,8 +169,17 @@ public class UserLevelService {
 
 		if(user.getUserProfile() == null || user.getUserProfile().getMaritalStatus() == null)
 			return Collections.emptyList();
-
+		
+		String csvParentsId = userRepository.fnGetParents(user.getId());
+		List<UUID> parentsId = Arrays.asList(csvParentsId.split(",")).stream().map(parentId -> {
+			return UUID.fromString(parentId.trim());
+		}).collect(Collectors.toList());
+		
+		return userRepository.findAllByIdIn(parentsId);
+		
+		/*
 		List<User> parents = new ArrayList<>();
+		
 		UUID parentId = userRepository.fnGetParent(user.getId());
 		if(parentId == null)
 			return parents;
@@ -172,8 +194,7 @@ public class UserLevelService {
 					parents.add(spouse);
 			}
 		}
-
-		return parents;
+		*/
 	}
 
 	// Family
