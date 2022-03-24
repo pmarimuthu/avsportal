@@ -16,7 +16,6 @@ import com.avs.portal.bean.UserBean;
 import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.service.AuthService;
-import com.avs.portal.util.Constants;
 import com.avs.portal.util.Logger;
 
 @RestController
@@ -41,7 +40,7 @@ public class AuthController {
 		return null;
 	}
 
-	private String getIPAddress() {
+	public String getIPAddress() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
 				.getRequest();
 
@@ -57,7 +56,7 @@ public class AuthController {
 		return remoteAddress;
 	}
 
-	private UserAgentEnum getUserAgent() {
+	public UserAgentEnum getUserAgent() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
 				.getRequest();
 
