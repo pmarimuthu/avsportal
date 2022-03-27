@@ -18,7 +18,7 @@ import com.avs.portal.bean.UserCredentialBean;
 public class UserCredential extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId 

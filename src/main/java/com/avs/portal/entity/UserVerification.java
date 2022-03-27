@@ -23,7 +23,7 @@ public class UserVerification extends BaseEntity {
 	@Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", columnDefinition = "uuid", updatable = false, nullable = false)
 	private UUID id;
 	
 	@ManyToOne
@@ -35,7 +35,7 @@ public class UserVerification extends BaseEntity {
 	@Column(name = "verification_status", nullable = false)
 	private VerificationStatusEnum verificationStatus;
 	
-	@Column(name = "verified_by")
+	@Column(name = "verified_by", columnDefinition = "uuid")
 	private UUID verifiedBy;
 	
 	@Column(name = "comment")

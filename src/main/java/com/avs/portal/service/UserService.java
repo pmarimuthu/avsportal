@@ -46,7 +46,7 @@ public class UserService {
 
 	public List<UUID> getAllUserId() {		
 		return userRepository.findNativeAllId().stream()
-				.map(uuid -> UUID.fromString(uuid)).collect(Collectors.toList());
+				.map(uuid -> UUID.fromString(uuid.trim())).collect(Collectors.toList());
 	}
 	
 	// FIND (Id or Email & Phone)
@@ -78,7 +78,7 @@ public class UserService {
 	// READ {ALL}
 	public List<UserBean> getUsers() {
 		return userRepository.findAllByIdIn(userRepository.findNativeAllId().stream()
-				.map(uuid -> UUID.fromString(uuid)).collect(Collectors.toList())).stream()
+				.map(uuid -> UUID.fromString(uuid.trim())).collect(Collectors.toList())).stream()
 				.map(User::toBean).collect(Collectors.toList());
 	}
 

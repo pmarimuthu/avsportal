@@ -20,7 +20,7 @@ import com.avs.portal.enums.GenderEnum;
 public class UserInformation extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId

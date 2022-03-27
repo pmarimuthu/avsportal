@@ -20,7 +20,7 @@ import com.avs.portal.enums.VisibilityEnum;
 public class UserPreferences extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId

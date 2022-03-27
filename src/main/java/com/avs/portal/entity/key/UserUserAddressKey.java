@@ -12,10 +12,10 @@ public class UserUserAddressKey implements Serializable {
 
 	private static final long serialVersionUID = -7845765692365427357L;
 
-	@Column(name = "user_id")
+	@Column(name = "user_id", columnDefinition = "uuid")
 	private UUID userId;
 	
-	@Column(name = "useraddress_id")
+	@Column(name = "useraddress_id", columnDefinition = "uuid")
 	private UUID userAddressId;
 	
 	public UserUserAddressKey() {

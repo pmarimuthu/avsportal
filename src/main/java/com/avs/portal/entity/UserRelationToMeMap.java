@@ -24,14 +24,14 @@ public class UserRelationToMeMap extends BaseEntity {
 	@Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", columnDefinition = "uuid", updatable = false, nullable = false)
 	private UUID id;
 	
 	@ManyToOne()
 	@JoinColumn(name = "userId")
 	private User user; // ref
 
-	@Column(name = "relative_user_id")
+	@Column(name = "relative_user_id", columnDefinition = "uuid")
 	private UUID relativeUserId;
 	
 	@Column(name = "relation_to_me_as")
@@ -40,7 +40,7 @@ public class UserRelationToMeMap extends BaseEntity {
 	@Column(name = "verification_status")
 	private VerificationStatusEnum verificaionStatus;
 	
-	@Column(name = "verified_by")
+	@Column(name = "verified_by", columnDefinition = "uuid")
 	private UUID verifiedBy;
 	
 	@Column(name = "created_on")

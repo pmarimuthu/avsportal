@@ -26,7 +26,7 @@ import com.avs.portal.util.CommonUtil;
 public class UserProfile extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId

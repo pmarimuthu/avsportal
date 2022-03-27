@@ -2,7 +2,6 @@ package com.avs.portal.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +50,7 @@ public class UserLevelController {
 			break;
 			
 		case LEVEL_ZERO: // Self
-			usersAtTheLevel = userLevelService.getFamilyMembers(userBean); // getLevelZeroUsers
+			usersAtTheLevel = userLevelService.getFamily(userBean); // getLevelZeroUsers
 			break;
 
 		case LEVEL_ONE: // Children

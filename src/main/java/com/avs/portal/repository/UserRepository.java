@@ -65,11 +65,17 @@ public interface UserRepository extends CrudRepository<User, UUID> {
 	@Procedure(name = "fn_get_parents", procedureName = "fn_get_parents", value = "fn_get_parents")
 	String fnGetParents(UUID givenUserId);
 	
+	@Procedure(name = "fn_get_grandparents", procedureName = "fn_get_grandparents", value = "fn_get_grandparents")
+	String fnGetGrandparents(UUID givenUserId);
+	
 	@Procedure(name = "fn_get_children", procedureName = "fn_get_children", value = "fn_get_children")
 	String fnGetChildren(UUID givenUserId);
 	
 	@Procedure(name = "fn_get_grandchildren", procedureName = "fn_get_grandchildren", value = "fn_get_grandchildren")
-	String[] fnGetGrandchildren(UUID givenUserId);
+	String fnGetGrandchildren(UUID givenUserId);
+	
+	@Procedure(name = "fn_get_family", procedureName = "fn_get_family", value = "fn_get_family")
+	String fnGetFamily(UUID givenUserId);
 	
 	
 	

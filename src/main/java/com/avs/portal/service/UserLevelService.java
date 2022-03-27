@@ -2,6 +2,7 @@ package com.avs.portal.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class UserLevelService {
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
-
+		
 		return getGrandparentUsers(user).stream().map(User::toBean).collect(Collectors.toList());
 	}
 	
@@ -36,14 +37,23 @@ public class UserLevelService {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 		
-		List<User> grandparents = new ArrayList<>();
+		String csvGrandparentsId = userRepository.fnGetGrandparents(user.getId());
+		if(csvGrandparentsId == null || csvGrandparentsId.trim().length() == 0)
+			return Collections.emptyList();
 		
-		List<User> parents = getParentUsers(user);
-		for (User parent : parents) {
-			grandparents.addAll(getParentUsers(parent));
+		List<UUID> grandparentsIds = new ArrayList<>();		
+		for (String strGrandparentId : Arrays.asList(csvGrandparentsId.split(","))) {
+			try {
+				grandparentsIds.add(UUID.fromString(strGrandparentId.trim()));
+			} catch (Exception e) {
+				System.err.println("getGrandparentUsers > " + user.getEmail() + " > " + e.getMessage());
+			}
 		}
 		
-		return grandparents;
+		if(grandparentsIds.size() == 0)
+			return Collections.emptyList();
+		
+		return userRepository.findAllByIdIn(grandparentsIds);
 	}
 
 	public List<UserBean> getParents(UserBean userBean) {
@@ -65,24 +75,22 @@ public class UserLevelService {
 		if(csvParentsId == null || csvParentsId.trim().length() == 0)
 			return Collections.emptyList();
 		
-		List<UUID> parentIds = new ArrayList<>();
-		
+		List<UUID> parentIds = new ArrayList<>();		
 		for (String strParentId : Arrays.asList(csvParentsId.split(","))) {
 			try {
 				parentIds.add(UUID.fromString(strParentId.trim()));				
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("getParentUsers > " + user.getEmail() + " > " + e.getMessage());
 			}			
 		}
 		
 		if(parentIds.size() == 0)
 			return Collections.emptyList();
 		
-		
 		return userRepository.findAllByIdIn(parentIds);
 	}
 
-	public List<UserBean> getFamilyMembers(UserBean userBean) {
+	public List<UserBean> getFamily(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
 
@@ -90,38 +98,39 @@ public class UserLevelService {
 		if(user == null)
 			return null;
 
-		return getFamilyHeadAndSpouseUsers(user).stream().map(User::toBean).collect(Collectors.toList());
+		return getFamilyUsers(user).stream().map(User::toBean).collect(Collectors.toList());
 
 	}
 
-	public List<User> getFamilyHeadAndSpouseUsers(User user) {
+	public List<User> getFamilyUsers(User user) {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
 
-		List<User> familyHeadAndSpouseUsers = new ArrayList<>();
-		familyHeadAndSpouseUsers.add(user);
+		List<User> familyUsers = new ArrayList<>();
+		familyUsers.add(user);
 
-		String csvSpouseIds = userRepository.fnGetSpouse(user.getId());
-		System.out.println("csv-spouse-ids: " + csvSpouseIds);
+		List<UUID> familyUsersId = new ArrayList<>();
 		
-		if(csvSpouseIds == null || csvSpouseIds.trim().length() == 0)
-			return familyHeadAndSpouseUsers;
+		String csvFamilyIds = userRepository.fnGetFamily(user.getId());
+		System.out.println("csv-family-ids: [" + csvFamilyIds.length() +"] " + csvFamilyIds);
 		
-		List<UUID> spouseIds = new ArrayList<>();
-		for (String strSpouseId : Arrays.asList(csvSpouseIds.split(","))) {
+		if(csvFamilyIds == null || csvFamilyIds.trim().length() == 0)
+			return familyUsers;
+		
+		for (String familyUserId : Arrays.asList(csvFamilyIds.split(","))) {
 			try {
-				spouseIds.add(UUID.fromString(strSpouseId));
+				familyUsersId.add(UUID.fromString(familyUserId.trim()));
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("getFamilyUsers > " + user.getEmail() + " > " + e.getMessage());
 			}
 		}
 		
-		if(spouseIds.size() == 0)
-			return familyHeadAndSpouseUsers;
+		if(familyUsersId.size() == 0)
+			return familyUsers;
 		
-		familyHeadAndSpouseUsers.addAll(userRepository.findAllByIdIn(spouseIds));
+		familyUsers.addAll(userRepository.findAllByIdIn(familyUsersId));
 		
-		return familyHeadAndSpouseUsers;
+		return familyUsers;
 		
 	}
 
@@ -144,20 +153,17 @@ public class UserLevelService {
 		if(csvChildrenId == null || csvChildrenId.trim().length() == 0)
 			return Collections.emptyList();
 		
-		List<UUID> childrenId = new ArrayList<>();
-		
+		List<UUID> childrenId = new ArrayList<>();		
 		for (String strId : Arrays.asList(csvChildrenId.split(","))) {
 			try {
-				childrenId.add(UUID.fromString(strId.trim()));
-				
+				childrenId.add(UUID.fromString(strId.trim()));				
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("getChildrenUsers > " + user.getEmail() + " > " + e.getMessage());
 			}			
 		}
 		
 		if(childrenId.size() == 0)
-			return Collections.emptyList();
-		
+			return Collections.emptyList();		
 		
 		return userRepository.findAllByIdIn(childrenId);
 	}
@@ -169,53 +175,31 @@ public class UserLevelService {
 		User user = userRepository.findById(userBean.getId()).orElse(null);
 		if(user == null)
 			return null;
-
+		
 		return getGrandchildrenUsers(user).stream().map(User::toBean).collect(Collectors.toList());
 	}
 	
-	public List<User> getGrandchildrenUsers(User user) {
+	public Collection<User> getGrandchildrenUsers(User user) {
 		if(user == null || user.getId() == null)
 			return Collections.emptyList();
-		
-		String csvChildrenId  = userRepository.fnGetChildren(user.getId());
-		if(csvChildrenId == null || csvChildrenId.trim().length() == 0)
+
+		String csvGrandchildrenId = userRepository.fnGetGrandchildren(user.getId());
+		if(csvGrandchildrenId == null || csvGrandchildrenId.trim().length() == 0)
 			return Collections.emptyList();
 		
-		List<UUID> childrenId = new ArrayList<>();
-		
-		for (String strChildId : Arrays.asList(csvChildrenId.split(", "))) {
+		List<UUID> grandchildrenId = new ArrayList<>();		
+		for (String strId : Arrays.asList(csvGrandchildrenId.split(","))) {
 			try {
-				childrenId.add(UUID.fromString(strChildId.trim()));				
+				grandchildrenId.add(UUID.fromString(strId.trim()));				
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("getGrandchildrenUsers > " + user.getEmail() + " > " + e.getMessage());
 			}			
 		}
 		
-		if(childrenId.size() == 0)
-			return Collections.emptyList();
-		
-		// ------------------------------------------------------------------------
-		
-		List<UUID> grandchildrenId = new ArrayList<>();
-		
-		for (UUID childId : childrenId) {
-			String csvGrandchildrenId = userRepository.fnGetChildren(childId);
-			if(csvGrandchildrenId != null && csvGrandchildrenId.trim().length() > 0) {
-				for (String strGrandchildId : Arrays.asList(csvGrandchildrenId.split(","))) {
-					try {
-						grandchildrenId.add(UUID.fromString(strGrandchildId.trim()));
-					} catch (Exception e) {
-						System.err.println(e.getMessage());
-					}			
-				}
-			}				
-		}
-		
 		if(grandchildrenId.size() == 0)
-			return Collections.emptyList();
+			return Collections.emptyList();		
 		
 		return userRepository.findAllByIdIn(grandchildrenId);
 	}
-
 
 }

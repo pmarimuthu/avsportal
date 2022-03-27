@@ -18,7 +18,7 @@ import com.avs.portal.bean.UserAccountStatusBean;
 public class UserAccountStatus extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId 

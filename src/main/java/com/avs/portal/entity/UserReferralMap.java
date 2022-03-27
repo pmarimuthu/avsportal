@@ -19,7 +19,7 @@ import com.avs.portal.enums.ReferralTypeEnum;
 public class UserReferralMap extends BaseEntity {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId
@@ -30,7 +30,7 @@ public class UserReferralMap extends BaseEntity {
 	@Column(name = "referral_type")
 	private ReferralTypeEnum referralType;	
 
-	@Column(name = "referral_user_id")
+	@Column(name = "referral_user_id", columnDefinition = "uuid")
 	private UUID referralUserId;
 	
 	@Column(name = "created_on")

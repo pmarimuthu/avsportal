@@ -20,7 +20,7 @@ import com.avs.portal.enums.LiveStatusEnum;
 public class UserFamilyMap extends BaseEntity {
 
 	@Id
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "uuid")
 	private UUID id;
 	
 	@MapsId
@@ -28,10 +28,10 @@ public class UserFamilyMap extends BaseEntity {
 	@JoinColumn(name = "userid")   //same name as id @Column
     private User user;
 	
-	@Column(name = "parent_family_head_id")
+	@Column(name = "parent_family_head_id", columnDefinition = "uuid")
 	private UUID parentFamilyHeadId;
 
-	@Column(name = "family_head_id")
+	@Column(name = "family_head_id", columnDefinition = "uuid")
 	private UUID familyHeadId;
 	
 	@Column(name = "title")
