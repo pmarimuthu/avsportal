@@ -49,12 +49,11 @@ public class UserService {
 				.map(uuid -> UUID.fromString(uuid.trim())).collect(Collectors.toList());
 	}
 	
-	// FIND (Id or Email & Phone)
 	public List<UserBean> getUsersByIdOrEmailAndPhone(UserBean userBean) {
 		if(userBean == null || (userBean.getId() == null && userBean.getEmail() == null) || (userBean.getPhone() == null))
 			return Collections.emptyList();
 
-		UUID foundUUID = null;
+		UUID foundUUID;
 
 		long start = System.currentTimeMillis();
 		foundUUID = userRepository.findIdByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone()).stream().findFirst().orElse(null);
@@ -75,14 +74,12 @@ public class UserService {
 		return userBeans;
 	}
 
-	// READ {ALL}
 	public List<UserBean> getUsers() {
 		return userRepository.findAllByIdIn(userRepository.findNativeAllId().stream()
 				.map(uuid -> UUID.fromString(uuid.trim())).collect(Collectors.toList())).stream()
 				.map(User::toBean).collect(Collectors.toList());
 	}
 
-	// READ {ONE}
 	public UserBean getUser(UserBean userBean) {
 		if(userBean == null)
 			return null;
@@ -102,7 +99,6 @@ public class UserService {
 		return null;
 	}
 
-	// CREATE
 	@Transactional
 	public UserBean createUser(UserBean userBean) {
 		if(userBean == null)
@@ -112,8 +108,6 @@ public class UserService {
 		if(theUserBean.getHasError())
 			return theUserBean;
 
-		// User :: user_01
-		// ---------------
 		User user = new User();
 		user.setPhone(theUserBean.getPhone());
 		user.setEmail(theUserBean.getEmail());
@@ -131,21 +125,17 @@ public class UserService {
 		defaultUserReferrer(user);
 		defaultUserVerifications(user);
 
-		// userRelationToMeMap, userAddresses, notifications, userVerifications, loginHistories
-
 		try {
 			user = userRepository.save(user);
 		} catch (Exception e) {
 			return user.toBean()
 					.setHasError(true)
 					.setCustomErrorMessages(Arrays.asList(e.getMessage()));
-
 		}
 
 		return user.toBean();
 	}
 
-	// UPDATE
 	public UserBean updateUser(UserBean bean) {
 		if(bean == null || bean.getId() == null)
 			return null;
@@ -163,7 +153,6 @@ public class UserService {
 		return entity.toBean();
 	}
 
-	// DELETE
 	public UserBean deleteUser(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return userBean;
@@ -205,8 +194,6 @@ public class UserService {
 		return user.toBean();
 	}
 
-	// UserCredential :: user_credential_02
-	// -------------------------------------------
 	private UserCredential defaultUserCredential(User user) {
 		UserCredential userCredential = new UserCredential()
 				.setPassword("password") // CommonUtil.generateDefaultPassword())
@@ -219,8 +206,6 @@ public class UserService {
 		return userCredential;
 	}
 
-	// UserAccountStatus :: user_account_status_03
-	// -------------------------------------------
 	private UserAccountStatus defaultUserAccountStatus(User user) {
 		UserAccountStatus userAccountStatus = new UserAccountStatus();
 		userAccountStatus.setIsDeleted(Boolean.FALSE);
@@ -238,8 +223,6 @@ public class UserService {
 
 	}
 
-	// UserInformation :: user_information_06
-	// -------------------------------------------
 	private UserInformation defaultUserInformation(User user) {
 		UserInformation userInformation = new UserInformation();
 		userInformation.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
@@ -252,8 +235,6 @@ public class UserService {
 
 	}
 
-	// UserAccountStatus :: user_preferences_05
-	// -------------------------------------------
 	private UserPreferences defaultUserPreferences(User user) {
 		UserPreferences userPreferences = new UserPreferences();
 		userPreferences.setAdvertisement(Boolean.FALSE);
@@ -269,8 +250,6 @@ public class UserService {
 		return userPreferences;
 	}
 
-	// UserRoleMap :: user_role_map_09
-	// -------------------------------
 	private UserRoleMap defaultUserRoleMap(User user) {
 		UserRoleMap userRoleMap = new UserRoleMap();
 		userRoleMap.setRole(RoleEnum.USER);

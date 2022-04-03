@@ -164,16 +164,6 @@ public class CommonUtil {
 	
 	public static void main(String[] args) {
 		System.out.println("availableProcessors: " + Runtime.getRuntime().availableProcessors());
-		/*
-		try {
-			System.out.println("Copy Large file: ~400 MB");
-			long start = System.currentTimeMillis();
-			CommonUtil.copyUsingChunks("D:\\Tutorials\\backup.7z", "D:\\Tutorials\\backup_copy.7z");
-			System.out.println((System.currentTimeMillis() - start));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		*/
 	}
 	
 }

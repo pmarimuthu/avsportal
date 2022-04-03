@@ -13,6 +13,7 @@ import com.avs.portal.enums.LiveStatusEnum;
 
 public interface UserFamilyMapRepository extends CrudRepository<UserFamilyMap, UUID> {
 
+	@Override
 	Collection<UserFamilyMap> findAll();
 	
 	List<UserFamilyMap> findByParentFamilyHeadId(UUID parentFamilyHeadId);

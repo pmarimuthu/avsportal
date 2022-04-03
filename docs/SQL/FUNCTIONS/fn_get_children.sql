@@ -8,43 +8,51 @@ AS $function$
 		up_marital_status int4;
 		ufm_headid uuid;
 		csv_children_id text := '';
-		lv_head_userid uuid;
+	
+		ufm_record record;
+		child_email text;
 	
 	begin
-		select ufm.title into ufm_title from user_family_map_15 ufm where ufm.userid = given_user_id;
+		
+		if fn_is_user_exists(given_user_id) = false then
+			return null;
+		end if;
 	
-		if ufm.title > 1 then -- SON | DAUGHTER
+		select ufm.title into ufm_title from user_family_map_15 ufm where ufm.userid = given_user_id;
+		if ufm_title > 1 then -- SON | DAUGHTER
 			return null;
 		end if;
 	
 		if ufm_title = 1 then -- SPOUSE
-			select ufm.family_head_id into lv_head_userid from user_family_map_15 ufm where ufm.userid = given_user_id;
+			select ufm.family_head_id into given_user_id from user_family_map_15 ufm where ufm.userid = given_user_id;
 		end if;
-			
 	
-		for user_record in select u.email, u.id from user_01 u where u.id != lv_head_userid
-		loop 
-			select up.marital_status into up_marital_status from user_profile_08 up where up.userid = user_record.id;
-
-			ufm_headid := null;
-		
-			if up_marital_status = 3 then -- SINGLE
-				select ufm.family_head_id into ufm_headid from user_family_map_15 ufm where ufm.userid = user_record.id and ufm.family_head_id = lv_head_userid;
-			else
-				select ufm.parent_family_head_id into ufm_headid from user_family_map_15 ufm where ufm.userid = user_record.id and ufm.parent_family_head_id = lv_head_userid;
+		for ufm_record in select ufm2.userid from user_family_map_15 ufm2 
+			where ufm2.family_head_id = given_user_id and ufm2.userid != given_user_id and ufm2.title != 1
+		loop
+			-- unmarried(son | daughter)
+			select u2.email into child_email from user_01 u2 where u2.id = ufm_record.userid;
+			if length(csv_children_id) > 0 then
+				csv_children_id := csv_children_id || ', ' || ufm_record.userid;
+			else 
+				csv_children_id := ufm_record.userid;
 			end if;
-		
-			if ufm_headid is not null and ufm_headid = lv_head_userid then
-				if length(csv_children_id) > 0 then
-					csv_children_id := csv_children_id || ', ' || user_record.id;
-				else 
-					csv_children_id := user_record.id;
-				end if;
-			
-			end if;
-		
 		end loop;
-		-- raise notice 'CSV Children_id: %', csv_children_id;
+	
+		for ufm_record in select ufm3.userid from user_family_map_15 ufm3 
+			where ufm3.parent_family_head_id = given_user_id and ufm3.userid != given_user_id
+		loop 
+			-- married(son | daughter)
+			select u3.email into child_email from user_01 u3 where u3.id = ufm_record.userid;
+			if length(csv_children_id) > 0 then
+				csv_children_id := csv_children_id || ', ' || ufm_record.userid;
+			else 
+				csv_children_id := ufm_record.userid;
+			end if;
+		end loop;
+	
+		-- **********	
+		raise notice 'CSV Children_id: %', csv_children_id;
 				
 		return csv_children_id;
 

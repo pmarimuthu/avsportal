@@ -1,6 +1,7 @@
 package com.avs.portal.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserLevelController {
 	@PostMapping("/{level}")
 	public List<UserBean> getLevelUsers(@PathVariable("level") int level, @RequestBody UserBean userBean) {
 		if(userBean ==  null || userBean.getId() == null)
-			return null;
+			return Collections.emptyList();
 
 		List<UserBean> usersAtTheLevel = new ArrayList<>();
 		
@@ -50,7 +51,7 @@ public class UserLevelController {
 			break;
 			
 		case LEVEL_ZERO: // Self
-			usersAtTheLevel = userLevelService.getFamily(userBean); // getLevelZeroUsers
+			usersAtTheLevel = userLevelService.getMyFamily(userBean); // getLevelZeroUsers
 			break;
 
 		case LEVEL_ONE: // Children

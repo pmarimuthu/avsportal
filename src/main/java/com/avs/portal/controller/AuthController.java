@@ -36,7 +36,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/post-login")
-	public UserBean doPostLogin(@RequestBody UserBean userBean) {
+	public UserBean doPostLogin() {
 		return null;
 	}
 
