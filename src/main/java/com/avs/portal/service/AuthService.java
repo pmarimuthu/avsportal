@@ -14,12 +14,14 @@ import com.avs.portal.bean.LoginBean;
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.LoginHistory;
 import com.avs.portal.entity.User;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.enums.UserAgentEnum;
 import com.avs.portal.repository.LoginHistoryRepository;
 import com.avs.portal.repository.UserCredentialRepository;
 import com.avs.portal.repository.UserFamilyMapRepository;
 import com.avs.portal.repository.UserRepository;
 import com.avs.portal.util.Constants;
+import com.avs.portal.util.Logger;
 
 import io.jsonwebtoken.lang.Collections;
 
@@ -43,23 +45,25 @@ public class AuthService {
 			return null;
 				
 		UUID authUserId = userCredentialRepository.fnAuthUser(loginBean.getLoginId(), loginBean.getPassword());
-		UserBean userBean = new UserBean();
+
 		if(authUserId == null) {
-			userBean = new UserBean().setHasError(true);
+			UserBean userBean = new UserBean()
+					.setHasError(true);
 			userBean.getCustomErrorMessages().add("Invalid Credentials");
 			return userBean;
 		}
 		
 		List<String[]> distinctFamilyHeads = userFamilyMapRepository.nativeQueryDistinctFamilyHeads();
-		System.out.println("DISTINCT FAMILY HEADS: [" + distinctFamilyHeads.size() + "]");
+		Logger.log(LogStatusEnum.INFO, "attemptLogin", "DISTINCT FAMILY HEADS: [" + distinctFamilyHeads.size() + "]");
 		
 		List<String[]> distinctParentFamilyHeads = userFamilyMapRepository.nativeQueryDistinctParentFamilyHeads();
-		System.out.println("DISTINCT PARENT FAMILY HEADS: [" + distinctParentFamilyHeads.size() + "]");
+		Logger.log(LogStatusEnum.INFO, "attemptLogin", "DISTINCT PARENT FAMILY HEADS: [" + distinctParentFamilyHeads.size() + "]");
 		
 		User user = userRepository.findById(authUserId).orElse(null);
 		
 		if(user == null) {
-			userBean = new UserBean().setHasError(true);
+			UserBean userBean = new UserBean()
+					.setHasError(true);
 			userBean.getCustomErrorMessages().add("User Not Found.");
 			return userBean;
 		}

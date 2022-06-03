@@ -94,7 +94,7 @@ public class UserPreferencesService {
 		userPreferences.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		userPreferences.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		userPreferences = userPreferencesRepository.save(userPreferences);
+		userPreferencesRepository.save(userPreferences);
 		
 		return user.toBean();
 	}

@@ -1,6 +1,5 @@
 package com.avs.portal.util;
 
-import com.avs.portal.bean.UserBean;
 import com.avs.portal.enums.LogStatusEnum;
 
 public final class AVSPortalSecurityUtil {
@@ -8,7 +7,7 @@ public final class AVSPortalSecurityUtil {
 	private AVSPortalSecurityUtil() {
 	}
 
-	public static String getJWTToken(UserBean userBean) {
+	public static String getJWTToken() {
 		Logger.log(LogStatusEnum.INFO, "AVSPortalSecurityUtil > getJWTToken >", "TODO: to-get-JWToken");
 		return "To return JWT Token - Please uncomment the below logic";
 		

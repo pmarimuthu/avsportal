@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.util.StringUtils;
 
+import com.avs.portal.enums.LogStatusEnum;
+
 public class CommonUtil {
 	
-	public static long timeTaken = 0;
-
 	public static final String DATE_TIME_PATTERN1 = "EEEE d, MMM yy HH:mm:ss";
 	
 	public static final String DATE_TIME_PATTERN2 = "yyyy-MM-dd HH:mm:ss";
@@ -40,11 +40,7 @@ public class CommonUtil {
 	}
 	
 	public static boolean isValidPhone(Long phone) {
-        if(phone != null 
-        		&& String.valueOf(phone).length() == 10)
-        	return true;
-        
-        return false;
+        return (phone != null && String.valueOf(phone).length() == 10);
     }
 	
 	public static boolean isValidEmail(String email) {
@@ -163,7 +159,7 @@ public class CommonUtil {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("availableProcessors: " + Runtime.getRuntime().availableProcessors());
+		Logger.log(LogStatusEnum.INFO, "main", "availableProcessors: " + Runtime.getRuntime().availableProcessors());
 	}
 	
 }

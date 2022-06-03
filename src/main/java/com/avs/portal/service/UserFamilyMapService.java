@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +35,27 @@ public class UserFamilyMapService {
 		for (User user : users) {
 			UserFamilyMapBean userFamilyMapBean;
 
-			if(user.getUserFamilyMap() != null) {
-				userFamilyMapBean = user.getUserFamilyMap().toBean();
+			if(user.getUserFamilyMap() == null)
+				return userFamilyMaps;
 
-				userFamilyMapBean.setId(user.getId());
-				if(user.getUserFamilyMap().getFamilyHeadId() != null) {
-					User familyHead = userRepository.findById(user.getUserFamilyMap().getFamilyHeadId()).orElse(null);
-					if(familyHead != null) {
-						userFamilyMapBean.setFamilyHeadId(familyHead.getId());
-					}
+			userFamilyMapBean = user.getUserFamilyMap().toBean();
+
+			userFamilyMapBean.setId(user.getId());
+			if(user.getUserFamilyMap().getFamilyHeadId() != null) {
+				User familyHead = userRepository.findById(user.getUserFamilyMap().getFamilyHeadId()).orElse(null);
+				if(familyHead != null) {
+					userFamilyMapBean.setFamilyHeadId(familyHead.getId());
 				}
-
-				if(user.getUserFamilyMap().getParentFamilyHeadId() != null) {
-					User parentFamilyHead = userRepository.findById(user.getUserFamilyMap().getParentFamilyHeadId()).orElse(null);
-					if(parentFamilyHead != null) {
-						userFamilyMapBean.setParentFamilyHeadId(parentFamilyHead.getId());
-					}
-				}
-
-				userFamilyMaps.add(userFamilyMapBean);
 			}
+
+			if(user.getUserFamilyMap().getParentFamilyHeadId() != null) {
+				User parentFamilyHead = userRepository.findById(user.getUserFamilyMap().getParentFamilyHeadId()).orElse(null);
+				if(parentFamilyHead != null) {
+					userFamilyMapBean.setParentFamilyHeadId(parentFamilyHead.getId());
+				}
+			}
+
+			userFamilyMaps.add(userFamilyMapBean);
 		}
 
 		return userFamilyMaps;
@@ -85,11 +87,13 @@ public class UserFamilyMapService {
 		}
 
 		userFamilyMap = new UserFamilyMap()
-				.setParentFamilyHeadId(userFamilyMapBean.getParentFamilyHeadId())
-				.setFamilyHeadId(
+				.setParentFamilyHeadId(userFamilyMapBean.getParentFamilyHeadId());
+		
+		UUID familyHeadId = userFamilyMapBean.getFamilyHeadId() == null ? null : userFamilyMapBean.getFamilyHeadId();
+		userFamilyMap.setFamilyHeadId(
 						userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.HEAD) 
 						? user.getId() 
-								: (userFamilyMapBean.getFamilyHeadId() == null ? null : userFamilyMapBean.getFamilyHeadId())
+								: (familyHeadId)
 						)
 				.setTitle(userFamilyMapBean.getTitle())
 				.setLiveStatus(userFamilyMapBean.getLiveStatus())
@@ -132,10 +136,9 @@ public class UserFamilyMapService {
 		.setParentFamilyHeadId(userFamilyMapBean.getParentFamilyHeadId())
 		.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-		if(userFamilyMapBean.getTitle() != null) {
-			if(userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.SON) || userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.DAUGHTER))
+		if(userFamilyMapBean.getTitle() != null &&
+			userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.SON) || userFamilyMapBean.getTitle().equals(FamilyMemberTitleEnum.DAUGHTER))
 				user.getUserProfile().setMaritalStatus(MaritalStatusEnum.SINGLE);
-		}
 
 		if(FamilyMemberTitleEnum.HEAD.equals(userFamilyMapBean.getTitle()))
 			userFamilyMap.setFamilyHeadId(user.getId());

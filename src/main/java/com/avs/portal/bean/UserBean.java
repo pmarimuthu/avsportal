@@ -19,9 +19,9 @@ public class UserBean extends BaseBean implements Serializable {
 
 	private String email;
 
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 
 	// Relations
 

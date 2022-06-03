@@ -24,6 +24,7 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.io.IOUtils;
 
 import com.avs.portal.exception.AVSApplicationException;
+import com.avs.portal.util.Constants;
 
 public class SendEmailSSL {
 	
@@ -46,7 +47,7 @@ public class SendEmailSSL {
 		
 		props.put("kanaksan.mail.subject", "TestMail" + new Date().toString());
 		props.put("kanaksan.mail.content.mimeType", "text/html");
-		props.put("kanaksan.mail.content", getEmailContentTemplate());
+		props.put("kanaksan.mail.content", getEmailContentTemplate(Constants.HTML_TEMPLATE_FILE_PATH));
 
 		props.put("<content-id>", "<logocid>");
 		props.put("kanaksan.mail.attach.file", "D:\\Tutorials\\avsportal-develop\\src\\main\\resources\\static\\assets\\logo.PNG");
@@ -54,8 +55,8 @@ public class SendEmailSSL {
 		return props;
 	}
 
-	public static String getEmailContentTemplate() throws AVSApplicationException {
-		File file = new File("D:\\Tutorials\\avsportal-develop\\src\\main\\resources\\static\\assets\\mail.html");
+	public static String getEmailContentTemplate(String filename) throws AVSApplicationException {
+		File file = new File(filename);
 		try {
 			InputStream inputStream = new FileInputStream(file);
 			return IOUtils.toString(inputStream, StandardCharsets.UTF_8);

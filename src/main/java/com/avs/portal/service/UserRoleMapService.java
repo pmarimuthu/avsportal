@@ -81,7 +81,7 @@ public class UserRoleMapService {
 
 		user.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 		
-		userRoleMap = userRoleMapRepository.save(userRoleMap);
+		userRoleMapRepository.save(userRoleMap);
 
 		return user.getUserRoleMap().toBean();
 	}

@@ -27,11 +27,11 @@ public class UserCredentialService {
 
 	public List<UserCredentialBean> getAllUsersCredentials() {
 		return userRepository.findAll().stream().map(
-				user -> {
-					return user.getUserCredential() != null 
+				user -> 
+					user.getUserCredential() != null 
 							? user.getUserCredential().toBean() 
-									: new UserCredentialBean().setUserId(user.getId());
-				}).collect(Collectors.toList());
+									: new UserCredentialBean().setUserId(user.getId())
+				).collect(Collectors.toList());
 	}
 
 	public UserCredentialBean getUserCredential(UserBean userBean) {

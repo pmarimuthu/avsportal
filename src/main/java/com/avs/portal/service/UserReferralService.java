@@ -139,7 +139,7 @@ public class UserReferralService {
 			userReferral.setStatus(UserReferralStatusEnum.AVAILED);
 			userReferral.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
-			userReferral = userReferralRepository.save(userReferral);
+			userReferralRepository.save(userReferral);
 			return userService.createUser(userBean);
 		} catch (Exception e) {
 			userBean.setHasError(true);

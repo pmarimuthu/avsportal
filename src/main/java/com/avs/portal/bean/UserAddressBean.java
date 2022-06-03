@@ -34,9 +34,9 @@ public class UserAddressBean extends BaseBean implements Serializable {
 	
 	private String ipAddress;
 	
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 	
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 	
 	private Boolean isDeleted;
 

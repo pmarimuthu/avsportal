@@ -22,9 +22,9 @@ public class UserPreferencesBean extends BaseBean implements Serializable {
 	private Boolean advertisementOpt;
 
 	
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 	
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 	
 	public UUID getId() {
 		return id;

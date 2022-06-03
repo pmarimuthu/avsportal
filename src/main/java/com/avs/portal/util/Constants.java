@@ -14,7 +14,9 @@ public class Constants {
 	
 	public static final String API_BASE_URL = "http://localhost:8080";
 	
-	public static final String DEFAULT_CALLBACK_URL = "http://localhost:3000";		
+	public static final String DEFAULT_CALLBACK_URL = "http://localhost:3000";
+	
+	public static final String HTML_TEMPLATE_FILE_PATH = "D:\\Tutorials\\avsportal-develop\\src\\main\\resources\\static\\assets\\mail.html";
 	
 	private Constants() {
 		

@@ -22,9 +22,9 @@ public class UserAccountStatusBean extends BaseBean implements Serializable {
 	
 	private Boolean isDeleted;
 	
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 	
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 
 	public UUID getId() {
 		return id;

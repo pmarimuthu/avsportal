@@ -24,12 +24,12 @@ public class UserProfileService {
 	@Autowired
 	private UserProfileRepository userProfileRepository;
 	
-	// READ {ALL}
+	// READ ALL
 	public List<UserProfileBean> getAllUserProfiles() {
 		return userProfileRepository.findAll().stream().map(UserProfile :: toBean).collect(Collectors.toList());
 	}
 
-	// READ {ONE}
+	// READ ONE
 	public UserProfileBean getUserProfile(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return null;
@@ -114,7 +114,7 @@ public class UserProfileService {
 	}
 
 	// DELETE
-	public UserBean deleteTempPassword(UserBean userBean, UserProfileBean userProfileBean) {
+	public UserBean deleteTempPassword(UserBean userBean) {
 		if(userBean == null || userBean.getId() == null)
 			return userBean;
 

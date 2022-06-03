@@ -59,8 +59,8 @@ public class UserProfileController {
 	}	
 
 	@DeleteMapping("/delete/{userId}")
-	public UserBean deleteUserProfile(@PathVariable(name = "userId") String userId, @RequestBody UserProfileBean userProfileBean) {
-		return userProfileService.deleteTempPassword(new UserBean().setId(UUID.fromString(userId)), userProfileBean);
+	public UserBean deleteUserProfile(@PathVariable(name = "userId") String userId) {
+		return userProfileService.deleteTempPassword(new UserBean().setId(UUID.fromString(userId)));
 	}
 
 }

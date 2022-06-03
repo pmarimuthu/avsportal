@@ -92,7 +92,6 @@ public class UserAddressService {
 	}
 
 	public List<UserAddressBean> attachUserWithUserAddress(UserBean userBean, UserAddressBean userAddressBean) {
-		
 		if(userBean == null || userAddressBean == null || userAddressBean.getId() == null || userAddressBean.getAddressType() == null)
 			return Collections.emptyList();
 		

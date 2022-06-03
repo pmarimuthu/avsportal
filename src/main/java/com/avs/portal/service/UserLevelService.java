@@ -1,7 +1,6 @@
 package com.avs.portal.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -13,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.avs.portal.bean.UserBean;
 import com.avs.portal.entity.User;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.util.Logger;
 
 
 @Service
@@ -72,7 +73,7 @@ public class UserLevelService {
 				try {
 					parentIds.add(UUID.fromString(parentIdToken));
 				} catch (Exception e) {
-					System.err.println("getParentUsers: " + user.getEmail() + " > " + csvParentsId + " > " + e.getMessage());
+					Logger.log(LogStatusEnum.INFO, "getParentUsers", "getParentUsers: " + user.getEmail() + " > " + csvParentsId + " > " + e.getMessage());
 				}
 		}
 		
@@ -114,7 +115,7 @@ public class UserLevelService {
 				try {
 					familyUsersId.add(UUID.fromString(familyIdToken));
 				} catch (Exception e) {
-					System.err.println("getMyFamilyUsers: " + user.getEmail() + " > " + csvFamilyIds + " > " + e.getMessage());
+					Logger.log(LogStatusEnum.INFO, "getMyFamilyUsers", "getMyFamilyUsers: " + user.getEmail() + " > " + csvFamilyIds + " > " + e.getMessage());
 				}
 			}
 		}
@@ -155,7 +156,7 @@ public class UserLevelService {
 				try {
 					childrenId.add(UUID.fromString(childIdToken));
 				} catch (Exception e) {
-					System.err.println("getChildrenUsers: " + user.getEmail() + " > " + csvChildrenId + " > " + e.getMessage());
+					Logger.log(LogStatusEnum.INFO, "getChildrenUsers", "getChildrenUsers: " + user.getEmail() + " > " + csvChildrenId + " > " + e.getMessage());
 				}
 			}
 		}

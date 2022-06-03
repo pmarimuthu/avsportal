@@ -32,15 +32,15 @@ public class UserProfileBean extends BaseBean implements Serializable {
 	
 	private String placeOfBirth;
 	
-	private LocalDateTime birthTimestamp;
+	private transient LocalDateTime birthTimestamp;
 	
 	private RaasiEnum raasi; // RaasiEnum
 	
 	private NatchaththiramEnum natchaththiram; // NatchaththiramEnum
 	
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 	
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 
 	public UUID getId() {
 		return id;

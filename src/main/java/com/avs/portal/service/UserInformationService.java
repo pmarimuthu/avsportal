@@ -26,12 +26,10 @@ public class UserInformationService {
 	@Autowired
 	private UserInformationRepository userInformationRepository;
 	
-	// READ {ALL}
 	public List<UserInformationBean> getAllUsersInformation() {
 		return userInformationRepository.findAll().stream().map(UserInformation :: toBean).collect(Collectors.toList());
 	}
 
-	// READ {ONE}
 	public UserInformationBean getUserInformation(UserBean bean) {
 		if(bean == null || bean.getId() == null)
 			return null;
@@ -43,7 +41,6 @@ public class UserInformationService {
 		return user.getUserInformation().toBean();
 	}
 
-	// CREATE
 	@Transactional
 	public UserInformationBean createUserInformation(UserInformationBean userInformationBean) {
 		if(userInformationBean == null || userInformationBean.getUserId() == null)
@@ -75,7 +72,6 @@ public class UserInformationService {
 		return userInformation.toBean();
 	}
 
-	// UPDATE
 	public UserBean updateUserInformation(UserInformationBean userInformationBean) {
 		if(userInformationBean == null || userInformationBean.getUserId() == null)
 			return null;
@@ -99,12 +95,11 @@ public class UserInformationService {
 		user.setUserInformation(userInformation);
 		userInformation.setUser(user);
 		
-		userInformation = userInformationRepository.save(userInformation);
+		userInformationRepository.save(userInformation);
 		
 		return user.toBean();
 	}
 	
-	// DELETE
 	public UserBean deleteUserInformation(UserBean bean) {
 		if(bean == null || bean.getId() == null)
 			return bean;

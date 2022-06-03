@@ -11,6 +11,17 @@ import com.avs.portal.util.Logger;
 
 public class EmailService {
 
+	private static final String KANAKSAN_USER_UUID = "kanaksan.user.uuid";
+	private static final String KANAKSAN_USER_EMAIL = "kanaksan.user.email";
+	private static final String KANAKSAN_USER_PHONE = "kanaksan.user.phone";
+	private static final String KANAKSAN_USER_INFORMATION_FIRSTNAME = "kanaksan.user.information.firstname";
+	private static final String KANAKSAN_EMAIL_MESSAGE_BANNER_TITLE = "kanaksan.email.message.banner.title";
+	private static final String KANAKSAN_EMAIL_OTP_BLOCK_OR_NONE = "kanaksan.email.otp.blockOrNone";
+	private static final String KANAKSAN_EMAIL_CALLBACK_BLOCK_OR_NONE = "kanaksan.email.callback.blockORnone";
+	private static final String KANAKSAN_EMAIL_SUBJECT = "kanaksan.mail.subject";
+	private static final String KANAKSAN_EMAIL_MESSAGE_BODY_LINEONE = "kanaksan.email.message.body.lineone";
+	private static final String KANAKSAN_EMAIL_MESSAGE_BODY_LINETWO = "kanaksan.email.message.body.linetwo";
+	
 	private EmailService() {
 	}
 
@@ -34,36 +45,36 @@ public class EmailService {
 			throw new AVSApplicationException(e.getMessage(), e);
 		}
 
-		props.put("kanaksan.user.uuid", user.getId());
-		props.put("kanaksan.user.email", user.getEmail());
-		props.put("kanaksan.user.phone", user.getPhone());
-		props.put("kanaksan.email.message.banner.title", "OTP To Change account details");
+		props.put(KANAKSAN_USER_UUID, user.getId());
+		props.put(KANAKSAN_USER_EMAIL, user.getEmail());
+		props.put(KANAKSAN_USER_PHONE, user.getPhone());
+		props.put(KANAKSAN_EMAIL_MESSAGE_BANNER_TITLE, "OTP To Change account details");
 
-		String content = SendEmailSSL.getEmailContentTemplate();			
+		String content = SendEmailSSL.getEmailContentTemplate(Constants.HTML_TEMPLATE_FILE_PATH);			
 		String otpString = generateOTP();
 
 		content = 
 				content
-				.replace("kanaksan.email.message.banner.title", "OTP To Change account details")
-				.replace("kanaksan.user.information.firstname", "Firstname")
-				.replace("kanaksan.email.message.body.lineone", 
+				.replace(KANAKSAN_EMAIL_MESSAGE_BANNER_TITLE, "OTP To Change account details")
+				.replace(KANAKSAN_USER_INFORMATION_FIRSTNAME, "Firstname")
+				.replace(KANAKSAN_EMAIL_MESSAGE_BODY_LINEONE, 
 						"OTP to change your <span style=\"color: rgb(255, 105, 0); font-weight: bold;\">Kanaksan</span> account details.")
-				.replace("kanaksan.email.message.body.linetwo", "This OTP is valid until HH:MM:SS")
+				.replace(KANAKSAN_EMAIL_MESSAGE_BODY_LINETWO, "This OTP is valid until HH:MM:SS")
 				.replace("kanaksan.email.callback.url" , Constants.DEFAULT_CALLBACK_URL)
 
-				.replace("kanaksan.email.callback.blockORnone", "none")
+				.replace(KANAKSAN_EMAIL_CALLBACK_BLOCK_OR_NONE, "none")
 				.replace("kanaksan.email.callback.message", "Message Callback")
-				.replace("kanaksan.user.uuid", user.getId().toString())
+				.replace(KANAKSAN_USER_UUID, user.getId().toString())
 
-				.replace("kanaksan.email.callback.blockORnone", "none")
-				.replace("kanaksan.email.otp.blockOrNone", "block")
+				.replace(KANAKSAN_EMAIL_CALLBACK_BLOCK_OR_NONE, "none")
+				.replace(KANAKSAN_EMAIL_OTP_BLOCK_OR_NONE, "block")
 
 				.replace("kanaksan.email.otp.1of4", String.valueOf(otpString.charAt(0)) )
 				.replace("kanaksan.email.otp.2of4", String.valueOf(otpString.charAt(1)) )
 				.replace("kanaksan.email.otp.3of4", String.valueOf(otpString.charAt(2)) )
 				.replace("kanaksan.email.otp.4of4", String.valueOf(otpString.charAt(3)) );
 
-		props.put("kanaksan.mail.subject", "TestMail | OTP to Reset Kanaksan password");
+		props.put(KANAKSAN_EMAIL_SUBJECT, "TestMail | OTP to Reset Kanaksan password");
 		props.put("kanaksan.mail.content", content);
 		props.put("kanaksan.mail.OTP", otpString);
 		Logger.log(LogStatusEnum.SUCCESS, "sendOTP", "OTP: " + otpString);
@@ -92,14 +103,15 @@ public class EmailService {
 			throw e;
 		}
 
-		props.put("kanaksan.user.uuid", user.getId());
-		props.put("kanaksan.user.email", user.getEmail());
-		props.put("kanaksan.user.phone", user.getPhone());
-		props.put("kanaksan.email.message.banner.title", "Confirm Email Address");
+		props.put(KANAKSAN_USER_UUID, user.getId());
+		props.put(KANAKSAN_USER_EMAIL, user.getEmail());
+		props.put(KANAKSAN_USER_PHONE, user.getPhone());
+		props.put(KANAKSAN_EMAIL_MESSAGE_BANNER_TITLE, "Confirm Email Address");
 
-		String content = new String();
+		String content = "";
+		
 		try {
-			content = SendEmailSSL.getEmailContentTemplate();
+			content = SendEmailSSL.getEmailContentTemplate(Constants.HTML_TEMPLATE_FILE_PATH);
 		} catch (AVSApplicationException e) {
 			Logger.log(LogStatusEnum.ERROR, "sendConfirmEmailAddress > SendEmailSSL.getEmailContentTemplate", e.getMessage());
 			throw e;
@@ -108,18 +120,18 @@ public class EmailService {
 
 		content = 
 				content
-				.replace("kanaksan.email.message.banner.title", "Confirm Email Address")
-				.replace("kanaksan.user.information.firstname", user.getEmail())
-				.replace("kanaksan.email.message.body.lineone", 
+				.replace(KANAKSAN_EMAIL_MESSAGE_BANNER_TITLE, "Confirm Email Address")
+				.replace(KANAKSAN_USER_INFORMATION_FIRSTNAME, user.getEmail())
+				.replace(KANAKSAN_EMAIL_MESSAGE_BODY_LINEONE, 
 						"Please confirm your email address for your <span style=\"color: rgb(255, 105, 0); font-weight: bold;\">Kanaksan</span> account.")
-				.replace("kanaksan.email.message.body.linetwo", "")
+				.replace(KANAKSAN_EMAIL_MESSAGE_BODY_LINETWO, "")
 				.replaceAll("kanaksan.email.callback.url", callbackURL)
 				.replace("kanaksan.email.callback.message", "Your Login Credential: " + user.getUserCredential().getPassword())
-				.replace("kanaksan.user.uuid", user.getId().toString())
-				.replace("kanaksan.email.callback.blockORnone", "block")
-				.replace("kanaksan.email.otp.blockOrNone", "none");
+				.replace(KANAKSAN_USER_UUID, user.getId().toString())
+				.replace(KANAKSAN_EMAIL_CALLBACK_BLOCK_OR_NONE, "block")
+				.replace(KANAKSAN_EMAIL_OTP_BLOCK_OR_NONE, "none");
 
-		props.put("kanaksan.mail.subject", "TestMail | Confirm Email Address");
+		props.put(KANAKSAN_EMAIL_SUBJECT, "TestMail | Confirm Email Address");
 		props.put("kanaksan.mail.content", content);
 
 		try {

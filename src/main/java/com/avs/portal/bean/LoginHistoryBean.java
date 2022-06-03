@@ -24,9 +24,9 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 	
 	private UserAgentEnum userAgent;
 	
-	private LocalDateTime createdOn;
+	private transient LocalDateTime createdOn;
 	
-	private LocalDateTime updatedOn;
+	private transient LocalDateTime updatedOn;
 
 	public UUID getId() {
 		return id;

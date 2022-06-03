@@ -29,11 +29,13 @@ import com.avs.portal.entity.UserRoleMap;
 import com.avs.portal.entity.UserVerification;
 import com.avs.portal.enums.AddressTypeEnum;
 import com.avs.portal.enums.LanguageEnum;
+import com.avs.portal.enums.LogStatusEnum;
 import com.avs.portal.enums.RoleEnum;
 import com.avs.portal.enums.VerificationStatusEnum;
 import com.avs.portal.enums.VerificationSubjectEnum;
 import com.avs.portal.enums.VisibilityEnum;
 import com.avs.portal.repository.UserRepository;
+import com.avs.portal.util.Logger;
 
 @Service
 public class UserService {
@@ -58,12 +60,12 @@ public class UserService {
 		long start = System.currentTimeMillis();
 		foundUUID = userRepository.findIdByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone()).stream().findFirst().orElse(null);
 		long end = System.currentTimeMillis();		
-		System.out.println(end - start);
+		Logger.log(LogStatusEnum.INFO, "getUsersByIdOrEmailAndPhone:" + foundUUID, String.valueOf(end - start));
 
 		start = System.currentTimeMillis();
 		foundUUID = userRepository.findByNativeTheUserByIdOrEmailAndPhone(userBean.getId(), userBean.getEmail(), userBean.getPhone()).stream().findFirst().orElse(null);
 		end = System.currentTimeMillis();		
-		System.out.println(end - start);
+		Logger.log(LogStatusEnum.INFO, "getUsersByIdOrEmailAndPhone: " + foundUUID, String.valueOf(end - start));
 
 		List<UserBean> userBeans = new ArrayList<>();
 		User user = userRepository.findById(foundUUID).orElse(null);
@@ -122,7 +124,7 @@ public class UserService {
 		defaultUserAddresses(user);
 		defaultUserFamilyMap(user);
 		defaultUserRoleMap(user);
-		defaultUserReferrer(user);
+		defaultUserReferrer();
 		defaultUserVerifications(user);
 
 		try {
@@ -182,7 +184,7 @@ public class UserService {
 		User user = entities.get(0);
 
 		return user.toBean();
-				//.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads());
+				//.setDistinctFamilyHeads(userFamilyMapService.listDistinctFamilyHeads())
 	}
 
 	private UserBean getUserByPhone(Long phone) {
@@ -313,7 +315,7 @@ public class UserService {
 		return userFamilyMap;
 	}
 
-	private UserReferral defaultUserReferrer(User user) {
+	private UserReferral defaultUserReferrer() {
 		UserReferral userReferral = new UserReferral();
 
 		userReferral.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));

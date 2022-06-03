@@ -77,7 +77,7 @@ public class UserController {
 			
 			if(!users.isEmpty()) {
 				String otpString = EmailService.sendOTP(users.get(0));
-				Logger.log(LogStatusEnum.INFO, "UserController > findUser >", "TODO ## Generated OTP: " + otpString);
+				Logger.log(LogStatusEnum.INFO, "1. UserController > findUser >", "TODO ## Generated OTP: " + otpString);
 				foundUserBean = users.get(0);
 				
 				return foundUserBean;
@@ -104,17 +104,17 @@ public class UserController {
 			new Thread( () -> {
 				try {
 					doPostCreate(createdUserBean2);
-					Logger.log(LogStatusEnum.INFO, "UserController > createUser > postCreate >", "done.");
+					Logger.log(LogStatusEnum.INFO, "2. UserController > createUser > postCreate >", "done.");
 				} catch (AVSApplicationException e) {
-					Logger.log(LogStatusEnum.ERROR, "UserController > createUser >", e.getMessage());
+					Logger.log(LogStatusEnum.ERROR, "3. UserController > createUser >", e.getMessage());
 				}
 			}).start();
-			Logger.log(LogStatusEnum.SUCCESS, "UserController > createUser >",  "Created! Post Create Triggered ...");
+			Logger.log(LogStatusEnum.SUCCESS, "4. UserController > createUser >",  "Created! Post Create Triggered ...");
 			return createdUserBean2;
 		}
 
 		createdUserBean.setHasError(true);
-		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists. 1");
 		return createdUserBean;
 	}
 
@@ -131,17 +131,17 @@ public class UserController {
 			new Thread( () -> {
 				try {
 					doPostCreate(createdUserBean2);
-					Logger.log(LogStatusEnum.INFO, "UserController > createUser > postCreate >", "done.");
+					Logger.log(LogStatusEnum.INFO, "5. UserController > createUser > postCreate >", "done.");
 				} catch (AVSApplicationException e) {
-					Logger.log(LogStatusEnum.ERROR, "UserController > createUser >", e.getMessage());
+					Logger.log(LogStatusEnum.ERROR, "6. UserController > createUser >", e.getMessage());
 				}
 			}).start();
-			Logger.log(LogStatusEnum.SUCCESS, "UserController > createUser >",  "Created! Post Create Triggered ...");
+			Logger.log(LogStatusEnum.SUCCESS, "7. UserController > createUser >",  "Created! Post Create Triggered ...");
 			return createdUserBean2;
 		}
 
 		createdUserBean.setHasError(true);
-		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists.");
+		createdUserBean.getCustomErrorMessages().add("Email/Phone already exists. 2");
 		return createdUserBean;
 	}
 
@@ -149,7 +149,7 @@ public class UserController {
 		try {
 			EmailService.sendConfirmEmailAddress(user);
 		} catch (Exception e) {
-			Logger.log(LogStatusEnum.ERROR, "UserController > doPostCreate > sendConfirmEmailAddress", e.getMessage());
+			Logger.log(LogStatusEnum.ERROR, "8. UserController > doPostCreate > sendConfirmEmailAddress", e.getMessage());
 			throw new AVSApplicationException(e.getMessage(), e);
 		}
 	}
@@ -169,7 +169,7 @@ public class UserController {
 		try {
 			UserBean userBean = userService.getUser(new UserBean().setId(UUID.fromString(userId)));
 			if(userBean == null || userBean.getId() == null)
-				throw new ResponseStatusException(200, "Unable to find User: " + userId, null);
+				throw new ResponseStatusException(200, "1. Unable to find User: " + userId, null);
 			
 			UserVerificationBean verificationBean = new UserVerificationBean();
 			verificationBean.setComment(null);
@@ -182,7 +182,7 @@ public class UserController {
 			return userBean;
 			
 		} catch (Exception e) {
-			throw new ResponseStatusException(200, "Unable to find User: " + userId, e);
+			throw new ResponseStatusException(200, "2. Unable to find User: " + userId, e);
 		}
 	}
 	
